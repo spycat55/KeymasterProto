@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package api.webrtc.v1;
+
+option go_package = "github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1";
+
+message ErrorMessage {
+  bytes hash = 1;
+  string message = 2;
+}

@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package api.webrtc.v1;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1";
+
+// 0x00 是指的系统
+// 错误代码 0x0000 没有错误， 0x0001 超时, 0x0002 系统错误, 0x0003 消息已存在
+
+// 付费
+message CostPoolUpdate {
+    bytes base_tx_id = 1; // 基础交易
+    bytes signature = 2; // 签名
+    uint32 sequence_number = 3; // 序列号
+    uint64 amount = 4; // 金额
+}
+
+
+message MessageMain {
+    string message_type = 1; // shake_hand, signaling, response, message_text
+    google.protobuf.Timestamp timestamp = 2;
+    optional bytes data = 3;
+    optional CostPoolUpdate cost_pool_update = 4;
+    optional bytes forward_publickey = 5; // 转发的公钥
+    optional bytes previous_shell_message_hash = 6; // 回复消息，使用的前序消息 hash
+    optional string error_message = 7; // 回复消息，错误
+}
+
+// 转发消息
+message MessageShell {
+    optional bytes message_main = 1; // shake_hand 就没有 Data
+    optional bytes data_signature = 2; // 如果是公开的，就有签名，否则没有，签data的名
+}
+
+
+// 消息回复，报文回复
+// 发送给 server 的信息
+// 回复的类型是由前序消息的类型决定的
+// message MessageResponseShell {
+//     bytes PreviousShellMessageHash = 1;
+//     fixed64 Code = 2; // 0x0000 没有错误，收到了
+//     optional string ErrorMessage = 3; // 非转发类错误，直接发给 server 的
+//     optional bytes Data = 4; // 给 node 的加密数据，肯定就是转发的才有这个，握手也需要这个
+// }
+
+// 发送给 node 的加密数据
+// message WSMessageResponse {
+//     // 前序消息的 hash
+//     bytes PreviousPackageMessageHash = 1;
+//     fixed64 Code = 2; // 0x0000 没有错误，收到了
+//     optional string ErrorMessage = 3;
+//     optional bytes Data = 4; // 给 node 的数据，有些需要返回信息
+// }

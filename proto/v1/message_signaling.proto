@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package api.webrtc.v1;
+
+option go_package = "github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1";
+
+// FORWARD 消息编号： 0x01
+// FORWARD ERROR CODE: 0x0101 用户不存在，0x0102 用户没有返回消息，消息超时
+
+// 定义消息结构,协调通信的过程，系列命令
+// 发送给 server 的信息
+message SignalingShell {
+    bytes ForwardPublicKey = 1;
+    bytes Data = 2; // 加密数据
+}
+
+// 发送给 node 的加密数据
+// message Signaling {
+//     string SignalingType = 1; // offer, answer, ice
+//     bytes Data = 2;
+// }

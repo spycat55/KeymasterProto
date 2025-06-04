@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package api.webrtc.v1;
+
+option go_package = "github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1";
+
+message Fee {
+  uint32 sequence = 1;  // sequence
+  uint64 amount = 2;  // 金额
+  bytes prev_tx_id = 3;  // 前序交易ID
+  bytes signature = 4;  // 签名
+}

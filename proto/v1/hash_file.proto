@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package api.webrtc.v1;
+
+option go_package = "github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1";
+
+// HashFile 定义文件哈希结构
+// block_length = 1 MiB
+// 不使用文件名，保证一个文件的 hashfile 的 hash 肯定一样
+// 最后一个 block 可能小于 1 MiB，用零补齐后面空格，保证 hash 一致性
+message Block {
+    fixed32 magic_number = 1; // MAGIC_NUMBER = 0x4B455950  # "FILE" 的十六进制值，也代表版本
+    uint64 length = 2; // 文件总长度
+    repeated bytes blocks = 3; // 哈希块
+}
+
+message Live {
+    fixed32 magic_number = 1; // MAGIC_NUMBER = 0x4B455950  # "LIVE" 的十六进制值，也代表版本
+    string type = 2; // 类型
+    bytes public_key = 3; // 公钥
+    bytes channel = 4; // 频道名称
+    // 块大小
+    fixed32 block_length = 5; // block_length = 1 MiB
+}
+
+message LiveShell{
+    Live live = 1;
+    bytes signature = 2;
+}
+
+message LiveBlock {
+    bytes live_hash = 1;
+    bytes prev_hash = 2; // 前序块，指的是 LiveBlockShell 的 hash
+    uint32 length = 3; // 块大小,最后一个块的 length 可能小于 block_length
+    bytes data = 4; // data
+}
+
+message LiveBlockShell {
+    LiveBlock live_block = 1;
+    bytes signature = 2;
+}
