@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.30.2
-// source: api_webrtc/proto/v1/rtc_file.proto
+// source: rtc_file.proto
 
 package v1
 
@@ -35,7 +35,7 @@ type RTCFileQuote struct {
 
 func (x *RTCFileQuote) Reset() {
 	*x = RTCFileQuote{}
-	mi := &file_api_webrtc_proto_v1_rtc_file_proto_msgTypes[0]
+	mi := &file_rtc_file_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -47,7 +47,7 @@ func (x *RTCFileQuote) String() string {
 func (*RTCFileQuote) ProtoMessage() {}
 
 func (x *RTCFileQuote) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_rtc_file_proto_msgTypes[0]
+	mi := &file_rtc_file_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +60,7 @@ func (x *RTCFileQuote) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RTCFileQuote.ProtoReflect.Descriptor instead.
 func (*RTCFileQuote) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_rtc_file_proto_rawDescGZIP(), []int{0}
+	return file_rtc_file_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *RTCFileQuote) GetFileHash() []byte {
@@ -109,7 +109,7 @@ type RTCFileContent struct {
 
 func (x *RTCFileContent) Reset() {
 	*x = RTCFileContent{}
-	mi := &file_api_webrtc_proto_v1_rtc_file_proto_msgTypes[1]
+	mi := &file_rtc_file_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -121,7 +121,7 @@ func (x *RTCFileContent) String() string {
 func (*RTCFileContent) ProtoMessage() {}
 
 func (x *RTCFileContent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_rtc_file_proto_msgTypes[1]
+	mi := &file_rtc_file_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -134,7 +134,7 @@ func (x *RTCFileContent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RTCFileContent.ProtoReflect.Descriptor instead.
 func (*RTCFileContent) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_rtc_file_proto_rawDescGZIP(), []int{1}
+	return file_rtc_file_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *RTCFileContent) GetFileHash() []byte {
@@ -151,11 +151,11 @@ func (x *RTCFileContent) GetFileContent() []byte {
 	return nil
 }
 
-var File_api_webrtc_proto_v1_rtc_file_proto protoreflect.FileDescriptor
+var File_rtc_file_proto protoreflect.FileDescriptor
 
-const file_api_webrtc_proto_v1_rtc_file_proto_rawDesc = "" +
+const file_rtc_file_proto_rawDesc = "" +
 	"\n" +
-	"\"api_webrtc/proto/v1/rtc_file.proto\x12\rapi.webrtc.v1\"\x9e\x01\n" +
+	"\x0ertc_file.proto\x12\rapi.webrtc.v1\"\x9e\x01\n" +
 	"\fRTCFileQuote\x12\x1a\n" +
 	"\bFileHash\x18\x01 \x01(\fR\bFileHash\x12\x1a\n" +
 	"\bFileName\x18\x02 \x01(\tR\bFileName\x12\x1a\n" +
@@ -167,23 +167,23 @@ const file_api_webrtc_proto_v1_rtc_file_proto_rawDesc = "" +
 	"\vFileContent\x18\x02 \x01(\fR\vFileContentB6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
 
 var (
-	file_api_webrtc_proto_v1_rtc_file_proto_rawDescOnce sync.Once
-	file_api_webrtc_proto_v1_rtc_file_proto_rawDescData []byte
+	file_rtc_file_proto_rawDescOnce sync.Once
+	file_rtc_file_proto_rawDescData []byte
 )
 
-func file_api_webrtc_proto_v1_rtc_file_proto_rawDescGZIP() []byte {
-	file_api_webrtc_proto_v1_rtc_file_proto_rawDescOnce.Do(func() {
-		file_api_webrtc_proto_v1_rtc_file_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_rtc_file_proto_rawDesc), len(file_api_webrtc_proto_v1_rtc_file_proto_rawDesc)))
+func file_rtc_file_proto_rawDescGZIP() []byte {
+	file_rtc_file_proto_rawDescOnce.Do(func() {
+		file_rtc_file_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_rtc_file_proto_rawDesc), len(file_rtc_file_proto_rawDesc)))
 	})
-	return file_api_webrtc_proto_v1_rtc_file_proto_rawDescData
+	return file_rtc_file_proto_rawDescData
 }
 
-var file_api_webrtc_proto_v1_rtc_file_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_api_webrtc_proto_v1_rtc_file_proto_goTypes = []any{
+var file_rtc_file_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_rtc_file_proto_goTypes = []any{
 	(*RTCFileQuote)(nil),   // 0: api.webrtc.v1.RTCFileQuote
 	(*RTCFileContent)(nil), // 1: api.webrtc.v1.RTCFileContent
 }
-var file_api_webrtc_proto_v1_rtc_file_proto_depIdxs = []int32{
+var file_rtc_file_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -191,26 +191,26 @@ var file_api_webrtc_proto_v1_rtc_file_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_api_webrtc_proto_v1_rtc_file_proto_init() }
-func file_api_webrtc_proto_v1_rtc_file_proto_init() {
-	if File_api_webrtc_proto_v1_rtc_file_proto != nil {
+func init() { file_rtc_file_proto_init() }
+func file_rtc_file_proto_init() {
+	if File_rtc_file_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_rtc_file_proto_rawDesc), len(file_api_webrtc_proto_v1_rtc_file_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rtc_file_proto_rawDesc), len(file_rtc_file_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_api_webrtc_proto_v1_rtc_file_proto_goTypes,
-		DependencyIndexes: file_api_webrtc_proto_v1_rtc_file_proto_depIdxs,
-		MessageInfos:      file_api_webrtc_proto_v1_rtc_file_proto_msgTypes,
+		GoTypes:           file_rtc_file_proto_goTypes,
+		DependencyIndexes: file_rtc_file_proto_depIdxs,
+		MessageInfos:      file_rtc_file_proto_msgTypes,
 	}.Build()
-	File_api_webrtc_proto_v1_rtc_file_proto = out.File
-	file_api_webrtc_proto_v1_rtc_file_proto_goTypes = nil
-	file_api_webrtc_proto_v1_rtc_file_proto_depIdxs = nil
+	File_rtc_file_proto = out.File
+	file_rtc_file_proto_goTypes = nil
+	file_rtc_file_proto_depIdxs = nil
 }

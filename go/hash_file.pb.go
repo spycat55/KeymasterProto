@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.30.2
-// source: api_webrtc/proto/v1/hash_file.proto
+// source: hash_file.proto
 
 package v1
 
@@ -36,7 +36,7 @@ type Block struct {
 
 func (x *Block) Reset() {
 	*x = Block{}
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[0]
+	mi := &file_hash_file_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -48,7 +48,7 @@ func (x *Block) String() string {
 func (*Block) ProtoMessage() {}
 
 func (x *Block) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[0]
+	mi := &file_hash_file_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,7 +61,7 @@ func (x *Block) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Block.ProtoReflect.Descriptor instead.
 func (*Block) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_hash_file_proto_rawDescGZIP(), []int{0}
+	return file_hash_file_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Block) GetMagicNumber() uint32 {
@@ -99,7 +99,7 @@ type Live struct {
 
 func (x *Live) Reset() {
 	*x = Live{}
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[1]
+	mi := &file_hash_file_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -111,7 +111,7 @@ func (x *Live) String() string {
 func (*Live) ProtoMessage() {}
 
 func (x *Live) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[1]
+	mi := &file_hash_file_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -124,7 +124,7 @@ func (x *Live) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Live.ProtoReflect.Descriptor instead.
 func (*Live) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_hash_file_proto_rawDescGZIP(), []int{1}
+	return file_hash_file_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Live) GetMagicNumber() uint32 {
@@ -172,7 +172,7 @@ type LiveShell struct {
 
 func (x *LiveShell) Reset() {
 	*x = LiveShell{}
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[2]
+	mi := &file_hash_file_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -184,7 +184,7 @@ func (x *LiveShell) String() string {
 func (*LiveShell) ProtoMessage() {}
 
 func (x *LiveShell) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[2]
+	mi := &file_hash_file_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -197,7 +197,7 @@ func (x *LiveShell) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LiveShell.ProtoReflect.Descriptor instead.
 func (*LiveShell) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_hash_file_proto_rawDescGZIP(), []int{2}
+	return file_hash_file_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *LiveShell) GetLive() *Live {
@@ -226,7 +226,7 @@ type LiveBlock struct {
 
 func (x *LiveBlock) Reset() {
 	*x = LiveBlock{}
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[3]
+	mi := &file_hash_file_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -238,7 +238,7 @@ func (x *LiveBlock) String() string {
 func (*LiveBlock) ProtoMessage() {}
 
 func (x *LiveBlock) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[3]
+	mi := &file_hash_file_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -251,7 +251,7 @@ func (x *LiveBlock) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LiveBlock.ProtoReflect.Descriptor instead.
 func (*LiveBlock) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_hash_file_proto_rawDescGZIP(), []int{3}
+	return file_hash_file_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *LiveBlock) GetLiveHash() []byte {
@@ -292,7 +292,7 @@ type LiveBlockShell struct {
 
 func (x *LiveBlockShell) Reset() {
 	*x = LiveBlockShell{}
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[4]
+	mi := &file_hash_file_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -304,7 +304,7 @@ func (x *LiveBlockShell) String() string {
 func (*LiveBlockShell) ProtoMessage() {}
 
 func (x *LiveBlockShell) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_hash_file_proto_msgTypes[4]
+	mi := &file_hash_file_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -317,7 +317,7 @@ func (x *LiveBlockShell) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LiveBlockShell.ProtoReflect.Descriptor instead.
 func (*LiveBlockShell) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_hash_file_proto_rawDescGZIP(), []int{4}
+	return file_hash_file_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *LiveBlockShell) GetLiveBlock() *LiveBlock {
@@ -334,11 +334,11 @@ func (x *LiveBlockShell) GetSignature() []byte {
 	return nil
 }
 
-var File_api_webrtc_proto_v1_hash_file_proto protoreflect.FileDescriptor
+var File_hash_file_proto protoreflect.FileDescriptor
 
-const file_api_webrtc_proto_v1_hash_file_proto_rawDesc = "" +
+const file_hash_file_proto_rawDesc = "" +
 	"\n" +
-	"#api_webrtc/proto/v1/hash_file.proto\x12\rapi.webrtc.v1\"Z\n" +
+	"\x0fhash_file.proto\x12\rapi.webrtc.v1\"Z\n" +
 	"\x05Block\x12!\n" +
 	"\fmagic_number\x18\x01 \x01(\aR\vmagicNumber\x12\x16\n" +
 	"\x06length\x18\x02 \x01(\x04R\x06length\x12\x16\n" +
@@ -364,26 +364,26 @@ const file_api_webrtc_proto_v1_hash_file_proto_rawDesc = "" +
 	"\tsignature\x18\x02 \x01(\fR\tsignatureB6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
 
 var (
-	file_api_webrtc_proto_v1_hash_file_proto_rawDescOnce sync.Once
-	file_api_webrtc_proto_v1_hash_file_proto_rawDescData []byte
+	file_hash_file_proto_rawDescOnce sync.Once
+	file_hash_file_proto_rawDescData []byte
 )
 
-func file_api_webrtc_proto_v1_hash_file_proto_rawDescGZIP() []byte {
-	file_api_webrtc_proto_v1_hash_file_proto_rawDescOnce.Do(func() {
-		file_api_webrtc_proto_v1_hash_file_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_hash_file_proto_rawDesc), len(file_api_webrtc_proto_v1_hash_file_proto_rawDesc)))
+func file_hash_file_proto_rawDescGZIP() []byte {
+	file_hash_file_proto_rawDescOnce.Do(func() {
+		file_hash_file_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_hash_file_proto_rawDesc), len(file_hash_file_proto_rawDesc)))
 	})
-	return file_api_webrtc_proto_v1_hash_file_proto_rawDescData
+	return file_hash_file_proto_rawDescData
 }
 
-var file_api_webrtc_proto_v1_hash_file_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_api_webrtc_proto_v1_hash_file_proto_goTypes = []any{
+var file_hash_file_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_hash_file_proto_goTypes = []any{
 	(*Block)(nil),          // 0: api.webrtc.v1.Block
 	(*Live)(nil),           // 1: api.webrtc.v1.Live
 	(*LiveShell)(nil),      // 2: api.webrtc.v1.LiveShell
 	(*LiveBlock)(nil),      // 3: api.webrtc.v1.LiveBlock
 	(*LiveBlockShell)(nil), // 4: api.webrtc.v1.LiveBlockShell
 }
-var file_api_webrtc_proto_v1_hash_file_proto_depIdxs = []int32{
+var file_hash_file_proto_depIdxs = []int32{
 	1, // 0: api.webrtc.v1.LiveShell.live:type_name -> api.webrtc.v1.Live
 	3, // 1: api.webrtc.v1.LiveBlockShell.live_block:type_name -> api.webrtc.v1.LiveBlock
 	2, // [2:2] is the sub-list for method output_type
@@ -393,26 +393,26 @@ var file_api_webrtc_proto_v1_hash_file_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_api_webrtc_proto_v1_hash_file_proto_init() }
-func file_api_webrtc_proto_v1_hash_file_proto_init() {
-	if File_api_webrtc_proto_v1_hash_file_proto != nil {
+func init() { file_hash_file_proto_init() }
+func file_hash_file_proto_init() {
+	if File_hash_file_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_hash_file_proto_rawDesc), len(file_api_webrtc_proto_v1_hash_file_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_hash_file_proto_rawDesc), len(file_hash_file_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_api_webrtc_proto_v1_hash_file_proto_goTypes,
-		DependencyIndexes: file_api_webrtc_proto_v1_hash_file_proto_depIdxs,
-		MessageInfos:      file_api_webrtc_proto_v1_hash_file_proto_msgTypes,
+		GoTypes:           file_hash_file_proto_goTypes,
+		DependencyIndexes: file_hash_file_proto_depIdxs,
+		MessageInfos:      file_hash_file_proto_msgTypes,
 	}.Build()
-	File_api_webrtc_proto_v1_hash_file_proto = out.File
-	file_api_webrtc_proto_v1_hash_file_proto_goTypes = nil
-	file_api_webrtc_proto_v1_hash_file_proto_depIdxs = nil
+	File_hash_file_proto = out.File
+	file_hash_file_proto_goTypes = nil
+	file_hash_file_proto_depIdxs = nil
 }

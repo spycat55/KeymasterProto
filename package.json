@@ -1,0 +1,28 @@
+{
+  "name": "keymasterproto",
+  "version": "1.0.0",
+  "description": "Go Proto 源文件，以及编译后go文件",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/popwu/KeymasterProto.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/popwu/KeymasterProto/issues"
+  },
+  "homepage": "https://github.com/popwu/KeymasterProto#readme",
+  "devDependencies": {
+    "google-protobuf": "^3.21.4",
+    "protobufjs": "^7.5.3",
+    "protobufjs-cli": "^1.1.3",
+    "ts-proto": "^2.7.2",
+    "ts-protoc-gen": "^0.15.0",
+    "typescript": "^5.8.3"
+  }
+}

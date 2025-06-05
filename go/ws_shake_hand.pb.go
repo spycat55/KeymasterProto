@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.30.2
-// source: api_webrtc/proto/v1/ws_shake_hand.proto
+// source: ws_shake_hand.proto
 
 package v1
 
@@ -32,7 +32,7 @@ type ShakeHandResponse struct {
 
 func (x *ShakeHandResponse) Reset() {
 	*x = ShakeHandResponse{}
-	mi := &file_api_webrtc_proto_v1_ws_shake_hand_proto_msgTypes[0]
+	mi := &file_ws_shake_hand_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +44,7 @@ func (x *ShakeHandResponse) String() string {
 func (*ShakeHandResponse) ProtoMessage() {}
 
 func (x *ShakeHandResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_ws_shake_hand_proto_msgTypes[0]
+	mi := &file_ws_shake_hand_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +57,7 @@ func (x *ShakeHandResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShakeHandResponse.ProtoReflect.Descriptor instead.
 func (*ShakeHandResponse) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescGZIP(), []int{0}
+	return file_ws_shake_hand_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ShakeHandResponse) GetVersion() uint32 {
@@ -85,7 +85,7 @@ type ShakeHand struct {
 
 func (x *ShakeHand) Reset() {
 	*x = ShakeHand{}
-	mi := &file_api_webrtc_proto_v1_ws_shake_hand_proto_msgTypes[1]
+	mi := &file_ws_shake_hand_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -97,7 +97,7 @@ func (x *ShakeHand) String() string {
 func (*ShakeHand) ProtoMessage() {}
 
 func (x *ShakeHand) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_ws_shake_hand_proto_msgTypes[1]
+	mi := &file_ws_shake_hand_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -110,7 +110,7 @@ func (x *ShakeHand) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ShakeHand.ProtoReflect.Descriptor instead.
 func (*ShakeHand) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescGZIP(), []int{1}
+	return file_ws_shake_hand_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ShakeHand) GetVersion() uint32 {
@@ -127,11 +127,11 @@ func (x *ShakeHand) GetName() string {
 	return ""
 }
 
-var File_api_webrtc_proto_v1_ws_shake_hand_proto protoreflect.FileDescriptor
+var File_ws_shake_hand_proto protoreflect.FileDescriptor
 
-const file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDesc = "" +
+const file_ws_shake_hand_proto_rawDesc = "" +
 	"\n" +
-	"'api_webrtc/proto/v1/ws_shake_hand.proto\x12\rapi.webrtc.v1\"A\n" +
+	"\x13ws_shake_hand.proto\x12\rapi.webrtc.v1\"A\n" +
 	"\x11ShakeHandResponse\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\rR\aversion\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"9\n" +
@@ -140,23 +140,23 @@ const file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04nameB6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
 
 var (
-	file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescOnce sync.Once
-	file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescData []byte
+	file_ws_shake_hand_proto_rawDescOnce sync.Once
+	file_ws_shake_hand_proto_rawDescData []byte
 )
 
-func file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescGZIP() []byte {
-	file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescOnce.Do(func() {
-		file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDesc), len(file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDesc)))
+func file_ws_shake_hand_proto_rawDescGZIP() []byte {
+	file_ws_shake_hand_proto_rawDescOnce.Do(func() {
+		file_ws_shake_hand_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_ws_shake_hand_proto_rawDesc), len(file_ws_shake_hand_proto_rawDesc)))
 	})
-	return file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDescData
+	return file_ws_shake_hand_proto_rawDescData
 }
 
-var file_api_webrtc_proto_v1_ws_shake_hand_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_api_webrtc_proto_v1_ws_shake_hand_proto_goTypes = []any{
+var file_ws_shake_hand_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_ws_shake_hand_proto_goTypes = []any{
 	(*ShakeHandResponse)(nil), // 0: api.webrtc.v1.ShakeHandResponse
 	(*ShakeHand)(nil),         // 1: api.webrtc.v1.ShakeHand
 }
-var file_api_webrtc_proto_v1_ws_shake_hand_proto_depIdxs = []int32{
+var file_ws_shake_hand_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -164,26 +164,26 @@ var file_api_webrtc_proto_v1_ws_shake_hand_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_api_webrtc_proto_v1_ws_shake_hand_proto_init() }
-func file_api_webrtc_proto_v1_ws_shake_hand_proto_init() {
-	if File_api_webrtc_proto_v1_ws_shake_hand_proto != nil {
+func init() { file_ws_shake_hand_proto_init() }
+func file_ws_shake_hand_proto_init() {
+	if File_ws_shake_hand_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDesc), len(file_api_webrtc_proto_v1_ws_shake_hand_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_ws_shake_hand_proto_rawDesc), len(file_ws_shake_hand_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_api_webrtc_proto_v1_ws_shake_hand_proto_goTypes,
-		DependencyIndexes: file_api_webrtc_proto_v1_ws_shake_hand_proto_depIdxs,
-		MessageInfos:      file_api_webrtc_proto_v1_ws_shake_hand_proto_msgTypes,
+		GoTypes:           file_ws_shake_hand_proto_goTypes,
+		DependencyIndexes: file_ws_shake_hand_proto_depIdxs,
+		MessageInfos:      file_ws_shake_hand_proto_msgTypes,
 	}.Build()
-	File_api_webrtc_proto_v1_ws_shake_hand_proto = out.File
-	file_api_webrtc_proto_v1_ws_shake_hand_proto_goTypes = nil
-	file_api_webrtc_proto_v1_ws_shake_hand_proto_depIdxs = nil
+	File_ws_shake_hand_proto = out.File
+	file_ws_shake_hand_proto_goTypes = nil
+	file_ws_shake_hand_proto_depIdxs = nil
 }

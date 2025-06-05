@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.30.2
-// source: api_webrtc/proto/v1/message.proto
+// source: message.proto
 
 package v1
 
@@ -35,7 +35,7 @@ type CostPoolUpdate struct {
 
 func (x *CostPoolUpdate) Reset() {
 	*x = CostPoolUpdate{}
-	mi := &file_api_webrtc_proto_v1_message_proto_msgTypes[0]
+	mi := &file_message_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -47,7 +47,7 @@ func (x *CostPoolUpdate) String() string {
 func (*CostPoolUpdate) ProtoMessage() {}
 
 func (x *CostPoolUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_proto_msgTypes[0]
+	mi := &file_message_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +60,7 @@ func (x *CostPoolUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CostPoolUpdate.ProtoReflect.Descriptor instead.
 func (*CostPoolUpdate) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_proto_rawDescGZIP(), []int{0}
+	return file_message_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *CostPoolUpdate) GetBaseTxId() []byte {
@@ -106,7 +106,7 @@ type MessageMain struct {
 
 func (x *MessageMain) Reset() {
 	*x = MessageMain{}
-	mi := &file_api_webrtc_proto_v1_message_proto_msgTypes[1]
+	mi := &file_message_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -118,7 +118,7 @@ func (x *MessageMain) String() string {
 func (*MessageMain) ProtoMessage() {}
 
 func (x *MessageMain) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_proto_msgTypes[1]
+	mi := &file_message_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -131,7 +131,7 @@ func (x *MessageMain) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MessageMain.ProtoReflect.Descriptor instead.
 func (*MessageMain) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_proto_rawDescGZIP(), []int{1}
+	return file_message_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *MessageMain) GetMessageType() string {
@@ -194,7 +194,7 @@ type MessageShell struct {
 
 func (x *MessageShell) Reset() {
 	*x = MessageShell{}
-	mi := &file_api_webrtc_proto_v1_message_proto_msgTypes[2]
+	mi := &file_message_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -206,7 +206,7 @@ func (x *MessageShell) String() string {
 func (*MessageShell) ProtoMessage() {}
 
 func (x *MessageShell) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_proto_msgTypes[2]
+	mi := &file_message_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -219,7 +219,7 @@ func (x *MessageShell) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MessageShell.ProtoReflect.Descriptor instead.
 func (*MessageShell) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_proto_rawDescGZIP(), []int{2}
+	return file_message_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *MessageShell) GetMessageMain() []byte {
@@ -236,11 +236,11 @@ func (x *MessageShell) GetDataSignature() []byte {
 	return nil
 }
 
-var File_api_webrtc_proto_v1_message_proto protoreflect.FileDescriptor
+var File_message_proto protoreflect.FileDescriptor
 
-const file_api_webrtc_proto_v1_message_proto_rawDesc = "" +
+const file_message_proto_rawDesc = "" +
 	"\n" +
-	"!api_webrtc/proto/v1/message.proto\x12\rapi.webrtc.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8d\x01\n" +
+	"\rmessage.proto\x12\rapi.webrtc.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8d\x01\n" +
 	"\x0eCostPoolUpdate\x12\x1c\n" +
 	"\n" +
 	"base_tx_id\x18\x01 \x01(\fR\bbaseTxId\x12\x1c\n" +
@@ -267,25 +267,25 @@ const file_api_webrtc_proto_v1_message_proto_rawDesc = "" +
 	"\x0f_data_signatureB6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
 
 var (
-	file_api_webrtc_proto_v1_message_proto_rawDescOnce sync.Once
-	file_api_webrtc_proto_v1_message_proto_rawDescData []byte
+	file_message_proto_rawDescOnce sync.Once
+	file_message_proto_rawDescData []byte
 )
 
-func file_api_webrtc_proto_v1_message_proto_rawDescGZIP() []byte {
-	file_api_webrtc_proto_v1_message_proto_rawDescOnce.Do(func() {
-		file_api_webrtc_proto_v1_message_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_message_proto_rawDesc), len(file_api_webrtc_proto_v1_message_proto_rawDesc)))
+func file_message_proto_rawDescGZIP() []byte {
+	file_message_proto_rawDescOnce.Do(func() {
+		file_message_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_message_proto_rawDesc), len(file_message_proto_rawDesc)))
 	})
-	return file_api_webrtc_proto_v1_message_proto_rawDescData
+	return file_message_proto_rawDescData
 }
 
-var file_api_webrtc_proto_v1_message_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_api_webrtc_proto_v1_message_proto_goTypes = []any{
+var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_message_proto_goTypes = []any{
 	(*CostPoolUpdate)(nil),        // 0: api.webrtc.v1.CostPoolUpdate
 	(*MessageMain)(nil),           // 1: api.webrtc.v1.MessageMain
 	(*MessageShell)(nil),          // 2: api.webrtc.v1.MessageShell
 	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
-var file_api_webrtc_proto_v1_message_proto_depIdxs = []int32{
+var file_message_proto_depIdxs = []int32{
 	3, // 0: api.webrtc.v1.MessageMain.timestamp:type_name -> google.protobuf.Timestamp
 	0, // 1: api.webrtc.v1.MessageMain.cost_pool_update:type_name -> api.webrtc.v1.CostPoolUpdate
 	2, // [2:2] is the sub-list for method output_type
@@ -295,28 +295,28 @@ var file_api_webrtc_proto_v1_message_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_api_webrtc_proto_v1_message_proto_init() }
-func file_api_webrtc_proto_v1_message_proto_init() {
-	if File_api_webrtc_proto_v1_message_proto != nil {
+func init() { file_message_proto_init() }
+func file_message_proto_init() {
+	if File_message_proto != nil {
 		return
 	}
-	file_api_webrtc_proto_v1_message_proto_msgTypes[1].OneofWrappers = []any{}
-	file_api_webrtc_proto_v1_message_proto_msgTypes[2].OneofWrappers = []any{}
+	file_message_proto_msgTypes[1].OneofWrappers = []any{}
+	file_message_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_message_proto_rawDesc), len(file_api_webrtc_proto_v1_message_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_proto_rawDesc), len(file_message_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_api_webrtc_proto_v1_message_proto_goTypes,
-		DependencyIndexes: file_api_webrtc_proto_v1_message_proto_depIdxs,
-		MessageInfos:      file_api_webrtc_proto_v1_message_proto_msgTypes,
+		GoTypes:           file_message_proto_goTypes,
+		DependencyIndexes: file_message_proto_depIdxs,
+		MessageInfos:      file_message_proto_msgTypes,
 	}.Build()
-	File_api_webrtc_proto_v1_message_proto = out.File
-	file_api_webrtc_proto_v1_message_proto_goTypes = nil
-	file_api_webrtc_proto_v1_message_proto_depIdxs = nil
+	File_message_proto = out.File
+	file_message_proto_goTypes = nil
+	file_message_proto_depIdxs = nil
 }

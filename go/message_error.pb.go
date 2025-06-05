@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.30.2
-// source: api_webrtc/proto/v1/message_error.proto
+// source: message_error.proto
 
 package v1
 
@@ -31,7 +31,7 @@ type ErrorMessage struct {
 
 func (x *ErrorMessage) Reset() {
 	*x = ErrorMessage{}
-	mi := &file_api_webrtc_proto_v1_message_error_proto_msgTypes[0]
+	mi := &file_message_error_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +43,7 @@ func (x *ErrorMessage) String() string {
 func (*ErrorMessage) ProtoMessage() {}
 
 func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_error_proto_msgTypes[0]
+	mi := &file_message_error_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +56,7 @@ func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
 func (*ErrorMessage) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_error_proto_rawDescGZIP(), []int{0}
+	return file_message_error_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ErrorMessage) GetHash() []byte {
@@ -73,32 +73,32 @@ func (x *ErrorMessage) GetMessage() string {
 	return ""
 }
 
-var File_api_webrtc_proto_v1_message_error_proto protoreflect.FileDescriptor
+var File_message_error_proto protoreflect.FileDescriptor
 
-const file_api_webrtc_proto_v1_message_error_proto_rawDesc = "" +
+const file_message_error_proto_rawDesc = "" +
 	"\n" +
-	"'api_webrtc/proto/v1/message_error.proto\x12\rapi.webrtc.v1\"<\n" +
+	"\x13message_error.proto\x12\rapi.webrtc.v1\"<\n" +
 	"\fErrorMessage\x12\x12\n" +
 	"\x04hash\x18\x01 \x01(\fR\x04hash\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessageB6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
 
 var (
-	file_api_webrtc_proto_v1_message_error_proto_rawDescOnce sync.Once
-	file_api_webrtc_proto_v1_message_error_proto_rawDescData []byte
+	file_message_error_proto_rawDescOnce sync.Once
+	file_message_error_proto_rawDescData []byte
 )
 
-func file_api_webrtc_proto_v1_message_error_proto_rawDescGZIP() []byte {
-	file_api_webrtc_proto_v1_message_error_proto_rawDescOnce.Do(func() {
-		file_api_webrtc_proto_v1_message_error_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_message_error_proto_rawDesc), len(file_api_webrtc_proto_v1_message_error_proto_rawDesc)))
+func file_message_error_proto_rawDescGZIP() []byte {
+	file_message_error_proto_rawDescOnce.Do(func() {
+		file_message_error_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_message_error_proto_rawDesc), len(file_message_error_proto_rawDesc)))
 	})
-	return file_api_webrtc_proto_v1_message_error_proto_rawDescData
+	return file_message_error_proto_rawDescData
 }
 
-var file_api_webrtc_proto_v1_message_error_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_api_webrtc_proto_v1_message_error_proto_goTypes = []any{
+var file_message_error_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_message_error_proto_goTypes = []any{
 	(*ErrorMessage)(nil), // 0: api.webrtc.v1.ErrorMessage
 }
-var file_api_webrtc_proto_v1_message_error_proto_depIdxs = []int32{
+var file_message_error_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -106,26 +106,26 @@ var file_api_webrtc_proto_v1_message_error_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_api_webrtc_proto_v1_message_error_proto_init() }
-func file_api_webrtc_proto_v1_message_error_proto_init() {
-	if File_api_webrtc_proto_v1_message_error_proto != nil {
+func init() { file_message_error_proto_init() }
+func file_message_error_proto_init() {
+	if File_message_error_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_message_error_proto_rawDesc), len(file_api_webrtc_proto_v1_message_error_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_error_proto_rawDesc), len(file_message_error_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_api_webrtc_proto_v1_message_error_proto_goTypes,
-		DependencyIndexes: file_api_webrtc_proto_v1_message_error_proto_depIdxs,
-		MessageInfos:      file_api_webrtc_proto_v1_message_error_proto_msgTypes,
+		GoTypes:           file_message_error_proto_goTypes,
+		DependencyIndexes: file_message_error_proto_depIdxs,
+		MessageInfos:      file_message_error_proto_msgTypes,
 	}.Build()
-	File_api_webrtc_proto_v1_message_error_proto = out.File
-	file_api_webrtc_proto_v1_message_error_proto_goTypes = nil
-	file_api_webrtc_proto_v1_message_error_proto_depIdxs = nil
+	File_message_error_proto = out.File
+	file_message_error_proto_goTypes = nil
+	file_message_error_proto_depIdxs = nil
 }

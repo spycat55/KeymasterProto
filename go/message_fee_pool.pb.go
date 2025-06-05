@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.30.2
-// source: api_webrtc/proto/v1/message_fee_pool.proto
+// source: message_fee_pool.proto
 
 package v1
 
@@ -33,7 +33,7 @@ type CreateFeePool struct {
 
 func (x *CreateFeePool) Reset() {
 	*x = CreateFeePool{}
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[0]
+	mi := &file_message_fee_pool_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +45,7 @@ func (x *CreateFeePool) String() string {
 func (*CreateFeePool) ProtoMessage() {}
 
 func (x *CreateFeePool) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[0]
+	mi := &file_message_fee_pool_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +58,7 @@ func (x *CreateFeePool) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateFeePool.ProtoReflect.Descriptor instead.
 func (*CreateFeePool) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescGZIP(), []int{0}
+	return file_message_fee_pool_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *CreateFeePool) GetTx() []byte {
@@ -93,7 +93,7 @@ type CreateFeePoolResponse struct {
 
 func (x *CreateFeePoolResponse) Reset() {
 	*x = CreateFeePoolResponse{}
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[1]
+	mi := &file_message_fee_pool_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -105,7 +105,7 @@ func (x *CreateFeePoolResponse) String() string {
 func (*CreateFeePoolResponse) ProtoMessage() {}
 
 func (x *CreateFeePoolResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[1]
+	mi := &file_message_fee_pool_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -118,7 +118,7 @@ func (x *CreateFeePoolResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateFeePoolResponse.ProtoReflect.Descriptor instead.
 func (*CreateFeePoolResponse) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescGZIP(), []int{1}
+	return file_message_fee_pool_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CreateFeePoolResponse) GetPreviousID() []byte {
@@ -146,7 +146,7 @@ type CommandFee struct {
 
 func (x *CommandFee) Reset() {
 	*x = CommandFee{}
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[2]
+	mi := &file_message_fee_pool_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -158,7 +158,7 @@ func (x *CommandFee) String() string {
 func (*CommandFee) ProtoMessage() {}
 
 func (x *CommandFee) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[2]
+	mi := &file_message_fee_pool_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -171,7 +171,7 @@ func (x *CommandFee) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CommandFee.ProtoReflect.Descriptor instead.
 func (*CommandFee) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescGZIP(), []int{2}
+	return file_message_fee_pool_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CommandFee) GetPreviousID() []byte {
@@ -207,7 +207,7 @@ type ResponseCloseFeePool struct {
 
 func (x *ResponseCloseFeePool) Reset() {
 	*x = ResponseCloseFeePool{}
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[3]
+	mi := &file_message_fee_pool_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -219,7 +219,7 @@ func (x *ResponseCloseFeePool) String() string {
 func (*ResponseCloseFeePool) ProtoMessage() {}
 
 func (x *ResponseCloseFeePool) ProtoReflect() protoreflect.Message {
-	mi := &file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes[3]
+	mi := &file_message_fee_pool_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -232,7 +232,7 @@ func (x *ResponseCloseFeePool) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResponseCloseFeePool.ProtoReflect.Descriptor instead.
 func (*ResponseCloseFeePool) Descriptor() ([]byte, []int) {
-	return file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescGZIP(), []int{3}
+	return file_message_fee_pool_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ResponseCloseFeePool) GetSignature() []byte {
@@ -249,11 +249,11 @@ func (x *ResponseCloseFeePool) GetUseAmount() uint64 {
 	return 0
 }
 
-var File_api_webrtc_proto_v1_message_fee_pool_proto protoreflect.FileDescriptor
+var File_message_fee_pool_proto protoreflect.FileDescriptor
 
-const file_api_webrtc_proto_v1_message_fee_pool_proto_rawDesc = "" +
+const file_message_fee_pool_proto_rawDesc = "" +
 	"\n" +
-	"*api_webrtc/proto/v1/message_fee_pool.proto\x12\rapi.webrtc.v1\"U\n" +
+	"\x16message_fee_pool.proto\x12\rapi.webrtc.v1\"U\n" +
 	"\rCreateFeePool\x12\x0e\n" +
 	"\x02tx\x18\x01 \x01(\fR\x02tx\x12\x1c\n" +
 	"\tsignature\x18\x02 \x01(\fR\tsignature\x12\x16\n" +
@@ -275,25 +275,25 @@ const file_api_webrtc_proto_v1_message_fee_pool_proto_rawDesc = "" +
 	"\tuseAmount\x18\x02 \x01(\x04R\tuseAmountB6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
 
 var (
-	file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescOnce sync.Once
-	file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescData []byte
+	file_message_fee_pool_proto_rawDescOnce sync.Once
+	file_message_fee_pool_proto_rawDescData []byte
 )
 
-func file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescGZIP() []byte {
-	file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescOnce.Do(func() {
-		file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_message_fee_pool_proto_rawDesc), len(file_api_webrtc_proto_v1_message_fee_pool_proto_rawDesc)))
+func file_message_fee_pool_proto_rawDescGZIP() []byte {
+	file_message_fee_pool_proto_rawDescOnce.Do(func() {
+		file_message_fee_pool_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_message_fee_pool_proto_rawDesc), len(file_message_fee_pool_proto_rawDesc)))
 	})
-	return file_api_webrtc_proto_v1_message_fee_pool_proto_rawDescData
+	return file_message_fee_pool_proto_rawDescData
 }
 
-var file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_api_webrtc_proto_v1_message_fee_pool_proto_goTypes = []any{
+var file_message_fee_pool_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_message_fee_pool_proto_goTypes = []any{
 	(*CreateFeePool)(nil),         // 0: api.webrtc.v1.CreateFeePool
 	(*CreateFeePoolResponse)(nil), // 1: api.webrtc.v1.CreateFeePoolResponse
 	(*CommandFee)(nil),            // 2: api.webrtc.v1.CommandFee
 	(*ResponseCloseFeePool)(nil),  // 3: api.webrtc.v1.ResponseCloseFeePool
 }
-var file_api_webrtc_proto_v1_message_fee_pool_proto_depIdxs = []int32{
+var file_message_fee_pool_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -301,26 +301,26 @@ var file_api_webrtc_proto_v1_message_fee_pool_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_api_webrtc_proto_v1_message_fee_pool_proto_init() }
-func file_api_webrtc_proto_v1_message_fee_pool_proto_init() {
-	if File_api_webrtc_proto_v1_message_fee_pool_proto != nil {
+func init() { file_message_fee_pool_proto_init() }
+func file_message_fee_pool_proto_init() {
+	if File_message_fee_pool_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_webrtc_proto_v1_message_fee_pool_proto_rawDesc), len(file_api_webrtc_proto_v1_message_fee_pool_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_fee_pool_proto_rawDesc), len(file_message_fee_pool_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_api_webrtc_proto_v1_message_fee_pool_proto_goTypes,
-		DependencyIndexes: file_api_webrtc_proto_v1_message_fee_pool_proto_depIdxs,
-		MessageInfos:      file_api_webrtc_proto_v1_message_fee_pool_proto_msgTypes,
+		GoTypes:           file_message_fee_pool_proto_goTypes,
+		DependencyIndexes: file_message_fee_pool_proto_depIdxs,
+		MessageInfos:      file_message_fee_pool_proto_msgTypes,
 	}.Build()
-	File_api_webrtc_proto_v1_message_fee_pool_proto = out.File
-	file_api_webrtc_proto_v1_message_fee_pool_proto_goTypes = nil
-	file_api_webrtc_proto_v1_message_fee_pool_proto_depIdxs = nil
+	File_message_fee_pool_proto = out.File
+	file_message_fee_pool_proto_goTypes = nil
+	file_message_fee_pool_proto_depIdxs = nil
 }
