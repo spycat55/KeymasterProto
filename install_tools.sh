@@ -16,14 +16,14 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 # 检查 npm 是否安装
-if ! command -v npm &> /dev/null; then
-    echo "错误: npm 未安装. 请先安装 Node.js 和 npm."
+if ! command -v bun &> /dev/null; then
+    echo "错误: bun 未安装. 请先安装 Node.js 和 bun."
     exit 1
 fi
 
 # 安装 TypeScript 的 protoc 插件
 echo "安装 TypeScript 的 protoc 插件..."
-npm install --save-dev typescript ts-proto
+bun install --save-dev typescript ts-proto
 
 # 输出安装的工具版本
 echo "安装完成. 工具版本信息:"

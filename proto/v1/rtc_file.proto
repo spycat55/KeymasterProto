@@ -8,7 +8,7 @@ option go_package = "github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1";
 // 文件报价
 message RTCFileQuote {
     bytes FileHash = 1; // 文件哈希
-    string FileName = 2; // 文件名
+    repeated string FileName = 2; // 文件名
     uint64 FileSize = 3; // 文件大小
     uint64 MetadataPrice = 4; // 文件元数据价格
     uint64 Price = 5; // 总价格
