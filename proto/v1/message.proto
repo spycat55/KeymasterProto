@@ -51,7 +51,7 @@ message ErrorReply {
 }
 
 message WSSignaling {
-  string signaling_type = 1; // offer, answer, ice
+  string signaling_type = 1; // offer, candidate
   bytes data = 2;            // SDP / ICE / 其他
 }
 
