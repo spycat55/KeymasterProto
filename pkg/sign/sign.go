@@ -3,8 +3,8 @@ package sign
 import (
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	hash "github.com/bsv-blockchain/go-sdk/primitives/hash"
-	v1 "github.com/spycat55/keymaster_proto/gen/go"
-	encodepkg "github.com/spycat55/keymaster_proto/pkg/encode"
+	v1 "github.com/spycat55/KeymasterProto/gen/go"
+	encodepkg "github.com/spycat55/KeymasterProto/pkg/encode"
 	"google.golang.org/protobuf/proto"
 )
 

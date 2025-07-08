@@ -1,4 +1,4 @@
-module github.com/spycat55/keymaster_proto
+module github.com/spycat55/KeymasterProto
 
 go 1.24.3
 

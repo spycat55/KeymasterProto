@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	v1 "github.com/spycat55/keymaster_proto/gen/go"
-	signpkg "github.com/spycat55/keymaster_proto/pkg/sign"
-	verifypkg "github.com/spycat55/keymaster_proto/pkg/verify"
+	v1 "github.com/spycat55/KeymasterProto/gen/go"
+	signpkg "github.com/spycat55/KeymasterProto/pkg/sign"
+	verifypkg "github.com/spycat55/KeymasterProto/pkg/verify"
 
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"google.golang.org/protobuf/proto"

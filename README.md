@@ -112,7 +112,7 @@ git add .
 git commit -m "feat: prepare v0.1.0"
 
 # 2. 打标签（必须以 v 开头）
-git tag -a v1.0.0 -m "release v0.1.0"
+git tag -a v0.1.0 -m "release v0.1.0"
 
 # 3. 推送代码与标签
 git push origin main --follow-tags   # 或
