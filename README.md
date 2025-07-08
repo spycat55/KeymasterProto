@@ -109,10 +109,10 @@ go test ./...
 
 # 1. 提交代码
 git add .
-git commit -m "feat: prepare v1.0.0"
+git commit -m "feat: prepare v0.1.0"
 
 # 2. 打标签（必须以 v 开头）
-git tag -a v1.0.0 -m "release v1.0.0"
+git tag -a v1.0.0 -m "release v0.1.0"
 
 # 3. 推送代码与标签
 git push origin main --follow-tags   # 或
@@ -122,7 +122,7 @@ git push origin main --follow-tags   # 或
 GO111MODULE=on go list -m -versions github.com/spycat55/keymaster_proto
 
 # 5. 用户侧引用
-go get github.com/spycat55/keymaster_proto@v1.0.0
+go get github.com/spycat55/keymaster_proto@v0.1.0
 ```
 
 ### 发布 npm 包
