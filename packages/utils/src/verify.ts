@@ -1,7 +1,7 @@
 // @ts-nocheck
 /* eslint-disable */
 import { deterministicMarshal } from "./encode";
-import { Envelope } from "../ts/message";
+import { Envelope } from "@spycat55/keymaster_proto";
 import { sha256 } from "@bsv/sdk/primitives/Hash";
 import Signature from "@bsv/sdk/primitives/Signature";
 import PublicKey from "@bsv/sdk/primitives/PublicKey";

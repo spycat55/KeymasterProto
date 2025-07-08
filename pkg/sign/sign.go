@@ -1,10 +1,10 @@
-package utils_go
+package sign
 
 import (
-	v1 "proto/go"
-
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	hash "github.com/bsv-blockchain/go-sdk/primitives/hash"
+	v1 "github.com/spycat55/keymaster_proto/gen/go"
+	encodepkg "github.com/spycat55/keymaster_proto/pkg/encode"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -16,7 +16,7 @@ func SignEnvelope(env *v1.Envelope, priv *ec.PrivateKey) error {
 	clone.Signature = nil
 	clone.SignatureAlgo = ""
 
-	b, err := DeterministicMarshal(clone)
+	b, err := encodepkg.DeterministicMarshal(clone)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package utils_go
+package encode
 
 import "google.golang.org/protobuf/proto"
 

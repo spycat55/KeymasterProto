@@ -1,9 +1,10 @@
-package utils_go
+package verify
 
 import (
 	"errors"
 
-	v1 "proto/go"
+	v1 "github.com/spycat55/keymaster_proto/gen/go"
+	encodepkg "github.com/spycat55/keymaster_proto/pkg/encode"
 
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	hash "github.com/bsv-blockchain/go-sdk/primitives/hash"
@@ -27,7 +28,7 @@ func VerifyEnvelope(env *v1.Envelope) error {
 	clone := proto.Clone(env).(*v1.Envelope)
 	clone.Signature = nil
 	clone.SignatureAlgo = ""
-	b, err := DeterministicMarshal(clone)
+	b, err := encodepkg.DeterministicMarshal(clone)
 	if err != nil {
 		return err
 	}

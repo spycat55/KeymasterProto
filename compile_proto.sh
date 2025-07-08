@@ -4,8 +4,8 @@ set -e  # 如果任何命令失败则退出
 
 # 定义目录
 PROTO_DIR="./proto/v1"
-TS_OUT_DIR="./ts"
-GO_OUT_DIR="./go"
+GO_OUT_DIR="./gen/go"
+TS_OUT_DIR="./gen/ts"
 
 # 检查 protoc 是否安装
 if ! command -v protoc &> /dev/null; then
@@ -44,7 +44,7 @@ else
     echo "ts-proto 已安装."
 fi
 
-# 删除老的输出目录
+# 清理旧输出
 rm -rf "${GO_OUT_DIR}"
 rm -rf "${TS_OUT_DIR}"
 
@@ -66,7 +66,7 @@ protoc -I ${PROTO_DIR} \
 # 编译 TypeScript 代码 - 使用 ts-proto
 echo "正在生成 TypeScript 代码..."
 protoc -I ${PROTO_DIR} \
-  --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto \
+  --plugin=protoc-gen-ts_proto=$(pwd)/node_modules/.bin/protoc-gen-ts_proto \
   --ts_proto_out=${TS_OUT_DIR} \
   --ts_proto_opt=outputServices=grpc-js,env=node,esModuleInterop=true,useOptionals=messages \
   ${PROTO_DIR}/*.proto

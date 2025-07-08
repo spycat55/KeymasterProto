@@ -6,8 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	v1 "proto/go"
-	utils "proto/utils_go"
+	v1 "github.com/spycat55/keymaster_proto/gen/go"
+	signpkg "github.com/spycat55/keymaster_proto/pkg/sign"
+	verifypkg "github.com/spycat55/keymaster_proto/pkg/verify"
 
 	ec "github.com/bsv-blockchain/go-sdk/primitives/ec"
 	"google.golang.org/protobuf/proto"
@@ -27,7 +28,7 @@ func TestCross_TS_Sign_Go_Verify(t *testing.T) {
 	if err := proto.Unmarshal(b, &env); err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}
-	if err := utils.VerifyEnvelope(&env); err != nil {
+	if err := verifypkg.VerifyEnvelope(&env); err != nil {
 		t.Fatalf("verify failed: %v", err)
 	}
 }
@@ -49,7 +50,7 @@ func TestCross_Go_Sign_TS_Verify(t *testing.T) {
 		},
 		Payload: &v1.Envelope_WsSignaling{WsSignaling: &v1.WSSignaling{SignalingType: "offer", Data: []byte("hi")}},
 	}
-	if err := utils.SignEnvelope(env, priv); err != nil {
+	if err := signpkg.SignEnvelope(env, priv); err != nil {
 		t.Fatalf("sign: %v", err)
 	}
 	b, _ := proto.Marshal(env)
