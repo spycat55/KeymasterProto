@@ -1,7 +1,6 @@
 // @ts-nocheck
 /* bun test helper: verify envelope bytes */
-import { Envelope } from '@spycat55/keymaster_proto';
-import { verifyEnvelope } from '@spycat55/keymaster_utils';
+import { Envelope, verifyEnvelope } from '../src/index';
 import { readFileSync } from 'fs';
 
 const inPath = process.argv[2];

@@ -19,9 +19,11 @@
 │   ├── encode/
 │   ├── sign/
 │   └── verify/
-├── packages/            # npm workspaces
-│   ├── proto/           # @spycat55/keymaster_proto  → 重新导出生成的 TS 类型
-│   └── utils/           # @spycat55/keymaster_utils  → encode / sign / verify
+├── src/                 # TypeScript source files
+│   ├── encode.ts        # Deterministic Marshal
+│   ├── sign.ts          # Envelope signing
+│   ├── verify.ts        # Envelope verification
+│   └── index.ts         # Main exports (proto types + utils)
 ├── compile_proto.sh     # 一键生成 Go + TS 代码
 └── install_tools.sh     # 安装 protoc / 插件 / ts-proto
 ```
@@ -34,8 +36,8 @@
 # 安装 protoc & 插件（仅一次）
 chmod +x install_tools.sh && ./install_tools.sh
 
-# 安装 npm 依赖 / 建立 workspaces
-bun install          # 或 npm install / pnpm install
+# 安装 npm 依赖
+npm install          # 或 bun install / pnpm install
 ```
 
 ---
@@ -91,8 +93,9 @@ import verify "github.com/spycat55/keymaster_proto/pkg/verify"
 ### TypeScript / Bun / Node
 
 ```ts
-import { Envelope } from '@spycat55/keymaster_proto';
-import { signEnvelope, verifyEnvelope } from '@spycat55/keymaster_utils';
+import { Envelope, signEnvelope, verifyEnvelope } from './src/index';
+// or when published as npm package:
+// import { Envelope, signEnvelope, verifyEnvelope } from 'keymaster_proto';
 ```
 
 ---
@@ -109,10 +112,10 @@ go test ./...
 
 # 1. 提交代码
 git add .
-git commit -m "feat: prepare v0.1.2"
+git commit -m "feat: prepare v0.1.5"
 
 # 2. 打标签（必须以 v 开头）
-git tag -a v0.1.2 -m "release v0.1.2"
+git tag -a v0.1.5 -m "release v0.1.5"
 
 # 3. 推送代码与标签
 git push origin main --follow-tags   # 或
@@ -127,9 +130,7 @@ go get github.com/spycat55/keymaster_proto@v0.1.2
 
 ### 发布 npm 包
 
-1. **对齐版本号**：修改下列文件中的 `version` 字段（如 `1.0.0`）
-   * `packages/proto/package.json`
-   * `packages/utils/package.json`
+1. **对齐版本号**：修改 `package.json` 中的 `version` 字段（如 `1.0.0`）
 
 2. **重新生成代码 & 可选构建**
 
@@ -137,8 +138,7 @@ go get github.com/spycat55/keymaster_proto@v0.1.2
 ./compile_proto.sh
 
 # 若希望发布编译后产物（非必需）
-npm run build -w @spycat55/keymaster_proto
-npm run build -w @spycat55/keymaster_utils
+npm run build
 ```
 
 3. **登录 npm（仅首次）**
@@ -150,14 +150,13 @@ npm login   # 或使用 NPM_TOKEN 环境变量
 4. **发布**
 
 ```bash
-npm publish --access public -w @spycat55/keymaster_proto
-npm publish --access public -w @spycat55/keymaster_utils
+npm publish --access public
 ```
 
 发布成功后，用户即可：
 
 ```bash
-npm i @spycat55/keymaster_proto @spycat55/keymaster_utils
+npm i keymaster_proto
 ```
 
 ---

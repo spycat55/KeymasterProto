@@ -1,7 +1,6 @@
 // @ts-nocheck
 /* bun test helper: generate signed Envelope via TS utils */
-import { Envelope, Header, WSSignaling, MsgKind } from '@spycat55/keymaster_proto';
-import { signEnvelope } from '@spycat55/keymaster_utils';
+import { Envelope, Header, WSSignaling, MsgKind, signEnvelope } from '../src/index';
 import PrivateKey from '@bsv/sdk/primitives/PrivateKey';
 import { writeFileSync } from 'fs';
 import { Buffer } from 'buffer';

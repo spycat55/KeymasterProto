@@ -5,6 +5,8 @@
 // source: message.proto
 
 /* eslint-disable */
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { Timestamp } from "./google/protobuf/timestamp";
 
 export const protobufPackage = "api.webrtc.v1";
 
@@ -17,6 +19,38 @@ export enum MsgKind {
    */
   KIND_WS_SIGNALING = 2,
   UNRECOGNIZED = -1,
+}
+
+export function msgKindFromJSON(object: any): MsgKind {
+  switch (object) {
+    case 0:
+    case "KIND_UNSPECIFIED":
+      return MsgKind.KIND_UNSPECIFIED;
+    case 1:
+    case "KIND_ERROR":
+      return MsgKind.KIND_ERROR;
+    case 2:
+    case "KIND_WS_SIGNALING":
+      return MsgKind.KIND_WS_SIGNALING;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MsgKind.UNRECOGNIZED;
+  }
+}
+
+export function msgKindToJSON(object: MsgKind): string {
+  switch (object) {
+    case MsgKind.KIND_UNSPECIFIED:
+      return "KIND_UNSPECIFIED";
+    case MsgKind.KIND_ERROR:
+      return "KIND_ERROR";
+    case MsgKind.KIND_WS_SIGNALING:
+      return "KIND_WS_SIGNALING";
+    case MsgKind.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
 }
 
 export interface Header {
@@ -66,4 +100,528 @@ export interface WSSignaling {
   signalingType: string;
   /** SDP / ICE / 其他 */
   data: Uint8Array;
+}
+
+function createBaseHeader(): Header {
+  return {
+    kind: 0,
+    messageId: "",
+    correlationId: "",
+    ts: undefined,
+    fromPubkey: new Uint8Array(0),
+    toPubkey: new Uint8Array(0),
+  };
+}
+
+export const Header: MessageFns<Header> = {
+  encode(message: Header, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.kind !== 0) {
+      writer.uint32(8).int32(message.kind);
+    }
+    if (message.messageId !== "") {
+      writer.uint32(18).string(message.messageId);
+    }
+    if (message.correlationId !== "") {
+      writer.uint32(26).string(message.correlationId);
+    }
+    if (message.ts !== undefined) {
+      Timestamp.encode(toTimestamp(message.ts), writer.uint32(34).fork()).join();
+    }
+    if (message.fromPubkey.length !== 0) {
+      writer.uint32(42).bytes(message.fromPubkey);
+    }
+    if (message.toPubkey.length !== 0) {
+      writer.uint32(50).bytes(message.toPubkey);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Header {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHeader();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.kind = reader.int32() as any;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.messageId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.correlationId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.ts = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fromPubkey = reader.bytes();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.toPubkey = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Header {
+    return {
+      kind: isSet(object.kind) ? msgKindFromJSON(object.kind) : 0,
+      messageId: isSet(object.messageId) ? globalThis.String(object.messageId) : "",
+      correlationId: isSet(object.correlationId) ? globalThis.String(object.correlationId) : "",
+      ts: isSet(object.ts) ? fromJsonTimestamp(object.ts) : undefined,
+      fromPubkey: isSet(object.fromPubkey) ? bytesFromBase64(object.fromPubkey) : new Uint8Array(0),
+      toPubkey: isSet(object.toPubkey) ? bytesFromBase64(object.toPubkey) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: Header): unknown {
+    const obj: any = {};
+    if (message.kind !== 0) {
+      obj.kind = msgKindToJSON(message.kind);
+    }
+    if (message.messageId !== "") {
+      obj.messageId = message.messageId;
+    }
+    if (message.correlationId !== "") {
+      obj.correlationId = message.correlationId;
+    }
+    if (message.ts !== undefined) {
+      obj.ts = message.ts.toISOString();
+    }
+    if (message.fromPubkey.length !== 0) {
+      obj.fromPubkey = base64FromBytes(message.fromPubkey);
+    }
+    if (message.toPubkey.length !== 0) {
+      obj.toPubkey = base64FromBytes(message.toPubkey);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Header>, I>>(base?: I): Header {
+    return Header.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Header>, I>>(object: I): Header {
+    const message = createBaseHeader();
+    message.kind = object.kind ?? 0;
+    message.messageId = object.messageId ?? "";
+    message.correlationId = object.correlationId ?? "";
+    message.ts = object.ts ?? undefined;
+    message.fromPubkey = object.fromPubkey ?? new Uint8Array(0);
+    message.toPubkey = object.toPubkey ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseEnvelope(): Envelope {
+  return {
+    version: 0,
+    header: undefined,
+    signature: new Uint8Array(0),
+    signatureAlgo: "",
+    errorReply: undefined,
+    wsSignaling: undefined,
+  };
+}
+
+export const Envelope: MessageFns<Envelope> = {
+  encode(message: Envelope, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.version !== 0) {
+      writer.uint32(8).uint32(message.version);
+    }
+    if (message.header !== undefined) {
+      Header.encode(message.header, writer.uint32(18).fork()).join();
+    }
+    if (message.signature.length !== 0) {
+      writer.uint32(26).bytes(message.signature);
+    }
+    if (message.signatureAlgo !== "") {
+      writer.uint32(34).string(message.signatureAlgo);
+    }
+    if (message.errorReply !== undefined) {
+      ErrorReply.encode(message.errorReply, writer.uint32(42).fork()).join();
+    }
+    if (message.wsSignaling !== undefined) {
+      WSSignaling.encode(message.wsSignaling, writer.uint32(50).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Envelope {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEnvelope();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.version = reader.uint32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.header = Header.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.signature = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.signatureAlgo = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.errorReply = ErrorReply.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.wsSignaling = WSSignaling.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Envelope {
+    return {
+      version: isSet(object.version) ? globalThis.Number(object.version) : 0,
+      header: isSet(object.header) ? Header.fromJSON(object.header) : undefined,
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
+      signatureAlgo: isSet(object.signatureAlgo) ? globalThis.String(object.signatureAlgo) : "",
+      errorReply: isSet(object.errorReply) ? ErrorReply.fromJSON(object.errorReply) : undefined,
+      wsSignaling: isSet(object.wsSignaling) ? WSSignaling.fromJSON(object.wsSignaling) : undefined,
+    };
+  },
+
+  toJSON(message: Envelope): unknown {
+    const obj: any = {};
+    if (message.version !== 0) {
+      obj.version = Math.round(message.version);
+    }
+    if (message.header !== undefined) {
+      obj.header = Header.toJSON(message.header);
+    }
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
+    }
+    if (message.signatureAlgo !== "") {
+      obj.signatureAlgo = message.signatureAlgo;
+    }
+    if (message.errorReply !== undefined) {
+      obj.errorReply = ErrorReply.toJSON(message.errorReply);
+    }
+    if (message.wsSignaling !== undefined) {
+      obj.wsSignaling = WSSignaling.toJSON(message.wsSignaling);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Envelope>, I>>(base?: I): Envelope {
+    return Envelope.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Envelope>, I>>(object: I): Envelope {
+    const message = createBaseEnvelope();
+    message.version = object.version ?? 0;
+    message.header = (object.header !== undefined && object.header !== null)
+      ? Header.fromPartial(object.header)
+      : undefined;
+    message.signature = object.signature ?? new Uint8Array(0);
+    message.signatureAlgo = object.signatureAlgo ?? "";
+    message.errorReply = (object.errorReply !== undefined && object.errorReply !== null)
+      ? ErrorReply.fromPartial(object.errorReply)
+      : undefined;
+    message.wsSignaling = (object.wsSignaling !== undefined && object.wsSignaling !== null)
+      ? WSSignaling.fromPartial(object.wsSignaling)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseErrorReply(): ErrorReply {
+  return { errorCode: "", detail: "" };
+}
+
+export const ErrorReply: MessageFns<ErrorReply> = {
+  encode(message: ErrorReply, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.errorCode !== "") {
+      writer.uint32(10).string(message.errorCode);
+    }
+    if (message.detail !== "") {
+      writer.uint32(18).string(message.detail);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ErrorReply {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseErrorReply();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.errorCode = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.detail = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ErrorReply {
+    return {
+      errorCode: isSet(object.errorCode) ? globalThis.String(object.errorCode) : "",
+      detail: isSet(object.detail) ? globalThis.String(object.detail) : "",
+    };
+  },
+
+  toJSON(message: ErrorReply): unknown {
+    const obj: any = {};
+    if (message.errorCode !== "") {
+      obj.errorCode = message.errorCode;
+    }
+    if (message.detail !== "") {
+      obj.detail = message.detail;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ErrorReply>, I>>(base?: I): ErrorReply {
+    return ErrorReply.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ErrorReply>, I>>(object: I): ErrorReply {
+    const message = createBaseErrorReply();
+    message.errorCode = object.errorCode ?? "";
+    message.detail = object.detail ?? "";
+    return message;
+  },
+};
+
+function createBaseWSSignaling(): WSSignaling {
+  return { signalingType: "", data: new Uint8Array(0) };
+}
+
+export const WSSignaling: MessageFns<WSSignaling> = {
+  encode(message: WSSignaling, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.signalingType !== "") {
+      writer.uint32(10).string(message.signalingType);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(18).bytes(message.data);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WSSignaling {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWSSignaling();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.signalingType = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WSSignaling {
+    return {
+      signalingType: isSet(object.signalingType) ? globalThis.String(object.signalingType) : "",
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: WSSignaling): unknown {
+    const obj: any = {};
+    if (message.signalingType !== "") {
+      obj.signalingType = message.signalingType;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<WSSignaling>, I>>(base?: I): WSSignaling {
+    return WSSignaling.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<WSSignaling>, I>>(object: I): WSSignaling {
+    const message = createBaseWSSignaling();
+    message.signalingType = object.signalingType ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if ((globalThis as any).Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if ((globalThis as any).Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
+
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = Math.trunc(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = (t.seconds || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
+  return new globalThis.Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof globalThis.Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new globalThis.Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
+export interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
+  create<I extends Exact<DeepPartial<T>, I>>(base?: I): T;
+  fromPartial<I extends Exact<DeepPartial<T>, I>>(object: I): T;
 }
