@@ -78,6 +78,7 @@ type Header struct {
 	CorrelationId string                 `protobuf:"bytes,3,opt,name=correlation_id,json=correlationId,proto3" json:"correlation_id,omitempty"` // 关联请求/响应 ID
 	Ts            *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=ts,proto3" json:"ts,omitempty"`                                            // 发送时间
 	FromPubkey    []byte                 `protobuf:"bytes,5,opt,name=from_pubkey,json=fromPubkey,proto3" json:"from_pubkey,omitempty"`          // 发送方公钥
+	ToPubkey      []byte                 `protobuf:"bytes,6,opt,name=to_pubkey,json=toPubkey,proto3" json:"to_pubkey,omitempty"`                // 接收方公钥
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -143,6 +144,13 @@ func (x *Header) GetTs() *timestamppb.Timestamp {
 func (x *Header) GetFromPubkey() []byte {
 	if x != nil {
 		return x.FromPubkey
+	}
+	return nil
+}
+
+func (x *Header) GetToPubkey() []byte {
+	if x != nil {
+		return x.ToPubkey
 	}
 	return nil
 }
@@ -316,7 +324,7 @@ func (x *ErrorReply) GetDetail() string {
 
 type WSSignaling struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	SignalingType string                 `protobuf:"bytes,1,opt,name=signaling_type,json=signalingType,proto3" json:"signaling_type,omitempty"` // offer, answer, ice
+	SignalingType string                 `protobuf:"bytes,1,opt,name=signaling_type,json=signalingType,proto3" json:"signaling_type,omitempty"` // offer, candidate
 	Data          []byte                 `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                                        // SDP / ICE / 其他
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -370,7 +378,7 @@ var File_message_proto protoreflect.FileDescriptor
 
 const file_message_proto_rawDesc = "" +
 	"\n" +
-	"\rmessage.proto\x12\rapi.webrtc.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc7\x01\n" +
+	"\rmessage.proto\x12\rapi.webrtc.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe4\x01\n" +
 	"\x06Header\x12*\n" +
 	"\x04kind\x18\x01 \x01(\x0e2\x16.api.webrtc.v1.MsgKindR\x04kind\x12\x1d\n" +
 	"\n" +
@@ -378,7 +386,8 @@ const file_message_proto_rawDesc = "" +
 	"\x0ecorrelation_id\x18\x03 \x01(\tR\rcorrelationId\x12*\n" +
 	"\x02ts\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x02ts\x12\x1f\n" +
 	"\vfrom_pubkey\x18\x05 \x01(\fR\n" +
-	"fromPubkey\"\xa2\x02\n" +
+	"fromPubkey\x12\x1b\n" +
+	"\tto_pubkey\x18\x06 \x01(\fR\btoPubkey\"\xa2\x02\n" +
 	"\bEnvelope\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\rR\aversion\x12-\n" +
 	"\x06header\x18\x02 \x01(\v2\x15.api.webrtc.v1.HeaderR\x06header\x12\x1c\n" +

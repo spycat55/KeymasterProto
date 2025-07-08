@@ -65,6 +65,8 @@ export interface Header {
     | undefined;
   /** 发送方公钥 */
   fromPubkey: Buffer;
+  /** 接收方公钥 */
+  toPubkey: Buffer;
 }
 
 export interface Envelope {
@@ -94,14 +96,21 @@ export interface ErrorReply {
 }
 
 export interface WSSignaling {
-  /** offer, answer, ice */
+  /** offer, candidate */
   signalingType: string;
   /** SDP / ICE / 其他 */
   data: Buffer;
 }
 
 function createBaseHeader(): Header {
-  return { kind: 0, messageId: "", correlationId: "", ts: undefined, fromPubkey: Buffer.alloc(0) };
+  return {
+    kind: 0,
+    messageId: "",
+    correlationId: "",
+    ts: undefined,
+    fromPubkey: Buffer.alloc(0),
+    toPubkey: Buffer.alloc(0),
+  };
 }
 
 export const Header: MessageFns<Header> = {
@@ -120,6 +129,9 @@ export const Header: MessageFns<Header> = {
     }
     if (message.fromPubkey.length !== 0) {
       writer.uint32(42).bytes(message.fromPubkey);
+    }
+    if (message.toPubkey.length !== 0) {
+      writer.uint32(50).bytes(message.toPubkey);
     }
     return writer;
   },
@@ -171,6 +183,14 @@ export const Header: MessageFns<Header> = {
           message.fromPubkey = Buffer.from(reader.bytes());
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.toPubkey = Buffer.from(reader.bytes());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -187,6 +207,7 @@ export const Header: MessageFns<Header> = {
       correlationId: isSet(object.correlationId) ? globalThis.String(object.correlationId) : "",
       ts: isSet(object.ts) ? fromJsonTimestamp(object.ts) : undefined,
       fromPubkey: isSet(object.fromPubkey) ? Buffer.from(bytesFromBase64(object.fromPubkey)) : Buffer.alloc(0),
+      toPubkey: isSet(object.toPubkey) ? Buffer.from(bytesFromBase64(object.toPubkey)) : Buffer.alloc(0),
     };
   },
 
@@ -207,6 +228,9 @@ export const Header: MessageFns<Header> = {
     if (message.fromPubkey.length !== 0) {
       obj.fromPubkey = base64FromBytes(message.fromPubkey);
     }
+    if (message.toPubkey.length !== 0) {
+      obj.toPubkey = base64FromBytes(message.toPubkey);
+    }
     return obj;
   },
 
@@ -220,6 +244,7 @@ export const Header: MessageFns<Header> = {
     message.correlationId = object.correlationId ?? "";
     message.ts = object.ts ?? undefined;
     message.fromPubkey = object.fromPubkey ?? Buffer.alloc(0);
+    message.toPubkey = object.toPubkey ?? Buffer.alloc(0);
     return message;
   },
 };

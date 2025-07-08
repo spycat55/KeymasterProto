@@ -25,6 +25,7 @@ message Header {
   string correlation_id = 3;      // 关联请求/响应 ID
   google.protobuf.Timestamp ts = 4; // 发送时间
   bytes from_pubkey = 5;          // 发送方公钥
+  bytes to_pubkey = 6;            // 接收方公钥
 }
 
 message Envelope {
