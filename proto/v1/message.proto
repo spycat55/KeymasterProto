@@ -5,50 +5,73 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1";
 
-// 0x00 是指的系统
-// 错误代码 0x0000 没有错误， 0x0001 超时, 0x0002 系统错误, 0x0003 消息已存在
+// ------------------ 通用枚举与错误码 ------------------
 
-// 付费
-message CostPoolUpdate {
-    bytes base_tx_id = 1; // 基础交易
-    bytes signature = 2; // 签名
-    uint32 sequence_number = 3; // 序列号
-    uint64 amount = 4; // 金额
+enum MsgKind {
+  KIND_UNSPECIFIED = 0;
+  KIND_ERROR = 1;
+  KIND_WS_SIGNALING = 2;
+//   KIND_RTC_FILE_QUOTE = 3;
+//   KIND_RTC_FILE_CONTENT = 4;
 }
 
+// ErrorCode 改用字符串，不再定义枚举。请在 ErrorReply.error_code 字段中填入具体错误字符串。
 
-message MessageMain {
-    string message_type = 1; // shake_hand, signaling, response, message_text
-    google.protobuf.Timestamp timestamp = 2;
-    optional bytes data = 3;
-    optional CostPoolUpdate cost_pool_update = 4;
-    optional bytes forward_publickey = 5; // 转发的公钥
-    optional bytes previous_shell_message_hash = 6; // 回复消息，使用的前序消息 hash
-    optional string error_message = 7; // 回复消息，错误
+// ------------------ 核心协议结构 ------------------
+
+message Header {
+  MsgKind kind = 1;
+  string message_id = 2;          // 全局唯一 ID
+  string correlation_id = 3;      // 关联请求/响应 ID
+  google.protobuf.Timestamp ts = 4; // 发送时间
+  bytes from_pubkey = 5;          // 发送方公钥
 }
 
-// 转发消息
-message MessageShell {
-    optional bytes message_main = 1; // shake_hand 就没有 Data
-    optional bytes data_signature = 2; // 如果是公开的，就有签名，否则没有，签data的名
+message Envelope {
+  uint32 version = 1; // 协议版本
+  Header header = 2;
+
+  // 安全字段（必填）
+  bytes signature = 3;
+  string signature_algo = 4; // 如 "ECDSA_P256_SHA256"
+
+  oneof payload {
+    ErrorReply error_reply = 5;
+    WSSignaling ws_signaling = 6;
+    // RTCFileQuote rtc_file_quote = 7;
+    // RTCFileContent rtc_file_content = 8;
+  }
 }
 
+// ------------------ 控制与通用业务消息 ------------------
 
-// 消息回复，报文回复
-// 发送给 server 的信息
-// 回复的类型是由前序消息的类型决定的
-// message MessageResponseShell {
-//     bytes PreviousShellMessageHash = 1;
-//     fixed64 Code = 2; // 0x0000 没有错误，收到了
-//     optional string ErrorMessage = 3; // 非转发类错误，直接发给 server 的
-//     optional bytes Data = 4; // 给 node 的加密数据，肯定就是转发的才有这个，握手也需要这个
+message ErrorReply {
+  string error_code = 1; // 字符串形式的错误码
+  string detail = 2;
+}
+
+message WSSignaling {
+  string signaling_type = 1; // offer, answer, ice
+  bytes data = 2;            // SDP / ICE / 其他
+}
+
+// ------------------ 费用池 / 支付 ------------------
+
+// ------------------ 文件相关 ------------------
+
+// ------------------ RTC 文件报价/内容 ------------------
+
+// message RTCFileQuote {
+//   bytes FileHash = 1;
+//   repeated string FileName = 2;
+//   uint64 FileSize = 3;
+//   uint64 MetadataPrice = 4;
+//   uint64 Price = 5;
 // }
 
-// 发送给 node 的加密数据
-// message WSMessageResponse {
-//     // 前序消息的 hash
-//     bytes PreviousPackageMessageHash = 1;
-//     fixed64 Code = 2; // 0x0000 没有错误，收到了
-//     optional string ErrorMessage = 3;
-//     optional bytes Data = 4; // 给 node 的数据，有些需要返回信息
+// message RTCFileContent {
+//   bytes FileHash = 1;
+//   bytes FileContent = 2;
 // }
+
+// ------------------ 广播与交易 ------------------
