@@ -68,7 +68,7 @@ echo "正在生成 TypeScript 代码..."
 protoc -I ${PROTO_DIR} \
   --plugin=protoc-gen-ts_proto=$(pwd)/node_modules/.bin/protoc-gen-ts_proto \
   --ts_proto_out=${TS_OUT_DIR} \
-  --ts_proto_opt=outputServices=grpc-js,env=node,esModuleInterop=true,useOptionals=messages \
+  --ts_proto_opt=outputServices=false,outputClientImpl=false,useOptionals=messages,onlyTypes=true \
   ${PROTO_DIR}/*.proto
 
 # 处理文件名，将 _pb.ts 重命名为 .ts

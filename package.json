@@ -8,7 +8,10 @@
     "build": "npm run build -w @spycat55/keymaster_proto && npm run build -w @spycat55/keymaster_utils"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "tsup": "^8.0.0"
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "ts-proto": "^2.7.5"
   }
 }
