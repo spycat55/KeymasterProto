@@ -3,15 +3,14 @@
 import { Envelope, Header, WSSignaling, MsgKind } from '../ts/message';
 import { signEnvelope } from '../utils_ts/sign';
 import PrivateKey from '@bsv/sdk/primitives/PrivateKey';
-import { randomBytes } from '@bsv/sdk/primitives/Random';
 import { writeFileSync } from 'fs';
 import { Buffer } from 'buffer';
 
 const outPath = process.argv[2];
 if (!outPath) { console.error('usage: bun ts_sign.ts <outputfile>'); process.exit(1); }
 
-// random priv
-const priv = new PrivateKey(randomBytes(32));
+// 随机私钥
+const priv = PrivateKey.fromRandom();
 const pub = priv.toPublicKey();
 
 const payload = WSSignaling.create({ signalingType: 'offer', data: Buffer.from('hello') });
