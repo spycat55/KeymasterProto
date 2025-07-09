@@ -92,11 +92,19 @@ import verify "github.com/spycat55/keymaster_proto/pkg/verify"
 
 ### TypeScript / Bun / Node
 
-```ts
-import { Envelope, signEnvelope, verifyEnvelope } from './src/index';
-// or when published as npm package:
-// import { Envelope, signEnvelope, verifyEnvelope } from 'keymaster_proto';
+```bash
+# 安装主包
+npm install keymaster_proto
+
+# 安装必需的peer依赖
+npm install @bsv/sdk
 ```
+
+```ts
+import { Envelope, signEnvelope, verifyEnvelope } from 'keymaster_proto';
+```
+
+**注意：** 从 v0.1.5 开始，`@bsv/sdk` 作为 peer dependency，需要用户单独安装。
 
 ---
 

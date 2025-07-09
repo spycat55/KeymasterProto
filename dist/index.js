@@ -1396,3 +1396,4 @@ function verifyEnvelope(env) {
   signEnvelope,
   verifyEnvelope
 });
+//# sourceMappingURL=index.js.map
