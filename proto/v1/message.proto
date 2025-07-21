@@ -13,6 +13,16 @@ enum MsgKind {
   KIND_WS_SIGNALING = 2;
 //   KIND_RTC_FILE_QUOTE = 3;
 //   KIND_RTC_FILE_CONTENT = 4;
+  KIND_FILE_DEMAND_REQUEST = 10;      // 文件需求请求
+  KIND_FILE_DEMAND_BROADCAST = 11;    // 文件需求广播
+  KIND_FEE_POOL_CREATE = 12;          // 费用池创建
+  KIND_FEE_POOL_SIGN = 13;            // 费用池签名
+  KIND_FEE_POOL_BASE_TX = 14;         // 发送基础交易
+  KIND_FEE_POOL_UPDATE = 15;          // 费用池更新
+  KIND_FEE_POOL_UPDATE_NOTIFY = 16;   // 费用池更新通知（服务器发送给客户端）
+  KIND_FEE_POOL_CLOSE = 17;           // 费用池关闭
+  KIND_FEE_POOL_STATUS_QUERY = 18;    // 费用池状态查询
+  KIND_FEE_POOL_STATUS_RESPONSE = 19; // 费用池状态响应
 }
 
 // ErrorCode 改用字符串，不再定义枚举。请在 ErrorReply.error_code 字段中填入具体错误字符串。
@@ -41,6 +51,16 @@ message Envelope {
     WSSignaling ws_signaling = 6;
     // RTCFileQuote rtc_file_quote = 7;
     // RTCFileContent rtc_file_content = 8;
+    FileDemandRequest file_demand_request = 10;
+    FileDemandBroadcast file_demand_broadcast = 11;
+    FeePoolCreate fee_pool_create = 12;
+    FeePoolSign fee_pool_sign = 13;
+    FeePoolBaseTx fee_pool_base_tx = 14;
+    FeePoolUpdate fee_pool_update = 15;
+    FeePoolUpdateNotify fee_pool_update_notify = 16;
+    FeePoolClose fee_pool_close = 17;
+    FeePoolStatusQuery fee_pool_status_query = 18;
+    FeePoolStatusResponse fee_pool_status_response = 19;
   }
 }
 
@@ -58,7 +78,76 @@ message WSSignaling {
 
 // ------------------ 费用池 / 支付 ------------------
 
+// 费用池创建消息
+message FeePoolCreate {
+  bytes spend_tx = 1;                 // 花费交易
+  bytes client_signature = 2;         // 客户端签名
+}
+
+// 费用池签名消息
+message FeePoolSign {
+  bytes spend_txid = 1;               // 花费交易ID
+  bytes server_signature = 2;         // 服务器签名（为空表示拒绝）
+  string error_message = 3;           // 错误信息（为空表示批准）
+}
+
+// 发送基础交易消息
+message FeePoolBaseTx {
+  bytes base_tx = 1;                  // 基础交易
+  bytes client_signature = 2;         // 客户端对基础交易的签名
+}
+
+// 费用池更新通知消息（服务器发送给客户端）
+message FeePoolUpdateNotify {
+  bytes base_txid = 1;                // 基础交易ID
+  uint32 sequence_number = 2;         // 序列号
+  uint64 server_amount = 3;           // 服务器金额
+  uint64 fee = 4;                     // 交易费用
+}
+
+// 费用池更新消息（客户端发送给服务器）
+message FeePoolUpdate {
+  bytes base_txid = 1;                // 基础交易ID
+  bytes spend_txid = 2;               // 花费交易ID
+  bytes client_signature = 3;         // 客户端对花费交易的签名
+  string operation_type = 4;          // 操作类型：update, close
+}
+
+// 费用池关闭消息
+message FeePoolClose {
+  bytes base_txid = 1;                // 基础交易ID
+  uint64 server_amount = 2;           // 服务器金额
+  uint64 fee = 3;                     // 交易费用
+}
+
+// 费用池状态查询消息
+message FeePoolStatusQuery {
+  bytes base_txid = 1;                // 基础交易ID（可选，为空则查询客户端所有费用池）
+}
+
+// 费用池状态响应消息
+message FeePoolStatusResponse {
+  bytes base_txid = 1;                // 基础交易ID
+  string status = 2;                  // 状态：pending, signed, active, expired, closed, error
+  uint64 server_amount = 3;           // 服务器当前金额
+  uint64 client_amount = 4;           // 客户端剩余金额
+  uint32 sequence_number = 5;         // 当前序列号
+  google.protobuf.Timestamp created_at = 6;     // 创建时间
+  google.protobuf.Timestamp expires_at = 7;     // 过期时间（如果适用）
+  string error_reason = 8;            // 错误原因（状态为error时）
+}
+
 // ------------------ 文件相关 ------------------
+
+// 文件需求请求消息
+message FileDemandRequest {
+  bytes file_hash = 1;                // 文件哈希
+}
+
+// 文件需求广播消息
+message FileDemandBroadcast {
+  bytes file_hash = 1;                // 文件哈希
+}
 
 // ------------------ RTC 文件报价/内容 ------------------
 
