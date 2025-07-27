@@ -32,6 +32,16 @@ var index_exports = {};
 __export(index_exports, {
   Envelope: () => Envelope,
   ErrorReply: () => ErrorReply,
+  FeePoolBaseTx: () => FeePoolBaseTx,
+  FeePoolClose: () => FeePoolClose,
+  FeePoolCreate: () => FeePoolCreate,
+  FeePoolSign: () => FeePoolSign,
+  FeePoolStatusQuery: () => FeePoolStatusQuery,
+  FeePoolStatusResponse: () => FeePoolStatusResponse,
+  FeePoolUpdate: () => FeePoolUpdate,
+  FeePoolUpdateNotify: () => FeePoolUpdateNotify,
+  FileDemandBroadcast: () => FileDemandBroadcast,
+  FileDemandRequest: () => FileDemandRequest,
   Header: () => Header,
   MsgKind: () => MsgKind,
   WSSignaling: () => WSSignaling,
@@ -853,6 +863,16 @@ var MsgKind = /* @__PURE__ */ ((MsgKind2) => {
   MsgKind2[MsgKind2["KIND_UNSPECIFIED"] = 0] = "KIND_UNSPECIFIED";
   MsgKind2[MsgKind2["KIND_ERROR"] = 1] = "KIND_ERROR";
   MsgKind2[MsgKind2["KIND_WS_SIGNALING"] = 2] = "KIND_WS_SIGNALING";
+  MsgKind2[MsgKind2["KIND_FILE_DEMAND_REQUEST"] = 10] = "KIND_FILE_DEMAND_REQUEST";
+  MsgKind2[MsgKind2["KIND_FILE_DEMAND_BROADCAST"] = 11] = "KIND_FILE_DEMAND_BROADCAST";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_CREATE"] = 12] = "KIND_FEE_POOL_CREATE";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_SIGN"] = 13] = "KIND_FEE_POOL_SIGN";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_BASE_TX"] = 14] = "KIND_FEE_POOL_BASE_TX";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_UPDATE"] = 15] = "KIND_FEE_POOL_UPDATE";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_UPDATE_NOTIFY"] = 16] = "KIND_FEE_POOL_UPDATE_NOTIFY";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_CLOSE"] = 17] = "KIND_FEE_POOL_CLOSE";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_STATUS_QUERY"] = 18] = "KIND_FEE_POOL_STATUS_QUERY";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_STATUS_RESPONSE"] = 19] = "KIND_FEE_POOL_STATUS_RESPONSE";
   MsgKind2[MsgKind2["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
   return MsgKind2;
 })(MsgKind || {});
@@ -867,6 +887,36 @@ function msgKindFromJSON(object) {
     case 2:
     case "KIND_WS_SIGNALING":
       return 2 /* KIND_WS_SIGNALING */;
+    case 10:
+    case "KIND_FILE_DEMAND_REQUEST":
+      return 10 /* KIND_FILE_DEMAND_REQUEST */;
+    case 11:
+    case "KIND_FILE_DEMAND_BROADCAST":
+      return 11 /* KIND_FILE_DEMAND_BROADCAST */;
+    case 12:
+    case "KIND_FEE_POOL_CREATE":
+      return 12 /* KIND_FEE_POOL_CREATE */;
+    case 13:
+    case "KIND_FEE_POOL_SIGN":
+      return 13 /* KIND_FEE_POOL_SIGN */;
+    case 14:
+    case "KIND_FEE_POOL_BASE_TX":
+      return 14 /* KIND_FEE_POOL_BASE_TX */;
+    case 15:
+    case "KIND_FEE_POOL_UPDATE":
+      return 15 /* KIND_FEE_POOL_UPDATE */;
+    case 16:
+    case "KIND_FEE_POOL_UPDATE_NOTIFY":
+      return 16 /* KIND_FEE_POOL_UPDATE_NOTIFY */;
+    case 17:
+    case "KIND_FEE_POOL_CLOSE":
+      return 17 /* KIND_FEE_POOL_CLOSE */;
+    case 18:
+    case "KIND_FEE_POOL_STATUS_QUERY":
+      return 18 /* KIND_FEE_POOL_STATUS_QUERY */;
+    case 19:
+    case "KIND_FEE_POOL_STATUS_RESPONSE":
+      return 19 /* KIND_FEE_POOL_STATUS_RESPONSE */;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -881,6 +931,26 @@ function msgKindToJSON(object) {
       return "KIND_ERROR";
     case 2 /* KIND_WS_SIGNALING */:
       return "KIND_WS_SIGNALING";
+    case 10 /* KIND_FILE_DEMAND_REQUEST */:
+      return "KIND_FILE_DEMAND_REQUEST";
+    case 11 /* KIND_FILE_DEMAND_BROADCAST */:
+      return "KIND_FILE_DEMAND_BROADCAST";
+    case 12 /* KIND_FEE_POOL_CREATE */:
+      return "KIND_FEE_POOL_CREATE";
+    case 13 /* KIND_FEE_POOL_SIGN */:
+      return "KIND_FEE_POOL_SIGN";
+    case 14 /* KIND_FEE_POOL_BASE_TX */:
+      return "KIND_FEE_POOL_BASE_TX";
+    case 15 /* KIND_FEE_POOL_UPDATE */:
+      return "KIND_FEE_POOL_UPDATE";
+    case 16 /* KIND_FEE_POOL_UPDATE_NOTIFY */:
+      return "KIND_FEE_POOL_UPDATE_NOTIFY";
+    case 17 /* KIND_FEE_POOL_CLOSE */:
+      return "KIND_FEE_POOL_CLOSE";
+    case 18 /* KIND_FEE_POOL_STATUS_QUERY */:
+      return "KIND_FEE_POOL_STATUS_QUERY";
+    case 19 /* KIND_FEE_POOL_STATUS_RESPONSE */:
+      return "KIND_FEE_POOL_STATUS_RESPONSE";
     case -1 /* UNRECOGNIZED */:
     default:
       return "UNRECOGNIZED";
@@ -1028,7 +1098,17 @@ function createBaseEnvelope() {
     signature: new Uint8Array(0),
     signatureAlgo: "",
     errorReply: void 0,
-    wsSignaling: void 0
+    wsSignaling: void 0,
+    fileDemandRequest: void 0,
+    fileDemandBroadcast: void 0,
+    feePoolCreate: void 0,
+    feePoolSign: void 0,
+    feePoolBaseTx: void 0,
+    feePoolUpdate: void 0,
+    feePoolUpdateNotify: void 0,
+    feePoolClose: void 0,
+    feePoolStatusQuery: void 0,
+    feePoolStatusResponse: void 0
   };
 }
 var Envelope = {
@@ -1050,6 +1130,36 @@ var Envelope = {
     }
     if (message.wsSignaling !== void 0) {
       WSSignaling.encode(message.wsSignaling, writer.uint32(50).fork()).join();
+    }
+    if (message.fileDemandRequest !== void 0) {
+      FileDemandRequest.encode(message.fileDemandRequest, writer.uint32(82).fork()).join();
+    }
+    if (message.fileDemandBroadcast !== void 0) {
+      FileDemandBroadcast.encode(message.fileDemandBroadcast, writer.uint32(90).fork()).join();
+    }
+    if (message.feePoolCreate !== void 0) {
+      FeePoolCreate.encode(message.feePoolCreate, writer.uint32(98).fork()).join();
+    }
+    if (message.feePoolSign !== void 0) {
+      FeePoolSign.encode(message.feePoolSign, writer.uint32(106).fork()).join();
+    }
+    if (message.feePoolBaseTx !== void 0) {
+      FeePoolBaseTx.encode(message.feePoolBaseTx, writer.uint32(114).fork()).join();
+    }
+    if (message.feePoolUpdate !== void 0) {
+      FeePoolUpdate.encode(message.feePoolUpdate, writer.uint32(122).fork()).join();
+    }
+    if (message.feePoolUpdateNotify !== void 0) {
+      FeePoolUpdateNotify.encode(message.feePoolUpdateNotify, writer.uint32(130).fork()).join();
+    }
+    if (message.feePoolClose !== void 0) {
+      FeePoolClose.encode(message.feePoolClose, writer.uint32(138).fork()).join();
+    }
+    if (message.feePoolStatusQuery !== void 0) {
+      FeePoolStatusQuery.encode(message.feePoolStatusQuery, writer.uint32(146).fork()).join();
+    }
+    if (message.feePoolStatusResponse !== void 0) {
+      FeePoolStatusResponse.encode(message.feePoolStatusResponse, writer.uint32(154).fork()).join();
     }
     return writer;
   },
@@ -1102,6 +1212,76 @@ var Envelope = {
           message.wsSignaling = WSSignaling.decode(reader, reader.uint32());
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+          message.fileDemandRequest = FileDemandRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+          message.fileDemandBroadcast = FileDemandBroadcast.decode(reader, reader.uint32());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+          message.feePoolCreate = FeePoolCreate.decode(reader, reader.uint32());
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+          message.feePoolSign = FeePoolSign.decode(reader, reader.uint32());
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+          message.feePoolBaseTx = FeePoolBaseTx.decode(reader, reader.uint32());
+          continue;
+        }
+        case 15: {
+          if (tag !== 122) {
+            break;
+          }
+          message.feePoolUpdate = FeePoolUpdate.decode(reader, reader.uint32());
+          continue;
+        }
+        case 16: {
+          if (tag !== 130) {
+            break;
+          }
+          message.feePoolUpdateNotify = FeePoolUpdateNotify.decode(reader, reader.uint32());
+          continue;
+        }
+        case 17: {
+          if (tag !== 138) {
+            break;
+          }
+          message.feePoolClose = FeePoolClose.decode(reader, reader.uint32());
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+          message.feePoolStatusQuery = FeePoolStatusQuery.decode(reader, reader.uint32());
+          continue;
+        }
+        case 19: {
+          if (tag !== 154) {
+            break;
+          }
+          message.feePoolStatusResponse = FeePoolStatusResponse.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1117,7 +1297,17 @@ var Envelope = {
       signature: isSet2(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
       signatureAlgo: isSet2(object.signatureAlgo) ? globalThis.String(object.signatureAlgo) : "",
       errorReply: isSet2(object.errorReply) ? ErrorReply.fromJSON(object.errorReply) : void 0,
-      wsSignaling: isSet2(object.wsSignaling) ? WSSignaling.fromJSON(object.wsSignaling) : void 0
+      wsSignaling: isSet2(object.wsSignaling) ? WSSignaling.fromJSON(object.wsSignaling) : void 0,
+      fileDemandRequest: isSet2(object.fileDemandRequest) ? FileDemandRequest.fromJSON(object.fileDemandRequest) : void 0,
+      fileDemandBroadcast: isSet2(object.fileDemandBroadcast) ? FileDemandBroadcast.fromJSON(object.fileDemandBroadcast) : void 0,
+      feePoolCreate: isSet2(object.feePoolCreate) ? FeePoolCreate.fromJSON(object.feePoolCreate) : void 0,
+      feePoolSign: isSet2(object.feePoolSign) ? FeePoolSign.fromJSON(object.feePoolSign) : void 0,
+      feePoolBaseTx: isSet2(object.feePoolBaseTx) ? FeePoolBaseTx.fromJSON(object.feePoolBaseTx) : void 0,
+      feePoolUpdate: isSet2(object.feePoolUpdate) ? FeePoolUpdate.fromJSON(object.feePoolUpdate) : void 0,
+      feePoolUpdateNotify: isSet2(object.feePoolUpdateNotify) ? FeePoolUpdateNotify.fromJSON(object.feePoolUpdateNotify) : void 0,
+      feePoolClose: isSet2(object.feePoolClose) ? FeePoolClose.fromJSON(object.feePoolClose) : void 0,
+      feePoolStatusQuery: isSet2(object.feePoolStatusQuery) ? FeePoolStatusQuery.fromJSON(object.feePoolStatusQuery) : void 0,
+      feePoolStatusResponse: isSet2(object.feePoolStatusResponse) ? FeePoolStatusResponse.fromJSON(object.feePoolStatusResponse) : void 0
     };
   },
   toJSON(message) {
@@ -1140,6 +1330,36 @@ var Envelope = {
     if (message.wsSignaling !== void 0) {
       obj.wsSignaling = WSSignaling.toJSON(message.wsSignaling);
     }
+    if (message.fileDemandRequest !== void 0) {
+      obj.fileDemandRequest = FileDemandRequest.toJSON(message.fileDemandRequest);
+    }
+    if (message.fileDemandBroadcast !== void 0) {
+      obj.fileDemandBroadcast = FileDemandBroadcast.toJSON(message.fileDemandBroadcast);
+    }
+    if (message.feePoolCreate !== void 0) {
+      obj.feePoolCreate = FeePoolCreate.toJSON(message.feePoolCreate);
+    }
+    if (message.feePoolSign !== void 0) {
+      obj.feePoolSign = FeePoolSign.toJSON(message.feePoolSign);
+    }
+    if (message.feePoolBaseTx !== void 0) {
+      obj.feePoolBaseTx = FeePoolBaseTx.toJSON(message.feePoolBaseTx);
+    }
+    if (message.feePoolUpdate !== void 0) {
+      obj.feePoolUpdate = FeePoolUpdate.toJSON(message.feePoolUpdate);
+    }
+    if (message.feePoolUpdateNotify !== void 0) {
+      obj.feePoolUpdateNotify = FeePoolUpdateNotify.toJSON(message.feePoolUpdateNotify);
+    }
+    if (message.feePoolClose !== void 0) {
+      obj.feePoolClose = FeePoolClose.toJSON(message.feePoolClose);
+    }
+    if (message.feePoolStatusQuery !== void 0) {
+      obj.feePoolStatusQuery = FeePoolStatusQuery.toJSON(message.feePoolStatusQuery);
+    }
+    if (message.feePoolStatusResponse !== void 0) {
+      obj.feePoolStatusResponse = FeePoolStatusResponse.toJSON(message.feePoolStatusResponse);
+    }
     return obj;
   },
   create(base) {
@@ -1153,6 +1373,16 @@ var Envelope = {
     message.signatureAlgo = object.signatureAlgo ?? "";
     message.errorReply = object.errorReply !== void 0 && object.errorReply !== null ? ErrorReply.fromPartial(object.errorReply) : void 0;
     message.wsSignaling = object.wsSignaling !== void 0 && object.wsSignaling !== null ? WSSignaling.fromPartial(object.wsSignaling) : void 0;
+    message.fileDemandRequest = object.fileDemandRequest !== void 0 && object.fileDemandRequest !== null ? FileDemandRequest.fromPartial(object.fileDemandRequest) : void 0;
+    message.fileDemandBroadcast = object.fileDemandBroadcast !== void 0 && object.fileDemandBroadcast !== null ? FileDemandBroadcast.fromPartial(object.fileDemandBroadcast) : void 0;
+    message.feePoolCreate = object.feePoolCreate !== void 0 && object.feePoolCreate !== null ? FeePoolCreate.fromPartial(object.feePoolCreate) : void 0;
+    message.feePoolSign = object.feePoolSign !== void 0 && object.feePoolSign !== null ? FeePoolSign.fromPartial(object.feePoolSign) : void 0;
+    message.feePoolBaseTx = object.feePoolBaseTx !== void 0 && object.feePoolBaseTx !== null ? FeePoolBaseTx.fromPartial(object.feePoolBaseTx) : void 0;
+    message.feePoolUpdate = object.feePoolUpdate !== void 0 && object.feePoolUpdate !== null ? FeePoolUpdate.fromPartial(object.feePoolUpdate) : void 0;
+    message.feePoolUpdateNotify = object.feePoolUpdateNotify !== void 0 && object.feePoolUpdateNotify !== null ? FeePoolUpdateNotify.fromPartial(object.feePoolUpdateNotify) : void 0;
+    message.feePoolClose = object.feePoolClose !== void 0 && object.feePoolClose !== null ? FeePoolClose.fromPartial(object.feePoolClose) : void 0;
+    message.feePoolStatusQuery = object.feePoolStatusQuery !== void 0 && object.feePoolStatusQuery !== null ? FeePoolStatusQuery.fromPartial(object.feePoolStatusQuery) : void 0;
+    message.feePoolStatusResponse = object.feePoolStatusResponse !== void 0 && object.feePoolStatusResponse !== null ? FeePoolStatusResponse.fromPartial(object.feePoolStatusResponse) : void 0;
     return message;
   }
 };
@@ -1292,6 +1522,844 @@ var WSSignaling = {
     return message;
   }
 };
+function createBaseFeePoolCreate() {
+  return { spendTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+}
+var FeePoolCreate = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.spendTx.length !== 0) {
+      writer.uint32(10).bytes(message.spendTx);
+    }
+    if (message.clientSignature.length !== 0) {
+      writer.uint32(18).bytes(message.clientSignature);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolCreate();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.spendTx = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+          message.clientSignature = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      spendTx: isSet2(object.spendTx) ? bytesFromBase64(object.spendTx) : new Uint8Array(0),
+      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.spendTx.length !== 0) {
+      obj.spendTx = base64FromBytes(message.spendTx);
+    }
+    if (message.clientSignature.length !== 0) {
+      obj.clientSignature = base64FromBytes(message.clientSignature);
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolCreate.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolCreate();
+    message.spendTx = object.spendTx ?? new Uint8Array(0);
+    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    return message;
+  }
+};
+function createBaseFeePoolSign() {
+  return { spendTxid: new Uint8Array(0), serverSignature: new Uint8Array(0), errorMessage: "" };
+}
+var FeePoolSign = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
+    }
+    if (message.serverSignature.length !== 0) {
+      writer.uint32(18).bytes(message.serverSignature);
+    }
+    if (message.errorMessage !== "") {
+      writer.uint32(26).string(message.errorMessage);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolSign();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.spendTxid = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+          message.serverSignature = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+          message.errorMessage = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
+      serverSignature: isSet2(object.serverSignature) ? bytesFromBase64(object.serverSignature) : new Uint8Array(0),
+      errorMessage: isSet2(object.errorMessage) ? globalThis.String(object.errorMessage) : ""
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
+    }
+    if (message.serverSignature.length !== 0) {
+      obj.serverSignature = base64FromBytes(message.serverSignature);
+    }
+    if (message.errorMessage !== "") {
+      obj.errorMessage = message.errorMessage;
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolSign.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolSign();
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
+    message.serverSignature = object.serverSignature ?? new Uint8Array(0);
+    message.errorMessage = object.errorMessage ?? "";
+    return message;
+  }
+};
+function createBaseFeePoolBaseTx() {
+  return { baseTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+}
+var FeePoolBaseTx = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.baseTx.length !== 0) {
+      writer.uint32(10).bytes(message.baseTx);
+    }
+    if (message.clientSignature.length !== 0) {
+      writer.uint32(18).bytes(message.clientSignature);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolBaseTx();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.baseTx = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+          message.clientSignature = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      baseTx: isSet2(object.baseTx) ? bytesFromBase64(object.baseTx) : new Uint8Array(0),
+      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.baseTx.length !== 0) {
+      obj.baseTx = base64FromBytes(message.baseTx);
+    }
+    if (message.clientSignature.length !== 0) {
+      obj.clientSignature = base64FromBytes(message.clientSignature);
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolBaseTx.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolBaseTx();
+    message.baseTx = object.baseTx ?? new Uint8Array(0);
+    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    return message;
+  }
+};
+function createBaseFeePoolUpdateNotify() {
+  return { baseTxid: new Uint8Array(0), sequenceNumber: 0, serverAmount: 0, fee: 0 };
+}
+var FeePoolUpdateNotify = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.baseTxid.length !== 0) {
+      writer.uint32(10).bytes(message.baseTxid);
+    }
+    if (message.sequenceNumber !== 0) {
+      writer.uint32(16).uint32(message.sequenceNumber);
+    }
+    if (message.serverAmount !== 0) {
+      writer.uint32(24).uint64(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      writer.uint32(32).uint64(message.fee);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolUpdateNotify();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.baseTxid = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+          message.sequenceNumber = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+          message.serverAmount = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+          message.fee = longToNumber2(reader.uint64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
+      serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
+      fee: isSet2(object.fee) ? globalThis.Number(object.fee) : 0
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.baseTxid.length !== 0) {
+      obj.baseTxid = base64FromBytes(message.baseTxid);
+    }
+    if (message.sequenceNumber !== 0) {
+      obj.sequenceNumber = Math.round(message.sequenceNumber);
+    }
+    if (message.serverAmount !== 0) {
+      obj.serverAmount = Math.round(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      obj.fee = Math.round(message.fee);
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolUpdateNotify.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolUpdateNotify();
+    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.sequenceNumber = object.sequenceNumber ?? 0;
+    message.serverAmount = object.serverAmount ?? 0;
+    message.fee = object.fee ?? 0;
+    return message;
+  }
+};
+function createBaseFeePoolUpdate() {
+  return {
+    baseTxid: new Uint8Array(0),
+    spendTxid: new Uint8Array(0),
+    clientSignature: new Uint8Array(0),
+    operationType: ""
+  };
+}
+var FeePoolUpdate = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.baseTxid.length !== 0) {
+      writer.uint32(10).bytes(message.baseTxid);
+    }
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(18).bytes(message.spendTxid);
+    }
+    if (message.clientSignature.length !== 0) {
+      writer.uint32(26).bytes(message.clientSignature);
+    }
+    if (message.operationType !== "") {
+      writer.uint32(34).string(message.operationType);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolUpdate();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.baseTxid = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+          message.spendTxid = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+          message.clientSignature = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+          message.operationType = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
+      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0),
+      operationType: isSet2(object.operationType) ? globalThis.String(object.operationType) : ""
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.baseTxid.length !== 0) {
+      obj.baseTxid = base64FromBytes(message.baseTxid);
+    }
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
+    }
+    if (message.clientSignature.length !== 0) {
+      obj.clientSignature = base64FromBytes(message.clientSignature);
+    }
+    if (message.operationType !== "") {
+      obj.operationType = message.operationType;
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolUpdate.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolUpdate();
+    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
+    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    message.operationType = object.operationType ?? "";
+    return message;
+  }
+};
+function createBaseFeePoolClose() {
+  return { baseTxid: new Uint8Array(0), serverAmount: 0, fee: 0, clientSignature: new Uint8Array(0) };
+}
+var FeePoolClose = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.baseTxid.length !== 0) {
+      writer.uint32(10).bytes(message.baseTxid);
+    }
+    if (message.serverAmount !== 0) {
+      writer.uint32(16).uint64(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      writer.uint32(24).uint64(message.fee);
+    }
+    if (message.clientSignature.length !== 0) {
+      writer.uint32(34).bytes(message.clientSignature);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolClose();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.baseTxid = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+          message.serverAmount = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+          message.fee = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+          message.clientSignature = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
+      fee: isSet2(object.fee) ? globalThis.Number(object.fee) : 0,
+      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.baseTxid.length !== 0) {
+      obj.baseTxid = base64FromBytes(message.baseTxid);
+    }
+    if (message.serverAmount !== 0) {
+      obj.serverAmount = Math.round(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      obj.fee = Math.round(message.fee);
+    }
+    if (message.clientSignature.length !== 0) {
+      obj.clientSignature = base64FromBytes(message.clientSignature);
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolClose.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolClose();
+    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.serverAmount = object.serverAmount ?? 0;
+    message.fee = object.fee ?? 0;
+    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    return message;
+  }
+};
+function createBaseFeePoolStatusQuery() {
+  return { baseTxid: new Uint8Array(0) };
+}
+var FeePoolStatusQuery = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.baseTxid.length !== 0) {
+      writer.uint32(10).bytes(message.baseTxid);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolStatusQuery();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.baseTxid = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return { baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0) };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.baseTxid.length !== 0) {
+      obj.baseTxid = base64FromBytes(message.baseTxid);
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolStatusQuery.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolStatusQuery();
+    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    return message;
+  }
+};
+function createBaseFeePoolStatusResponse() {
+  return {
+    baseTxid: new Uint8Array(0),
+    status: "",
+    serverAmount: 0,
+    clientAmount: 0,
+    sequenceNumber: 0,
+    createdAt: void 0,
+    expiresAt: void 0,
+    errorReason: ""
+  };
+}
+var FeePoolStatusResponse = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.baseTxid.length !== 0) {
+      writer.uint32(10).bytes(message.baseTxid);
+    }
+    if (message.status !== "") {
+      writer.uint32(18).string(message.status);
+    }
+    if (message.serverAmount !== 0) {
+      writer.uint32(24).uint64(message.serverAmount);
+    }
+    if (message.clientAmount !== 0) {
+      writer.uint32(32).uint64(message.clientAmount);
+    }
+    if (message.sequenceNumber !== 0) {
+      writer.uint32(40).uint32(message.sequenceNumber);
+    }
+    if (message.createdAt !== void 0) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(50).fork()).join();
+    }
+    if (message.expiresAt !== void 0) {
+      Timestamp.encode(toTimestamp(message.expiresAt), writer.uint32(58).fork()).join();
+    }
+    if (message.errorReason !== "") {
+      writer.uint32(66).string(message.errorReason);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolStatusResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.baseTxid = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+          message.status = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+          message.serverAmount = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+          message.clientAmount = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+          message.sequenceNumber = reader.uint32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+          message.expiresAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+          message.errorReason = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      status: isSet2(object.status) ? globalThis.String(object.status) : "",
+      serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
+      clientAmount: isSet2(object.clientAmount) ? globalThis.Number(object.clientAmount) : 0,
+      sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
+      createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
+      expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
+      errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : ""
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.baseTxid.length !== 0) {
+      obj.baseTxid = base64FromBytes(message.baseTxid);
+    }
+    if (message.status !== "") {
+      obj.status = message.status;
+    }
+    if (message.serverAmount !== 0) {
+      obj.serverAmount = Math.round(message.serverAmount);
+    }
+    if (message.clientAmount !== 0) {
+      obj.clientAmount = Math.round(message.clientAmount);
+    }
+    if (message.sequenceNumber !== 0) {
+      obj.sequenceNumber = Math.round(message.sequenceNumber);
+    }
+    if (message.createdAt !== void 0) {
+      obj.createdAt = message.createdAt.toISOString();
+    }
+    if (message.expiresAt !== void 0) {
+      obj.expiresAt = message.expiresAt.toISOString();
+    }
+    if (message.errorReason !== "") {
+      obj.errorReason = message.errorReason;
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolStatusResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolStatusResponse();
+    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.status = object.status ?? "";
+    message.serverAmount = object.serverAmount ?? 0;
+    message.clientAmount = object.clientAmount ?? 0;
+    message.sequenceNumber = object.sequenceNumber ?? 0;
+    message.createdAt = object.createdAt ?? void 0;
+    message.expiresAt = object.expiresAt ?? void 0;
+    message.errorReason = object.errorReason ?? "";
+    return message;
+  }
+};
+function createBaseFileDemandRequest() {
+  return { fileHash: new Uint8Array(0) };
+}
+var FileDemandRequest = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.fileHash.length !== 0) {
+      writer.uint32(10).bytes(message.fileHash);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFileDemandRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.fileHash = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return { fileHash: isSet2(object.fileHash) ? bytesFromBase64(object.fileHash) : new Uint8Array(0) };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.fileHash.length !== 0) {
+      obj.fileHash = base64FromBytes(message.fileHash);
+    }
+    return obj;
+  },
+  create(base) {
+    return FileDemandRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFileDemandRequest();
+    message.fileHash = object.fileHash ?? new Uint8Array(0);
+    return message;
+  }
+};
+function createBaseFileDemandBroadcast() {
+  return { fileHash: new Uint8Array(0) };
+}
+var FileDemandBroadcast = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.fileHash.length !== 0) {
+      writer.uint32(10).bytes(message.fileHash);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFileDemandBroadcast();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.fileHash = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return { fileHash: isSet2(object.fileHash) ? bytesFromBase64(object.fileHash) : new Uint8Array(0) };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.fileHash.length !== 0) {
+      obj.fileHash = base64FromBytes(message.fileHash);
+    }
+    return obj;
+  },
+  create(base) {
+    return FileDemandBroadcast.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFileDemandBroadcast();
+    message.fileHash = object.fileHash ?? new Uint8Array(0);
+    return message;
+  }
+};
 function bytesFromBase64(b64) {
   if (globalThis.Buffer) {
     return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
@@ -1333,6 +2401,16 @@ function fromJsonTimestamp(o) {
   } else {
     return fromTimestamp(Timestamp.fromJSON(o));
   }
+}
+function longToNumber2(int64) {
+  const num = globalThis.Number(int64.toString());
+  if (num > globalThis.Number.MAX_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  if (num < globalThis.Number.MIN_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
+  }
+  return num;
 }
 function isSet2(value) {
   return value !== null && value !== void 0;
@@ -1386,6 +2464,16 @@ function verifyEnvelope(env) {
 0 && (module.exports = {
   Envelope,
   ErrorReply,
+  FeePoolBaseTx,
+  FeePoolClose,
+  FeePoolCreate,
+  FeePoolSign,
+  FeePoolStatusQuery,
+  FeePoolStatusResponse,
+  FeePoolUpdate,
+  FeePoolUpdateNotify,
+  FileDemandBroadcast,
+  FileDemandRequest,
   Header,
   MsgKind,
   WSSignaling,

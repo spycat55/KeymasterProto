@@ -239,6 +239,8 @@ export interface FeePoolClose {
   serverAmount: number;
   /** 交易费用 */
   fee: number;
+  /** 客户端签名 */
+  clientSignature: Uint8Array;
 }
 
 /** 费用池状态查询消息 */
@@ -1402,7 +1404,7 @@ export const FeePoolUpdate: MessageFns<FeePoolUpdate> = {
 };
 
 function createBaseFeePoolClose(): FeePoolClose {
-  return { baseTxid: new Uint8Array(0), serverAmount: 0, fee: 0 };
+  return { baseTxid: new Uint8Array(0), serverAmount: 0, fee: 0, clientSignature: new Uint8Array(0) };
 }
 
 export const FeePoolClose: MessageFns<FeePoolClose> = {
@@ -1415,6 +1417,9 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
     }
     if (message.fee !== 0) {
       writer.uint32(24).uint64(message.fee);
+    }
+    if (message.clientSignature.length !== 0) {
+      writer.uint32(34).bytes(message.clientSignature);
     }
     return writer;
   },
@@ -1450,6 +1455,14 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
           message.fee = longToNumber(reader.uint64());
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.clientSignature = reader.bytes();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1464,6 +1477,7 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
       baseTxid: isSet(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
       serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
       fee: isSet(object.fee) ? globalThis.Number(object.fee) : 0,
+      clientSignature: isSet(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0),
     };
   },
 
@@ -1478,6 +1492,9 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
     if (message.fee !== 0) {
       obj.fee = Math.round(message.fee);
     }
+    if (message.clientSignature.length !== 0) {
+      obj.clientSignature = base64FromBytes(message.clientSignature);
+    }
     return obj;
   },
 
@@ -1489,6 +1506,7 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
     message.baseTxid = object.baseTxid ?? new Uint8Array(0);
     message.serverAmount = object.serverAmount ?? 0;
     message.fee = object.fee ?? 0;
+    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
     return message;
   },
 };

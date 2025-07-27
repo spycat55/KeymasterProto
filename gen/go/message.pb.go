@@ -875,12 +875,13 @@ func (x *FeePoolUpdate) GetOperationType() string {
 
 // 费用池关闭消息
 type FeePoolClose struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	BaseTxid      []byte                 `protobuf:"bytes,1,opt,name=base_txid,json=baseTxid,proto3" json:"base_txid,omitempty"`              // 基础交易ID
-	ServerAmount  uint64                 `protobuf:"varint,2,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"` // 服务器金额
-	Fee           uint64                 `protobuf:"varint,3,opt,name=fee,proto3" json:"fee,omitempty"`                                       // 交易费用
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	BaseTxid        []byte                 `protobuf:"bytes,1,opt,name=base_txid,json=baseTxid,proto3" json:"base_txid,omitempty"`                      // 基础交易ID
+	ServerAmount    uint64                 `protobuf:"varint,2,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`         // 服务器金额
+	Fee             uint64                 `protobuf:"varint,3,opt,name=fee,proto3" json:"fee,omitempty"`                                               // 交易费用
+	ClientSignature []byte                 `protobuf:"bytes,4,opt,name=client_signature,json=clientSignature,proto3" json:"client_signature,omitempty"` // 客户端签名
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *FeePoolClose) Reset() {
@@ -932,6 +933,13 @@ func (x *FeePoolClose) GetFee() uint64 {
 		return x.Fee
 	}
 	return 0
+}
+
+func (x *FeePoolClose) GetClientSignature() []byte {
+	if x != nil {
+		return x.ClientSignature
+	}
+	return nil
 }
 
 // 费用池状态查询消息
@@ -1233,11 +1241,12 @@ const file_message_proto_rawDesc = "" +
 	"\n" +
 	"spend_txid\x18\x02 \x01(\fR\tspendTxid\x12)\n" +
 	"\x10client_signature\x18\x03 \x01(\fR\x0fclientSignature\x12%\n" +
-	"\x0eoperation_type\x18\x04 \x01(\tR\roperationType\"b\n" +
+	"\x0eoperation_type\x18\x04 \x01(\tR\roperationType\"\x8d\x01\n" +
 	"\fFeePoolClose\x12\x1b\n" +
 	"\tbase_txid\x18\x01 \x01(\fR\bbaseTxid\x12#\n" +
 	"\rserver_amount\x18\x02 \x01(\x04R\fserverAmount\x12\x10\n" +
-	"\x03fee\x18\x03 \x01(\x04R\x03fee\"1\n" +
+	"\x03fee\x18\x03 \x01(\x04R\x03fee\x12)\n" +
+	"\x10client_signature\x18\x04 \x01(\fR\x0fclientSignature\"1\n" +
 	"\x12FeePoolStatusQuery\x12\x1b\n" +
 	"\tbase_txid\x18\x01 \x01(\fR\bbaseTxid\"\xd8\x02\n" +
 	"\x15FeePoolStatusResponse\x12\x1b\n" +

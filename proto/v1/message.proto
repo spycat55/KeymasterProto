@@ -118,6 +118,7 @@ message FeePoolClose {
   bytes base_txid = 1;                // 基础交易ID
   uint64 server_amount = 2;           // 服务器金额
   uint64 fee = 3;                     // 交易费用
+  bytes client_signature = 4;         // 客户端签名
 }
 
 // 费用池状态查询消息
