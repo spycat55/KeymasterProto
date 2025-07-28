@@ -1,5 +1,27 @@
 # Release Notes
 
+## v0.1.9 (2025-07-28)
+
+### Changes
+- **FeePoolUpdate message structure simplified**: Removed `spend_txid` and `operation_type` fields, keeping only `base_txid` and `client_signature` for cleaner protocol implementation
+- Updated npm package version to 0.1.9
+- Regenerated Go and TypeScript code with simplified message structure
+
+### Breaking Changes
+- `FeePoolUpdate` message structure changed - removed fields 2 and 4, renumbered `client_signature` from field 3 to field 2
+
+### Installation
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.1.9
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.1.9
+```
+
 ## v0.1.8 (2025-07-27)
 
 ### Features

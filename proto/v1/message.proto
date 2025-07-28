@@ -108,9 +108,7 @@ message FeePoolUpdateNotify {
 // 费用池更新消息（客户端发送给服务器）
 message FeePoolUpdate {
   bytes base_txid = 1;                // 基础交易ID
-  bytes spend_txid = 2;               // 花费交易ID
-  bytes client_signature = 3;         // 客户端对花费交易的签名
-  string operation_type = 4;          // 操作类型：update, close
+  bytes client_signature = 2;         // 客户端对花费交易的签名
 }
 
 // 费用池关闭消息

@@ -128,12 +128,8 @@ declare const FeePoolUpdateNotify: MessageFns<FeePoolUpdateNotify>;
 interface FeePoolUpdate {
     /** 基础交易ID */
     baseTxid: Uint8Array;
-    /** 花费交易ID */
-    spendTxid: Uint8Array;
     /** 客户端对花费交易的签名 */
     clientSignature: Uint8Array;
-    /** 操作类型：update, close */
-    operationType: string;
 }
 declare const FeePoolUpdate: MessageFns<FeePoolUpdate>;
 /** 费用池关闭消息 */

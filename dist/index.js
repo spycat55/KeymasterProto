@@ -1840,26 +1840,15 @@ var FeePoolUpdateNotify = {
   }
 };
 function createBaseFeePoolUpdate() {
-  return {
-    baseTxid: new Uint8Array(0),
-    spendTxid: new Uint8Array(0),
-    clientSignature: new Uint8Array(0),
-    operationType: ""
-  };
+  return { baseTxid: new Uint8Array(0), clientSignature: new Uint8Array(0) };
 }
 var FeePoolUpdate = {
   encode(message, writer = new BinaryWriter()) {
     if (message.baseTxid.length !== 0) {
       writer.uint32(10).bytes(message.baseTxid);
     }
-    if (message.spendTxid.length !== 0) {
-      writer.uint32(18).bytes(message.spendTxid);
-    }
     if (message.clientSignature.length !== 0) {
-      writer.uint32(26).bytes(message.clientSignature);
-    }
-    if (message.operationType !== "") {
-      writer.uint32(34).string(message.operationType);
+      writer.uint32(18).bytes(message.clientSignature);
     }
     return writer;
   },
@@ -1881,21 +1870,7 @@ var FeePoolUpdate = {
           if (tag !== 18) {
             break;
           }
-          message.spendTxid = reader.bytes();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
           message.clientSignature = reader.bytes();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-          message.operationType = reader.string();
           continue;
         }
       }
@@ -1909,9 +1884,7 @@ var FeePoolUpdate = {
   fromJSON(object) {
     return {
       baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
-      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
-      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0),
-      operationType: isSet2(object.operationType) ? globalThis.String(object.operationType) : ""
+      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
     };
   },
   toJSON(message) {
@@ -1919,14 +1892,8 @@ var FeePoolUpdate = {
     if (message.baseTxid.length !== 0) {
       obj.baseTxid = base64FromBytes(message.baseTxid);
     }
-    if (message.spendTxid.length !== 0) {
-      obj.spendTxid = base64FromBytes(message.spendTxid);
-    }
     if (message.clientSignature.length !== 0) {
       obj.clientSignature = base64FromBytes(message.clientSignature);
-    }
-    if (message.operationType !== "") {
-      obj.operationType = message.operationType;
     }
     return obj;
   },
@@ -1936,9 +1903,7 @@ var FeePoolUpdate = {
   fromPartial(object) {
     const message = createBaseFeePoolUpdate();
     message.baseTxid = object.baseTxid ?? new Uint8Array(0);
-    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.clientSignature = object.clientSignature ?? new Uint8Array(0);
-    message.operationType = object.operationType ?? "";
     return message;
   }
 };
