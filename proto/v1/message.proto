@@ -84,52 +84,56 @@ message FeePoolCreate {
   bytes client_signature = 2;         // 客户端签名
 }
 
-// 费用池签名消息
+// 费用池签名消息，服务器返回给客户端
 message FeePoolSign {
-  bytes spend_txid = 1;               // 花费交易ID
+  bytes spend_txid = 1;               // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
   bytes server_signature = 2;         // 服务器签名（为空表示拒绝）
   string error_message = 3;           // 错误信息（为空表示批准）
 }
 
-// 发送基础交易消息
+// 发送基础交易消息，客户端返回给服务器
 message FeePoolBaseTx {
-  bytes base_tx = 1;                  // 基础交易
-  bytes client_signature = 2;         // 客户端对基础交易的签名
+  bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
+  bytes base_tx = 2;                  // 基础交易
+  bytes client_signature = 3;         // 客户端对基础交易的签名
 }
 
 // 费用池更新通知消息（服务器发送给客户端）
 message FeePoolUpdateNotify {
-  bytes base_txid = 1;                // 基础交易ID
+  bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
   uint32 sequence_number = 2;         // 序列号
   uint64 server_amount = 3;           // 服务器金额
   uint64 fee = 4;                     // 交易费用
 }
 
-// 费用池更新消息（客户端发送给服务器）
+// 费用池更新消息，在客户端主动关闭的时候，服务器也会发送给客户端，平时都是客户端发送给服务器，回应 FeePoolUpdateNotify
 message FeePoolUpdate {
-  bytes base_txid = 1;                // 基础交易ID
-  bytes client_signature = 2;         // 客户端对花费交易的签名
+  bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
+  uint32 sequence_number = 2;         // 序列号，如果 sequence_number 为 ffffffff，则表示是关闭费用池
+  uint64 server_amount = 3;           // 服务器金额
+  uint64 fee = 4;                     // 交易费用
+  bytes signature = 5;                // 签名
 }
 
-// 费用池关闭消息
+// 费用池关闭消息，双方都可以发送
 message FeePoolClose {
-  bytes base_txid = 1;                // 基础交易ID
+  bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
   uint64 server_amount = 2;           // 服务器金额
   uint64 fee = 3;                     // 交易费用
-  bytes client_signature = 4;         // 客户端签名
+  bytes signature = 4;                // 签名
 }
 
 // 费用池状态查询消息
 message FeePoolStatusQuery {
-  bytes base_txid = 1;                // 基础交易ID（可选，为空则查询客户端所有费用池）
+  bytes spend_txid = 1;                // 花费交易ID（可选，为空则查询客户端所有费用池）
 }
 
 // 费用池状态响应消息
 message FeePoolStatusResponse {
-  bytes base_txid = 1;                // 基础交易ID
+  bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
   string status = 2;                  // 状态：pending, signed, active, expired, closed, error
   uint64 server_amount = 3;           // 服务器当前金额
-  uint64 client_amount = 4;           // 客户端剩余金额
+  uint64 fee = 4;                     // 交易费用
   uint32 sequence_number = 5;         // 当前序列号
   google.protobuf.Timestamp created_at = 6;     // 创建时间
   google.protobuf.Timestamp expires_at = 7;     // 过期时间（如果适用）

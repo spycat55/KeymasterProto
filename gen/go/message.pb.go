@@ -621,10 +621,10 @@ func (x *FeePoolCreate) GetClientSignature() []byte {
 	return nil
 }
 
-// 费用池签名消息
+// 费用池签名消息，服务器返回给客户端
 type FeePoolSign struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
-	SpendTxid       []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"`                   // 花费交易ID
+	SpendTxid       []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"`                   // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
 	ServerSignature []byte                 `protobuf:"bytes,2,opt,name=server_signature,json=serverSignature,proto3" json:"server_signature,omitempty"` // 服务器签名（为空表示拒绝）
 	ErrorMessage    string                 `protobuf:"bytes,3,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"`          // 错误信息（为空表示批准）
 	unknownFields   protoimpl.UnknownFields
@@ -682,11 +682,12 @@ func (x *FeePoolSign) GetErrorMessage() string {
 	return ""
 }
 
-// 发送基础交易消息
+// 发送基础交易消息，客户端返回给服务器
 type FeePoolBaseTx struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
-	BaseTx          []byte                 `protobuf:"bytes,1,opt,name=base_tx,json=baseTx,proto3" json:"base_tx,omitempty"`                            // 基础交易
-	ClientSignature []byte                 `protobuf:"bytes,2,opt,name=client_signature,json=clientSignature,proto3" json:"client_signature,omitempty"` // 客户端对基础交易的签名
+	SpendTxid       []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"`                   // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
+	BaseTx          []byte                 `protobuf:"bytes,2,opt,name=base_tx,json=baseTx,proto3" json:"base_tx,omitempty"`                            // 基础交易
+	ClientSignature []byte                 `protobuf:"bytes,3,opt,name=client_signature,json=clientSignature,proto3" json:"client_signature,omitempty"` // 客户端对基础交易的签名
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -721,6 +722,13 @@ func (*FeePoolBaseTx) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{6}
 }
 
+func (x *FeePoolBaseTx) GetSpendTxid() []byte {
+	if x != nil {
+		return x.SpendTxid
+	}
+	return nil
+}
+
 func (x *FeePoolBaseTx) GetBaseTx() []byte {
 	if x != nil {
 		return x.BaseTx
@@ -738,7 +746,7 @@ func (x *FeePoolBaseTx) GetClientSignature() []byte {
 // 费用池更新通知消息（服务器发送给客户端）
 type FeePoolUpdateNotify struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	BaseTxid       []byte                 `protobuf:"bytes,1,opt,name=base_txid,json=baseTxid,proto3" json:"base_txid,omitempty"`                    // 基础交易ID
+	SpendTxid      []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"`                 // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
 	SequenceNumber uint32                 `protobuf:"varint,2,opt,name=sequence_number,json=sequenceNumber,proto3" json:"sequence_number,omitempty"` // 序列号
 	ServerAmount   uint64                 `protobuf:"varint,3,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`       // 服务器金额
 	Fee            uint64                 `protobuf:"varint,4,opt,name=fee,proto3" json:"fee,omitempty"`                                             // 交易费用
@@ -776,9 +784,9 @@ func (*FeePoolUpdateNotify) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *FeePoolUpdateNotify) GetBaseTxid() []byte {
+func (x *FeePoolUpdateNotify) GetSpendTxid() []byte {
 	if x != nil {
-		return x.BaseTxid
+		return x.SpendTxid
 	}
 	return nil
 }
@@ -804,13 +812,16 @@ func (x *FeePoolUpdateNotify) GetFee() uint64 {
 	return 0
 }
 
-// 费用池更新消息（客户端发送给服务器）
+// 费用池更新消息，在客户端主动关闭的时候，服务器也会发送给客户端，平时都是客户端发送给服务器，回应 FeePoolUpdateNotify
 type FeePoolUpdate struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	BaseTxid        []byte                 `protobuf:"bytes,1,opt,name=base_txid,json=baseTxid,proto3" json:"base_txid,omitempty"`                      // 基础交易ID
-	ClientSignature []byte                 `protobuf:"bytes,2,opt,name=client_signature,json=clientSignature,proto3" json:"client_signature,omitempty"` // 客户端对花费交易的签名
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	SpendTxid      []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"`                 // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
+	SequenceNumber uint32                 `protobuf:"varint,2,opt,name=sequence_number,json=sequenceNumber,proto3" json:"sequence_number,omitempty"` // 序列号，如果 sequence_number 为 ffffffff，则表示是关闭费用池
+	ServerAmount   uint64                 `protobuf:"varint,3,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`       // 服务器金额
+	Fee            uint64                 `protobuf:"varint,4,opt,name=fee,proto3" json:"fee,omitempty"`                                             // 交易费用
+	Signature      []byte                 `protobuf:"bytes,5,opt,name=signature,proto3" json:"signature,omitempty"`                                  // 签名
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *FeePoolUpdate) Reset() {
@@ -843,29 +854,50 @@ func (*FeePoolUpdate) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *FeePoolUpdate) GetBaseTxid() []byte {
+func (x *FeePoolUpdate) GetSpendTxid() []byte {
 	if x != nil {
-		return x.BaseTxid
+		return x.SpendTxid
 	}
 	return nil
 }
 
-func (x *FeePoolUpdate) GetClientSignature() []byte {
+func (x *FeePoolUpdate) GetSequenceNumber() uint32 {
 	if x != nil {
-		return x.ClientSignature
+		return x.SequenceNumber
+	}
+	return 0
+}
+
+func (x *FeePoolUpdate) GetServerAmount() uint64 {
+	if x != nil {
+		return x.ServerAmount
+	}
+	return 0
+}
+
+func (x *FeePoolUpdate) GetFee() uint64 {
+	if x != nil {
+		return x.Fee
+	}
+	return 0
+}
+
+func (x *FeePoolUpdate) GetSignature() []byte {
+	if x != nil {
+		return x.Signature
 	}
 	return nil
 }
 
-// 费用池关闭消息
+// 费用池关闭消息，双方都可以发送
 type FeePoolClose struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	BaseTxid        []byte                 `protobuf:"bytes,1,opt,name=base_txid,json=baseTxid,proto3" json:"base_txid,omitempty"`                      // 基础交易ID
-	ServerAmount    uint64                 `protobuf:"varint,2,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`         // 服务器金额
-	Fee             uint64                 `protobuf:"varint,3,opt,name=fee,proto3" json:"fee,omitempty"`                                               // 交易费用
-	ClientSignature []byte                 `protobuf:"bytes,4,opt,name=client_signature,json=clientSignature,proto3" json:"client_signature,omitempty"` // 客户端签名
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SpendTxid     []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"`           // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
+	ServerAmount  uint64                 `protobuf:"varint,2,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"` // 服务器金额
+	Fee           uint64                 `protobuf:"varint,3,opt,name=fee,proto3" json:"fee,omitempty"`                                       // 交易费用
+	Signature     []byte                 `protobuf:"bytes,4,opt,name=signature,proto3" json:"signature,omitempty"`                            // 签名
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *FeePoolClose) Reset() {
@@ -898,9 +930,9 @@ func (*FeePoolClose) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *FeePoolClose) GetBaseTxid() []byte {
+func (x *FeePoolClose) GetSpendTxid() []byte {
 	if x != nil {
-		return x.BaseTxid
+		return x.SpendTxid
 	}
 	return nil
 }
@@ -919,9 +951,9 @@ func (x *FeePoolClose) GetFee() uint64 {
 	return 0
 }
 
-func (x *FeePoolClose) GetClientSignature() []byte {
+func (x *FeePoolClose) GetSignature() []byte {
 	if x != nil {
-		return x.ClientSignature
+		return x.Signature
 	}
 	return nil
 }
@@ -929,7 +961,7 @@ func (x *FeePoolClose) GetClientSignature() []byte {
 // 费用池状态查询消息
 type FeePoolStatusQuery struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	BaseTxid      []byte                 `protobuf:"bytes,1,opt,name=base_txid,json=baseTxid,proto3" json:"base_txid,omitempty"` // 基础交易ID（可选，为空则查询客户端所有费用池）
+	SpendTxid     []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"` // 花费交易ID（可选，为空则查询客户端所有费用池）
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -964,9 +996,9 @@ func (*FeePoolStatusQuery) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *FeePoolStatusQuery) GetBaseTxid() []byte {
+func (x *FeePoolStatusQuery) GetSpendTxid() []byte {
 	if x != nil {
-		return x.BaseTxid
+		return x.SpendTxid
 	}
 	return nil
 }
@@ -974,10 +1006,10 @@ func (x *FeePoolStatusQuery) GetBaseTxid() []byte {
 // 费用池状态响应消息
 type FeePoolStatusResponse struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	BaseTxid       []byte                 `protobuf:"bytes,1,opt,name=base_txid,json=baseTxid,proto3" json:"base_txid,omitempty"`                    // 基础交易ID
+	SpendTxid      []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"`                 // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
 	Status         string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`                                        // 状态：pending, signed, active, expired, closed, error
 	ServerAmount   uint64                 `protobuf:"varint,3,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`       // 服务器当前金额
-	ClientAmount   uint64                 `protobuf:"varint,4,opt,name=client_amount,json=clientAmount,proto3" json:"client_amount,omitempty"`       // 客户端剩余金额
+	Fee            uint64                 `protobuf:"varint,4,opt,name=fee,proto3" json:"fee,omitempty"`                                             // 交易费用
 	SequenceNumber uint32                 `protobuf:"varint,5,opt,name=sequence_number,json=sequenceNumber,proto3" json:"sequence_number,omitempty"` // 当前序列号
 	CreatedAt      *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                 // 创建时间
 	ExpiresAt      *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`                 // 过期时间（如果适用）
@@ -1016,9 +1048,9 @@ func (*FeePoolStatusResponse) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *FeePoolStatusResponse) GetBaseTxid() []byte {
+func (x *FeePoolStatusResponse) GetSpendTxid() []byte {
 	if x != nil {
-		return x.BaseTxid
+		return x.SpendTxid
 	}
 	return nil
 }
@@ -1037,9 +1069,9 @@ func (x *FeePoolStatusResponse) GetServerAmount() uint64 {
 	return 0
 }
 
-func (x *FeePoolStatusResponse) GetClientAmount() uint64 {
+func (x *FeePoolStatusResponse) GetFee() uint64 {
 	if x != nil {
-		return x.ClientAmount
+		return x.Fee
 	}
 	return 0
 }
@@ -1211,30 +1243,40 @@ const file_message_proto_rawDesc = "" +
 	"\n" +
 	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12)\n" +
 	"\x10server_signature\x18\x02 \x01(\fR\x0fserverSignature\x12#\n" +
-	"\rerror_message\x18\x03 \x01(\tR\ferrorMessage\"S\n" +
-	"\rFeePoolBaseTx\x12\x17\n" +
-	"\abase_tx\x18\x01 \x01(\fR\x06baseTx\x12)\n" +
-	"\x10client_signature\x18\x02 \x01(\fR\x0fclientSignature\"\x92\x01\n" +
-	"\x13FeePoolUpdateNotify\x12\x1b\n" +
-	"\tbase_txid\x18\x01 \x01(\fR\bbaseTxid\x12'\n" +
+	"\rerror_message\x18\x03 \x01(\tR\ferrorMessage\"r\n" +
+	"\rFeePoolBaseTx\x12\x1d\n" +
+	"\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12\x17\n" +
+	"\abase_tx\x18\x02 \x01(\fR\x06baseTx\x12)\n" +
+	"\x10client_signature\x18\x03 \x01(\fR\x0fclientSignature\"\x94\x01\n" +
+	"\x13FeePoolUpdateNotify\x12\x1d\n" +
+	"\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12'\n" +
 	"\x0fsequence_number\x18\x02 \x01(\rR\x0esequenceNumber\x12#\n" +
 	"\rserver_amount\x18\x03 \x01(\x04R\fserverAmount\x12\x10\n" +
-	"\x03fee\x18\x04 \x01(\x04R\x03fee\"W\n" +
-	"\rFeePoolUpdate\x12\x1b\n" +
-	"\tbase_txid\x18\x01 \x01(\fR\bbaseTxid\x12)\n" +
-	"\x10client_signature\x18\x02 \x01(\fR\x0fclientSignature\"\x8d\x01\n" +
-	"\fFeePoolClose\x12\x1b\n" +
-	"\tbase_txid\x18\x01 \x01(\fR\bbaseTxid\x12#\n" +
+	"\x03fee\x18\x04 \x01(\x04R\x03fee\"\xac\x01\n" +
+	"\rFeePoolUpdate\x12\x1d\n" +
+	"\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12'\n" +
+	"\x0fsequence_number\x18\x02 \x01(\rR\x0esequenceNumber\x12#\n" +
+	"\rserver_amount\x18\x03 \x01(\x04R\fserverAmount\x12\x10\n" +
+	"\x03fee\x18\x04 \x01(\x04R\x03fee\x12\x1c\n" +
+	"\tsignature\x18\x05 \x01(\fR\tsignature\"\x82\x01\n" +
+	"\fFeePoolClose\x12\x1d\n" +
+	"\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12#\n" +
 	"\rserver_amount\x18\x02 \x01(\x04R\fserverAmount\x12\x10\n" +
-	"\x03fee\x18\x03 \x01(\x04R\x03fee\x12)\n" +
-	"\x10client_signature\x18\x04 \x01(\fR\x0fclientSignature\"1\n" +
-	"\x12FeePoolStatusQuery\x12\x1b\n" +
-	"\tbase_txid\x18\x01 \x01(\fR\bbaseTxid\"\xd8\x02\n" +
-	"\x15FeePoolStatusResponse\x12\x1b\n" +
-	"\tbase_txid\x18\x01 \x01(\fR\bbaseTxid\x12\x16\n" +
+	"\x03fee\x18\x03 \x01(\x04R\x03fee\x12\x1c\n" +
+	"\tsignature\x18\x04 \x01(\fR\tsignature\"3\n" +
+	"\x12FeePoolStatusQuery\x12\x1d\n" +
+	"\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\xc7\x02\n" +
+	"\x15FeePoolStatusResponse\x12\x1d\n" +
+	"\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12#\n" +
-	"\rserver_amount\x18\x03 \x01(\x04R\fserverAmount\x12#\n" +
-	"\rclient_amount\x18\x04 \x01(\x04R\fclientAmount\x12'\n" +
+	"\rserver_amount\x18\x03 \x01(\x04R\fserverAmount\x12\x10\n" +
+	"\x03fee\x18\x04 \x01(\x04R\x03fee\x12'\n" +
 	"\x0fsequence_number\x18\x05 \x01(\rR\x0esequenceNumber\x129\n" +
 	"\n" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +

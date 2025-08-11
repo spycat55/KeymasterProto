@@ -1,5 +1,30 @@
 # Release Notes
 
+## v0.2.0 (2025-08-11)
+
+### 变更
+- 统一费用池相关字段为 `spend_txid`，并在注释中明确：
+  - 32 字节，小端序；十六进制展示为大端序；必填且不可为空（除 `FeePoolStatusQuery` 外）。
+- `FeePoolBaseTx` 字段重新编排：
+  - `spend_txid = 1`，`base_tx = 2`，`client_signature = 3`。
+- `FeePoolUpdateNotify`/`FeePoolUpdate`/`FeePoolClose`/`FeePoolSign`/`FeePoolStatusResponse` 等消息的 `spend_txid` 注释补充端序与必填说明。
+- `FeePoolClose` 字段号顺序修正为：`spend_txid = 1`，`server_amount = 2`，`fee = 3`，`signature = 4`。
+
+### 兼容性
+- 本次为首版发布前（v1 前）协议整理，存在不兼容改动（字段号调整）。
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.2.0
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.2.0
+```
+
 ## v0.1.9 (2025-07-28)
 
 ### Changes

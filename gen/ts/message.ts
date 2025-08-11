@@ -189,9 +189,9 @@ export interface FeePoolCreate {
   clientSignature: Uint8Array;
 }
 
-/** 费用池签名消息 */
+/** 费用池签名消息，服务器返回给客户端 */
 export interface FeePoolSign {
-  /** 花费交易ID */
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
   spendTxid: Uint8Array;
   /** 服务器签名（为空表示拒绝） */
   serverSignature: Uint8Array;
@@ -199,8 +199,10 @@ export interface FeePoolSign {
   errorMessage: string;
 }
 
-/** 发送基础交易消息 */
+/** 发送基础交易消息，客户端返回给服务器 */
 export interface FeePoolBaseTx {
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
+  spendTxid: Uint8Array;
   /** 基础交易 */
   baseTx: Uint8Array;
   /** 客户端对基础交易的签名 */
@@ -209,8 +211,8 @@ export interface FeePoolBaseTx {
 
 /** 费用池更新通知消息（服务器发送给客户端） */
 export interface FeePoolUpdateNotify {
-  /** 基础交易ID */
-  baseTxid: Uint8Array;
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
+  spendTxid: Uint8Array;
   /** 序列号 */
   sequenceNumber: number;
   /** 服务器金额 */
@@ -219,42 +221,48 @@ export interface FeePoolUpdateNotify {
   fee: number;
 }
 
-/** 费用池更新消息（客户端发送给服务器） */
+/** 费用池更新消息，在客户端主动关闭的时候，服务器也会发送给客户端，平时都是客户端发送给服务器，回应 FeePoolUpdateNotify */
 export interface FeePoolUpdate {
-  /** 基础交易ID */
-  baseTxid: Uint8Array;
-  /** 客户端对花费交易的签名 */
-  clientSignature: Uint8Array;
-}
-
-/** 费用池关闭消息 */
-export interface FeePoolClose {
-  /** 基础交易ID */
-  baseTxid: Uint8Array;
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
+  spendTxid: Uint8Array;
+  /** 序列号，如果 sequence_number 为 ffffffff，则表示是关闭费用池 */
+  sequenceNumber: number;
   /** 服务器金额 */
   serverAmount: number;
   /** 交易费用 */
   fee: number;
-  /** 客户端签名 */
-  clientSignature: Uint8Array;
+  /** 签名 */
+  signature: Uint8Array;
+}
+
+/** 费用池关闭消息，双方都可以发送 */
+export interface FeePoolClose {
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
+  spendTxid: Uint8Array;
+  /** 服务器金额 */
+  serverAmount: number;
+  /** 交易费用 */
+  fee: number;
+  /** 签名 */
+  signature: Uint8Array;
 }
 
 /** 费用池状态查询消息 */
 export interface FeePoolStatusQuery {
-  /** 基础交易ID（可选，为空则查询客户端所有费用池） */
-  baseTxid: Uint8Array;
+  /** 花费交易ID（可选，为空则查询客户端所有费用池） */
+  spendTxid: Uint8Array;
 }
 
 /** 费用池状态响应消息 */
 export interface FeePoolStatusResponse {
-  /** 基础交易ID */
-  baseTxid: Uint8Array;
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
+  spendTxid: Uint8Array;
   /** 状态：pending, signed, active, expired, closed, error */
   status: string;
   /** 服务器当前金额 */
   serverAmount: number;
-  /** 客户端剩余金额 */
-  clientAmount: number;
+  /** 交易费用 */
+  fee: number;
   /** 当前序列号 */
   sequenceNumber: number;
   /** 创建时间 */
@@ -1103,16 +1111,19 @@ export const FeePoolSign: MessageFns<FeePoolSign> = {
 };
 
 function createBaseFeePoolBaseTx(): FeePoolBaseTx {
-  return { baseTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0), baseTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
 }
 
 export const FeePoolBaseTx: MessageFns<FeePoolBaseTx> = {
   encode(message: FeePoolBaseTx, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
+    }
     if (message.baseTx.length !== 0) {
-      writer.uint32(10).bytes(message.baseTx);
+      writer.uint32(18).bytes(message.baseTx);
     }
     if (message.clientSignature.length !== 0) {
-      writer.uint32(18).bytes(message.clientSignature);
+      writer.uint32(26).bytes(message.clientSignature);
     }
     return writer;
   },
@@ -1129,11 +1140,19 @@ export const FeePoolBaseTx: MessageFns<FeePoolBaseTx> = {
             break;
           }
 
-          message.baseTx = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
           if (tag !== 18) {
+            break;
+          }
+
+          message.baseTx = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
             break;
           }
 
@@ -1151,6 +1170,7 @@ export const FeePoolBaseTx: MessageFns<FeePoolBaseTx> = {
 
   fromJSON(object: any): FeePoolBaseTx {
     return {
+      spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       baseTx: isSet(object.baseTx) ? bytesFromBase64(object.baseTx) : new Uint8Array(0),
       clientSignature: isSet(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0),
     };
@@ -1158,6 +1178,9 @@ export const FeePoolBaseTx: MessageFns<FeePoolBaseTx> = {
 
   toJSON(message: FeePoolBaseTx): unknown {
     const obj: any = {};
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
+    }
     if (message.baseTx.length !== 0) {
       obj.baseTx = base64FromBytes(message.baseTx);
     }
@@ -1172,6 +1195,7 @@ export const FeePoolBaseTx: MessageFns<FeePoolBaseTx> = {
   },
   fromPartial<I extends Exact<DeepPartial<FeePoolBaseTx>, I>>(object: I): FeePoolBaseTx {
     const message = createBaseFeePoolBaseTx();
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.baseTx = object.baseTx ?? new Uint8Array(0);
     message.clientSignature = object.clientSignature ?? new Uint8Array(0);
     return message;
@@ -1179,13 +1203,13 @@ export const FeePoolBaseTx: MessageFns<FeePoolBaseTx> = {
 };
 
 function createBaseFeePoolUpdateNotify(): FeePoolUpdateNotify {
-  return { baseTxid: new Uint8Array(0), sequenceNumber: 0, serverAmount: 0, fee: 0 };
+  return { spendTxid: new Uint8Array(0), sequenceNumber: 0, serverAmount: 0, fee: 0 };
 }
 
 export const FeePoolUpdateNotify: MessageFns<FeePoolUpdateNotify> = {
   encode(message: FeePoolUpdateNotify, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     if (message.sequenceNumber !== 0) {
       writer.uint32(16).uint32(message.sequenceNumber);
@@ -1211,7 +1235,7 @@ export const FeePoolUpdateNotify: MessageFns<FeePoolUpdateNotify> = {
             break;
           }
 
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
@@ -1249,7 +1273,7 @@ export const FeePoolUpdateNotify: MessageFns<FeePoolUpdateNotify> = {
 
   fromJSON(object: any): FeePoolUpdateNotify {
     return {
-      baseTxid: isSet(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       sequenceNumber: isSet(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
       serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
       fee: isSet(object.fee) ? globalThis.Number(object.fee) : 0,
@@ -1258,8 +1282,8 @@ export const FeePoolUpdateNotify: MessageFns<FeePoolUpdateNotify> = {
 
   toJSON(message: FeePoolUpdateNotify): unknown {
     const obj: any = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     if (message.sequenceNumber !== 0) {
       obj.sequenceNumber = Math.round(message.sequenceNumber);
@@ -1278,7 +1302,7 @@ export const FeePoolUpdateNotify: MessageFns<FeePoolUpdateNotify> = {
   },
   fromPartial<I extends Exact<DeepPartial<FeePoolUpdateNotify>, I>>(object: I): FeePoolUpdateNotify {
     const message = createBaseFeePoolUpdateNotify();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.sequenceNumber = object.sequenceNumber ?? 0;
     message.serverAmount = object.serverAmount ?? 0;
     message.fee = object.fee ?? 0;
@@ -1287,16 +1311,25 @@ export const FeePoolUpdateNotify: MessageFns<FeePoolUpdateNotify> = {
 };
 
 function createBaseFeePoolUpdate(): FeePoolUpdate {
-  return { baseTxid: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0), sequenceNumber: 0, serverAmount: 0, fee: 0, signature: new Uint8Array(0) };
 }
 
 export const FeePoolUpdate: MessageFns<FeePoolUpdate> = {
   encode(message: FeePoolUpdate, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
-    if (message.clientSignature.length !== 0) {
-      writer.uint32(18).bytes(message.clientSignature);
+    if (message.sequenceNumber !== 0) {
+      writer.uint32(16).uint32(message.sequenceNumber);
+    }
+    if (message.serverAmount !== 0) {
+      writer.uint32(24).uint64(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      writer.uint32(32).uint64(message.fee);
+    }
+    if (message.signature.length !== 0) {
+      writer.uint32(42).bytes(message.signature);
     }
     return writer;
   },
@@ -1313,15 +1346,39 @@ export const FeePoolUpdate: MessageFns<FeePoolUpdate> = {
             break;
           }
 
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
-          if (tag !== 18) {
+          if (tag !== 16) {
             break;
           }
 
-          message.clientSignature = reader.bytes();
+          message.sequenceNumber = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.serverAmount = longToNumber(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.fee = longToNumber(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.signature = reader.bytes();
           continue;
         }
       }
@@ -1335,18 +1392,30 @@ export const FeePoolUpdate: MessageFns<FeePoolUpdate> = {
 
   fromJSON(object: any): FeePoolUpdate {
     return {
-      baseTxid: isSet(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
-      clientSignature: isSet(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0),
+      spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
+      sequenceNumber: isSet(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
+      serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
+      fee: isSet(object.fee) ? globalThis.Number(object.fee) : 0,
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
     };
   },
 
   toJSON(message: FeePoolUpdate): unknown {
     const obj: any = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
-    if (message.clientSignature.length !== 0) {
-      obj.clientSignature = base64FromBytes(message.clientSignature);
+    if (message.sequenceNumber !== 0) {
+      obj.sequenceNumber = Math.round(message.sequenceNumber);
+    }
+    if (message.serverAmount !== 0) {
+      obj.serverAmount = Math.round(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      obj.fee = Math.round(message.fee);
+    }
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
     }
     return obj;
   },
@@ -1356,20 +1425,23 @@ export const FeePoolUpdate: MessageFns<FeePoolUpdate> = {
   },
   fromPartial<I extends Exact<DeepPartial<FeePoolUpdate>, I>>(object: I): FeePoolUpdate {
     const message = createBaseFeePoolUpdate();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
-    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
+    message.sequenceNumber = object.sequenceNumber ?? 0;
+    message.serverAmount = object.serverAmount ?? 0;
+    message.fee = object.fee ?? 0;
+    message.signature = object.signature ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseFeePoolClose(): FeePoolClose {
-  return { baseTxid: new Uint8Array(0), serverAmount: 0, fee: 0, clientSignature: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0), serverAmount: 0, fee: 0, signature: new Uint8Array(0) };
 }
 
 export const FeePoolClose: MessageFns<FeePoolClose> = {
   encode(message: FeePoolClose, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     if (message.serverAmount !== 0) {
       writer.uint32(16).uint64(message.serverAmount);
@@ -1377,8 +1449,8 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
     if (message.fee !== 0) {
       writer.uint32(24).uint64(message.fee);
     }
-    if (message.clientSignature.length !== 0) {
-      writer.uint32(34).bytes(message.clientSignature);
+    if (message.signature.length !== 0) {
+      writer.uint32(34).bytes(message.signature);
     }
     return writer;
   },
@@ -1395,7 +1467,7 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
             break;
           }
 
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
@@ -1419,7 +1491,7 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
             break;
           }
 
-          message.clientSignature = reader.bytes();
+          message.signature = reader.bytes();
           continue;
         }
       }
@@ -1433,17 +1505,17 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
 
   fromJSON(object: any): FeePoolClose {
     return {
-      baseTxid: isSet(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
       fee: isSet(object.fee) ? globalThis.Number(object.fee) : 0,
-      clientSignature: isSet(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0),
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
     };
   },
 
   toJSON(message: FeePoolClose): unknown {
     const obj: any = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     if (message.serverAmount !== 0) {
       obj.serverAmount = Math.round(message.serverAmount);
@@ -1451,8 +1523,8 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
     if (message.fee !== 0) {
       obj.fee = Math.round(message.fee);
     }
-    if (message.clientSignature.length !== 0) {
-      obj.clientSignature = base64FromBytes(message.clientSignature);
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
     }
     return obj;
   },
@@ -1462,22 +1534,22 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
   },
   fromPartial<I extends Exact<DeepPartial<FeePoolClose>, I>>(object: I): FeePoolClose {
     const message = createBaseFeePoolClose();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.serverAmount = object.serverAmount ?? 0;
     message.fee = object.fee ?? 0;
-    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    message.signature = object.signature ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseFeePoolStatusQuery(): FeePoolStatusQuery {
-  return { baseTxid: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0) };
 }
 
 export const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery> = {
   encode(message: FeePoolStatusQuery, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     return writer;
   },
@@ -1494,7 +1566,7 @@ export const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery> = {
             break;
           }
 
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
       }
@@ -1507,13 +1579,13 @@ export const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery> = {
   },
 
   fromJSON(object: any): FeePoolStatusQuery {
-    return { baseTxid: isSet(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0) };
+    return { spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0) };
   },
 
   toJSON(message: FeePoolStatusQuery): unknown {
     const obj: any = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     return obj;
   },
@@ -1523,17 +1595,17 @@ export const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery> = {
   },
   fromPartial<I extends Exact<DeepPartial<FeePoolStatusQuery>, I>>(object: I): FeePoolStatusQuery {
     const message = createBaseFeePoolStatusQuery();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
   return {
-    baseTxid: new Uint8Array(0),
+    spendTxid: new Uint8Array(0),
     status: "",
     serverAmount: 0,
-    clientAmount: 0,
+    fee: 0,
     sequenceNumber: 0,
     createdAt: undefined,
     expiresAt: undefined,
@@ -1543,8 +1615,8 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
 
 export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
   encode(message: FeePoolStatusResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     if (message.status !== "") {
       writer.uint32(18).string(message.status);
@@ -1552,8 +1624,8 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.serverAmount !== 0) {
       writer.uint32(24).uint64(message.serverAmount);
     }
-    if (message.clientAmount !== 0) {
-      writer.uint32(32).uint64(message.clientAmount);
+    if (message.fee !== 0) {
+      writer.uint32(32).uint64(message.fee);
     }
     if (message.sequenceNumber !== 0) {
       writer.uint32(40).uint32(message.sequenceNumber);
@@ -1582,7 +1654,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
             break;
           }
 
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
@@ -1606,7 +1678,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
             break;
           }
 
-          message.clientAmount = longToNumber(reader.uint64());
+          message.fee = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -1652,10 +1724,10 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
 
   fromJSON(object: any): FeePoolStatusResponse {
     return {
-      baseTxid: isSet(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       status: isSet(object.status) ? globalThis.String(object.status) : "",
       serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
-      clientAmount: isSet(object.clientAmount) ? globalThis.Number(object.clientAmount) : 0,
+      fee: isSet(object.fee) ? globalThis.Number(object.fee) : 0,
       sequenceNumber: isSet(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
       createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
       expiresAt: isSet(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : undefined,
@@ -1665,8 +1737,8 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
 
   toJSON(message: FeePoolStatusResponse): unknown {
     const obj: any = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     if (message.status !== "") {
       obj.status = message.status;
@@ -1674,8 +1746,8 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.serverAmount !== 0) {
       obj.serverAmount = Math.round(message.serverAmount);
     }
-    if (message.clientAmount !== 0) {
-      obj.clientAmount = Math.round(message.clientAmount);
+    if (message.fee !== 0) {
+      obj.fee = Math.round(message.fee);
     }
     if (message.sequenceNumber !== 0) {
       obj.sequenceNumber = Math.round(message.sequenceNumber);
@@ -1697,10 +1769,10 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<FeePoolStatusResponse>, I>>(object: I): FeePoolStatusResponse {
     const message = createBaseFeePoolStatusResponse();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.status = object.status ?? "";
     message.serverAmount = object.serverAmount ?? 0;
-    message.clientAmount = object.clientAmount ?? 0;
+    message.fee = object.fee ?? 0;
     message.sequenceNumber = object.sequenceNumber ?? 0;
     message.createdAt = object.createdAt ?? undefined;
     message.expiresAt = object.expiresAt ?? undefined;
