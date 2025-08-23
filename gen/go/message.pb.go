@@ -572,7 +572,8 @@ func (x *WSSignaling) GetData() []byte {
 type FeePoolCreate struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	SpendTx         []byte                 `protobuf:"bytes,1,opt,name=spend_tx,json=spendTx,proto3" json:"spend_tx,omitempty"`                         // 花费交易
-	ClientSignature []byte                 `protobuf:"bytes,2,opt,name=client_signature,json=clientSignature,proto3" json:"client_signature,omitempty"` // 客户端签名
+	InputAmount     uint64                 `protobuf:"varint,2,opt,name=input_amount,json=inputAmount,proto3" json:"input_amount,omitempty"`            // 输入总金额
+	ClientSignature []byte                 `protobuf:"bytes,3,opt,name=client_signature,json=clientSignature,proto3" json:"client_signature,omitempty"` // 客户端签名
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -612,6 +613,13 @@ func (x *FeePoolCreate) GetSpendTx() []byte {
 		return x.SpendTx
 	}
 	return nil
+}
+
+func (x *FeePoolCreate) GetInputAmount() uint64 {
+	if x != nil {
+		return x.InputAmount
+	}
+	return 0
 }
 
 func (x *FeePoolCreate) GetClientSignature() []byte {
@@ -1235,10 +1243,11 @@ const file_message_proto_rawDesc = "" +
 	"\x06detail\x18\x02 \x01(\tR\x06detail\"H\n" +
 	"\vWSSignaling\x12%\n" +
 	"\x0esignaling_type\x18\x01 \x01(\tR\rsignalingType\x12\x12\n" +
-	"\x04data\x18\x02 \x01(\fR\x04data\"U\n" +
+	"\x04data\x18\x02 \x01(\fR\x04data\"x\n" +
 	"\rFeePoolCreate\x12\x19\n" +
-	"\bspend_tx\x18\x01 \x01(\fR\aspendTx\x12)\n" +
-	"\x10client_signature\x18\x02 \x01(\fR\x0fclientSignature\"|\n" +
+	"\bspend_tx\x18\x01 \x01(\fR\aspendTx\x12!\n" +
+	"\finput_amount\x18\x02 \x01(\x04R\vinputAmount\x12)\n" +
+	"\x10client_signature\x18\x03 \x01(\fR\x0fclientSignature\"|\n" +
 	"\vFeePoolSign\x12\x1d\n" +
 	"\n" +
 	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12)\n" +

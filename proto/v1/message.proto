@@ -81,7 +81,8 @@ message WSSignaling {
 // 费用池创建消息
 message FeePoolCreate {
   bytes spend_tx = 1;                 // 花费交易
-  bytes client_signature = 2;         // 客户端签名
+  uint64 input_amount = 2;            // 输入总金额
+  bytes client_signature = 3;         // 客户端签名
 }
 
 // 费用池签名消息，服务器返回给客户端

@@ -1,5 +1,26 @@
 # Release Notes
 
+## v0.3.0 (2025-08-23)
+
+### 变更
+- FeePoolCreate 新增字段：`uint64 input_amount = 2`。
+- 重新生成 Go 与 TypeScript 代码（`./compile_proto.sh`）。
+
+### 兼容性
+- Protobuf 级别为向后兼容新增；但上层服务可能将该字段视为业务必填，建议尽快升级。
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.3.0
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.3.0
+```
+
 ## v0.2.0 (2025-08-11)
 
 ### 变更

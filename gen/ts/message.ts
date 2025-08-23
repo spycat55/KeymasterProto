@@ -185,6 +185,8 @@ export interface WSSignaling {
 export interface FeePoolCreate {
   /** 花费交易 */
   spendTx: Uint8Array;
+  /** 输入总金额 */
+  inputAmount: number;
   /** 客户端签名 */
   clientSignature: Uint8Array;
 }
@@ -943,7 +945,7 @@ export const WSSignaling: MessageFns<WSSignaling> = {
 };
 
 function createBaseFeePoolCreate(): FeePoolCreate {
-  return { spendTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+  return { spendTx: new Uint8Array(0), inputAmount: 0, clientSignature: new Uint8Array(0) };
 }
 
 export const FeePoolCreate: MessageFns<FeePoolCreate> = {
@@ -951,8 +953,11 @@ export const FeePoolCreate: MessageFns<FeePoolCreate> = {
     if (message.spendTx.length !== 0) {
       writer.uint32(10).bytes(message.spendTx);
     }
+    if (message.inputAmount !== 0) {
+      writer.uint32(16).uint64(message.inputAmount);
+    }
     if (message.clientSignature.length !== 0) {
-      writer.uint32(18).bytes(message.clientSignature);
+      writer.uint32(26).bytes(message.clientSignature);
     }
     return writer;
   },
@@ -973,7 +978,15 @@ export const FeePoolCreate: MessageFns<FeePoolCreate> = {
           continue;
         }
         case 2: {
-          if (tag !== 18) {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.inputAmount = longToNumber(reader.uint64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
             break;
           }
 
@@ -992,6 +1005,7 @@ export const FeePoolCreate: MessageFns<FeePoolCreate> = {
   fromJSON(object: any): FeePoolCreate {
     return {
       spendTx: isSet(object.spendTx) ? bytesFromBase64(object.spendTx) : new Uint8Array(0),
+      inputAmount: isSet(object.inputAmount) ? globalThis.Number(object.inputAmount) : 0,
       clientSignature: isSet(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0),
     };
   },
@@ -1000,6 +1014,9 @@ export const FeePoolCreate: MessageFns<FeePoolCreate> = {
     const obj: any = {};
     if (message.spendTx.length !== 0) {
       obj.spendTx = base64FromBytes(message.spendTx);
+    }
+    if (message.inputAmount !== 0) {
+      obj.inputAmount = Math.round(message.inputAmount);
     }
     if (message.clientSignature.length !== 0) {
       obj.clientSignature = base64FromBytes(message.clientSignature);
@@ -1013,6 +1030,7 @@ export const FeePoolCreate: MessageFns<FeePoolCreate> = {
   fromPartial<I extends Exact<DeepPartial<FeePoolCreate>, I>>(object: I): FeePoolCreate {
     const message = createBaseFeePoolCreate();
     message.spendTx = object.spendTx ?? new Uint8Array(0);
+    message.inputAmount = object.inputAmount ?? 0;
     message.clientSignature = object.clientSignature ?? new Uint8Array(0);
     return message;
   },
