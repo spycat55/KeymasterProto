@@ -1,5 +1,26 @@
 # Release Notes
 
+## v0.4.0 (2025-08-29)
+
+### 变更
+- 版本升级到0.4.0
+- 重新生成 Go 与 TypeScript 代码
+
+### 兼容性
+- 保持向后兼容
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.4.0
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.4.0
+```
+
 ## v0.3.0 (2025-08-23)
 
 ### 变更

@@ -35,6 +35,9 @@ __export(index_exports, {
   FeePoolBaseTx: () => FeePoolBaseTx,
   FeePoolClose: () => FeePoolClose,
   FeePoolCreate: () => FeePoolCreate,
+  FeePoolListItem: () => FeePoolListItem,
+  FeePoolListQuery: () => FeePoolListQuery,
+  FeePoolListResponse: () => FeePoolListResponse,
   FeePoolSign: () => FeePoolSign,
   FeePoolStatusQuery: () => FeePoolStatusQuery,
   FeePoolStatusResponse: () => FeePoolStatusResponse,
@@ -873,6 +876,8 @@ var MsgKind = /* @__PURE__ */ ((MsgKind2) => {
   MsgKind2[MsgKind2["KIND_FEE_POOL_CLOSE"] = 17] = "KIND_FEE_POOL_CLOSE";
   MsgKind2[MsgKind2["KIND_FEE_POOL_STATUS_QUERY"] = 18] = "KIND_FEE_POOL_STATUS_QUERY";
   MsgKind2[MsgKind2["KIND_FEE_POOL_STATUS_RESPONSE"] = 19] = "KIND_FEE_POOL_STATUS_RESPONSE";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_LIST_QUERY"] = 20] = "KIND_FEE_POOL_LIST_QUERY";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_LIST_RESPONSE"] = 21] = "KIND_FEE_POOL_LIST_RESPONSE";
   MsgKind2[MsgKind2["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
   return MsgKind2;
 })(MsgKind || {});
@@ -917,6 +922,12 @@ function msgKindFromJSON(object) {
     case 19:
     case "KIND_FEE_POOL_STATUS_RESPONSE":
       return 19 /* KIND_FEE_POOL_STATUS_RESPONSE */;
+    case 20:
+    case "KIND_FEE_POOL_LIST_QUERY":
+      return 20 /* KIND_FEE_POOL_LIST_QUERY */;
+    case 21:
+    case "KIND_FEE_POOL_LIST_RESPONSE":
+      return 21 /* KIND_FEE_POOL_LIST_RESPONSE */;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -951,6 +962,10 @@ function msgKindToJSON(object) {
       return "KIND_FEE_POOL_STATUS_QUERY";
     case 19 /* KIND_FEE_POOL_STATUS_RESPONSE */:
       return "KIND_FEE_POOL_STATUS_RESPONSE";
+    case 20 /* KIND_FEE_POOL_LIST_QUERY */:
+      return "KIND_FEE_POOL_LIST_QUERY";
+    case 21 /* KIND_FEE_POOL_LIST_RESPONSE */:
+      return "KIND_FEE_POOL_LIST_RESPONSE";
     case -1 /* UNRECOGNIZED */:
     default:
       return "UNRECOGNIZED";
@@ -1108,7 +1123,9 @@ function createBaseEnvelope() {
     feePoolUpdateNotify: void 0,
     feePoolClose: void 0,
     feePoolStatusQuery: void 0,
-    feePoolStatusResponse: void 0
+    feePoolStatusResponse: void 0,
+    feePoolListQuery: void 0,
+    feePoolListResponse: void 0
   };
 }
 var Envelope = {
@@ -1160,6 +1177,12 @@ var Envelope = {
     }
     if (message.feePoolStatusResponse !== void 0) {
       FeePoolStatusResponse.encode(message.feePoolStatusResponse, writer.uint32(154).fork()).join();
+    }
+    if (message.feePoolListQuery !== void 0) {
+      FeePoolListQuery.encode(message.feePoolListQuery, writer.uint32(162).fork()).join();
+    }
+    if (message.feePoolListResponse !== void 0) {
+      FeePoolListResponse.encode(message.feePoolListResponse, writer.uint32(170).fork()).join();
     }
     return writer;
   },
@@ -1282,6 +1305,20 @@ var Envelope = {
           message.feePoolStatusResponse = FeePoolStatusResponse.decode(reader, reader.uint32());
           continue;
         }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+          message.feePoolListQuery = FeePoolListQuery.decode(reader, reader.uint32());
+          continue;
+        }
+        case 21: {
+          if (tag !== 170) {
+            break;
+          }
+          message.feePoolListResponse = FeePoolListResponse.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1307,7 +1344,9 @@ var Envelope = {
       feePoolUpdateNotify: isSet2(object.feePoolUpdateNotify) ? FeePoolUpdateNotify.fromJSON(object.feePoolUpdateNotify) : void 0,
       feePoolClose: isSet2(object.feePoolClose) ? FeePoolClose.fromJSON(object.feePoolClose) : void 0,
       feePoolStatusQuery: isSet2(object.feePoolStatusQuery) ? FeePoolStatusQuery.fromJSON(object.feePoolStatusQuery) : void 0,
-      feePoolStatusResponse: isSet2(object.feePoolStatusResponse) ? FeePoolStatusResponse.fromJSON(object.feePoolStatusResponse) : void 0
+      feePoolStatusResponse: isSet2(object.feePoolStatusResponse) ? FeePoolStatusResponse.fromJSON(object.feePoolStatusResponse) : void 0,
+      feePoolListQuery: isSet2(object.feePoolListQuery) ? FeePoolListQuery.fromJSON(object.feePoolListQuery) : void 0,
+      feePoolListResponse: isSet2(object.feePoolListResponse) ? FeePoolListResponse.fromJSON(object.feePoolListResponse) : void 0
     };
   },
   toJSON(message) {
@@ -1360,6 +1399,12 @@ var Envelope = {
     if (message.feePoolStatusResponse !== void 0) {
       obj.feePoolStatusResponse = FeePoolStatusResponse.toJSON(message.feePoolStatusResponse);
     }
+    if (message.feePoolListQuery !== void 0) {
+      obj.feePoolListQuery = FeePoolListQuery.toJSON(message.feePoolListQuery);
+    }
+    if (message.feePoolListResponse !== void 0) {
+      obj.feePoolListResponse = FeePoolListResponse.toJSON(message.feePoolListResponse);
+    }
     return obj;
   },
   create(base) {
@@ -1383,6 +1428,8 @@ var Envelope = {
     message.feePoolClose = object.feePoolClose !== void 0 && object.feePoolClose !== null ? FeePoolClose.fromPartial(object.feePoolClose) : void 0;
     message.feePoolStatusQuery = object.feePoolStatusQuery !== void 0 && object.feePoolStatusQuery !== null ? FeePoolStatusQuery.fromPartial(object.feePoolStatusQuery) : void 0;
     message.feePoolStatusResponse = object.feePoolStatusResponse !== void 0 && object.feePoolStatusResponse !== null ? FeePoolStatusResponse.fromPartial(object.feePoolStatusResponse) : void 0;
+    message.feePoolListQuery = object.feePoolListQuery !== void 0 && object.feePoolListQuery !== null ? FeePoolListQuery.fromPartial(object.feePoolListQuery) : void 0;
+    message.feePoolListResponse = object.feePoolListResponse !== void 0 && object.feePoolListResponse !== null ? FeePoolListResponse.fromPartial(object.feePoolListResponse) : void 0;
     return message;
   }
 };
@@ -2314,6 +2361,240 @@ var FeePoolStatusResponse = {
     return message;
   }
 };
+function createBaseFeePoolListQuery() {
+  return { limit: 0, page: 0 };
+}
+var FeePoolListQuery = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.limit !== 0) {
+      writer.uint32(8).uint32(message.limit);
+    }
+    if (message.page !== 0) {
+      writer.uint32(16).uint32(message.page);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolListQuery();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+          message.limit = reader.uint32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+          message.page = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      limit: isSet2(object.limit) ? globalThis.Number(object.limit) : 0,
+      page: isSet2(object.page) ? globalThis.Number(object.page) : 0
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.page !== 0) {
+      obj.page = Math.round(message.page);
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolListQuery.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolListQuery();
+    message.limit = object.limit ?? 0;
+    message.page = object.page ?? 0;
+    return message;
+  }
+};
+function createBaseFeePoolListItem() {
+  return { spendTxId: new Uint8Array(0), status: "", createAt: void 0 };
+}
+var FeePoolListItem = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.spendTxId.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxId);
+    }
+    if (message.status !== "") {
+      writer.uint32(18).string(message.status);
+    }
+    if (message.createAt !== void 0) {
+      Timestamp.encode(toTimestamp(message.createAt), writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolListItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.spendTxId = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+          message.status = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+          message.createAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      spendTxId: isSet2(object.spendTxId) ? bytesFromBase64(object.spendTxId) : new Uint8Array(0),
+      status: isSet2(object.status) ? globalThis.String(object.status) : "",
+      createAt: isSet2(object.createAt) ? fromJsonTimestamp(object.createAt) : void 0
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.spendTxId.length !== 0) {
+      obj.spendTxId = base64FromBytes(message.spendTxId);
+    }
+    if (message.status !== "") {
+      obj.status = message.status;
+    }
+    if (message.createAt !== void 0) {
+      obj.createAt = message.createAt.toISOString();
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolListItem.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolListItem();
+    message.spendTxId = object.spendTxId ?? new Uint8Array(0);
+    message.status = object.status ?? "";
+    message.createAt = object.createAt ?? void 0;
+    return message;
+  }
+};
+function createBaseFeePoolListResponse() {
+  return { items: [], totalCount: 0, totalPages: 0 };
+}
+var FeePoolListResponse = {
+  encode(message, writer = new BinaryWriter()) {
+    for (const v of message.items) {
+      FeePoolListItem.encode(v, writer.uint32(10).fork()).join();
+    }
+    if (message.totalCount !== 0) {
+      writer.uint32(16).uint32(message.totalCount);
+    }
+    if (message.totalPages !== 0) {
+      writer.uint32(24).uint32(message.totalPages);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolListResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.items.push(FeePoolListItem.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+          message.totalCount = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+          message.totalPages = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      items: globalThis.Array.isArray(object?.items) ? object.items.map((e) => FeePoolListItem.fromJSON(e)) : [],
+      totalCount: isSet2(object.totalCount) ? globalThis.Number(object.totalCount) : 0,
+      totalPages: isSet2(object.totalPages) ? globalThis.Number(object.totalPages) : 0
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.items?.length) {
+      obj.items = message.items.map((e) => FeePoolListItem.toJSON(e));
+    }
+    if (message.totalCount !== 0) {
+      obj.totalCount = Math.round(message.totalCount);
+    }
+    if (message.totalPages !== 0) {
+      obj.totalPages = Math.round(message.totalPages);
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolListResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolListResponse();
+    message.items = object.items?.map((e) => FeePoolListItem.fromPartial(e)) || [];
+    message.totalCount = object.totalCount ?? 0;
+    message.totalPages = object.totalPages ?? 0;
+    return message;
+  }
+};
 function createBaseFileDemandRequest() {
   return { fileHash: new Uint8Array(0) };
 }
@@ -2523,6 +2804,9 @@ function verifyEnvelope(env) {
   FeePoolBaseTx,
   FeePoolClose,
   FeePoolCreate,
+  FeePoolListItem,
+  FeePoolListQuery,
+  FeePoolListResponse,
   FeePoolSign,
   FeePoolStatusQuery,
   FeePoolStatusResponse,

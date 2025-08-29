@@ -40,6 +40,8 @@ const (
 	MsgKind_KIND_FEE_POOL_CLOSE           MsgKind = 17 // 费用池关闭
 	MsgKind_KIND_FEE_POOL_STATUS_QUERY    MsgKind = 18 // 费用池状态查询
 	MsgKind_KIND_FEE_POOL_STATUS_RESPONSE MsgKind = 19 // 费用池状态响应
+	MsgKind_KIND_FEE_POOL_LIST_QUERY      MsgKind = 20 // 费用池列表查询
+	MsgKind_KIND_FEE_POOL_LIST_RESPONSE   MsgKind = 21 // 费用池列表响应
 )
 
 // Enum value maps for MsgKind.
@@ -58,6 +60,8 @@ var (
 		17: "KIND_FEE_POOL_CLOSE",
 		18: "KIND_FEE_POOL_STATUS_QUERY",
 		19: "KIND_FEE_POOL_STATUS_RESPONSE",
+		20: "KIND_FEE_POOL_LIST_QUERY",
+		21: "KIND_FEE_POOL_LIST_RESPONSE",
 	}
 	MsgKind_value = map[string]int32{
 		"KIND_UNSPECIFIED":              0,
@@ -73,6 +77,8 @@ var (
 		"KIND_FEE_POOL_CLOSE":           17,
 		"KIND_FEE_POOL_STATUS_QUERY":    18,
 		"KIND_FEE_POOL_STATUS_RESPONSE": 19,
+		"KIND_FEE_POOL_LIST_QUERY":      20,
+		"KIND_FEE_POOL_LIST_RESPONSE":   21,
 	}
 )
 
@@ -208,6 +214,8 @@ type Envelope struct {
 	//	*Envelope_FeePoolClose
 	//	*Envelope_FeePoolStatusQuery
 	//	*Envelope_FeePoolStatusResponse
+	//	*Envelope_FeePoolListQuery
+	//	*Envelope_FeePoolListResponse
 	Payload       isEnvelope_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -386,6 +394,24 @@ func (x *Envelope) GetFeePoolStatusResponse() *FeePoolStatusResponse {
 	return nil
 }
 
+func (x *Envelope) GetFeePoolListQuery() *FeePoolListQuery {
+	if x != nil {
+		if x, ok := x.Payload.(*Envelope_FeePoolListQuery); ok {
+			return x.FeePoolListQuery
+		}
+	}
+	return nil
+}
+
+func (x *Envelope) GetFeePoolListResponse() *FeePoolListResponse {
+	if x != nil {
+		if x, ok := x.Payload.(*Envelope_FeePoolListResponse); ok {
+			return x.FeePoolListResponse
+		}
+	}
+	return nil
+}
+
 type isEnvelope_Payload interface {
 	isEnvelope_Payload()
 }
@@ -440,6 +466,14 @@ type Envelope_FeePoolStatusResponse struct {
 	FeePoolStatusResponse *FeePoolStatusResponse `protobuf:"bytes,19,opt,name=fee_pool_status_response,json=feePoolStatusResponse,proto3,oneof"`
 }
 
+type Envelope_FeePoolListQuery struct {
+	FeePoolListQuery *FeePoolListQuery `protobuf:"bytes,20,opt,name=fee_pool_list_query,json=feePoolListQuery,proto3,oneof"`
+}
+
+type Envelope_FeePoolListResponse struct {
+	FeePoolListResponse *FeePoolListResponse `protobuf:"bytes,21,opt,name=fee_pool_list_response,json=feePoolListResponse,proto3,oneof"`
+}
+
 func (*Envelope_ErrorReply) isEnvelope_Payload() {}
 
 func (*Envelope_WsSignaling) isEnvelope_Payload() {}
@@ -463,6 +497,10 @@ func (*Envelope_FeePoolClose) isEnvelope_Payload() {}
 func (*Envelope_FeePoolStatusQuery) isEnvelope_Payload() {}
 
 func (*Envelope_FeePoolStatusResponse) isEnvelope_Payload() {}
+
+func (*Envelope_FeePoolListQuery) isEnvelope_Payload() {}
+
+func (*Envelope_FeePoolListResponse) isEnvelope_Payload() {}
 
 type ErrorReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -1120,6 +1158,181 @@ func (x *FeePoolStatusResponse) GetErrorReason() string {
 	return ""
 }
 
+// 费用池列表查询消息
+type FeePoolListQuery struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         uint32                 `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"` // 每页数量
+	Page          uint32                 `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`   // 页码（从1开始）
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FeePoolListQuery) Reset() {
+	*x = FeePoolListQuery{}
+	mi := &file_message_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FeePoolListQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FeePoolListQuery) ProtoMessage() {}
+
+func (x *FeePoolListQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FeePoolListQuery.ProtoReflect.Descriptor instead.
+func (*FeePoolListQuery) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *FeePoolListQuery) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *FeePoolListQuery) GetPage() uint32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+// 费用池列表项目
+type FeePoolListItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SpendTxId     []byte                 `protobuf:"bytes,1,opt,name=spend_tx_id,json=spendTxId,proto3" json:"spend_tx_id,omitempty"` // 花费交易ID（32 字节，小端序；十六进制展示为大端序）
+	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`                          // 状态：pending, signed, active, expired, closed, error
+	CreateAt      *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=create_at,json=createAt,proto3" json:"create_at,omitempty"`      // 创建时间
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FeePoolListItem) Reset() {
+	*x = FeePoolListItem{}
+	mi := &file_message_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FeePoolListItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FeePoolListItem) ProtoMessage() {}
+
+func (x *FeePoolListItem) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FeePoolListItem.ProtoReflect.Descriptor instead.
+func (*FeePoolListItem) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *FeePoolListItem) GetSpendTxId() []byte {
+	if x != nil {
+		return x.SpendTxId
+	}
+	return nil
+}
+
+func (x *FeePoolListItem) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *FeePoolListItem) GetCreateAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreateAt
+	}
+	return nil
+}
+
+// 费用池列表响应消息
+type FeePoolListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Items         []*FeePoolListItem     `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`                              // 费用池列表
+	TotalCount    uint32                 `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"` // 总数量
+	TotalPages    uint32                 `protobuf:"varint,3,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"` // 总页数
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FeePoolListResponse) Reset() {
+	*x = FeePoolListResponse{}
+	mi := &file_message_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FeePoolListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FeePoolListResponse) ProtoMessage() {}
+
+func (x *FeePoolListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FeePoolListResponse.ProtoReflect.Descriptor instead.
+func (*FeePoolListResponse) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *FeePoolListResponse) GetItems() []*FeePoolListItem {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *FeePoolListResponse) GetTotalCount() uint32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *FeePoolListResponse) GetTotalPages() uint32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
+}
+
 // 文件需求请求消息
 type FileDemandRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -1130,7 +1343,7 @@ type FileDemandRequest struct {
 
 func (x *FileDemandRequest) Reset() {
 	*x = FileDemandRequest{}
-	mi := &file_message_proto_msgTypes[12]
+	mi := &file_message_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1142,7 +1355,7 @@ func (x *FileDemandRequest) String() string {
 func (*FileDemandRequest) ProtoMessage() {}
 
 func (x *FileDemandRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[12]
+	mi := &file_message_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1155,7 +1368,7 @@ func (x *FileDemandRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileDemandRequest.ProtoReflect.Descriptor instead.
 func (*FileDemandRequest) Descriptor() ([]byte, []int) {
-	return file_message_proto_rawDescGZIP(), []int{12}
+	return file_message_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *FileDemandRequest) GetFileHash() []byte {
@@ -1175,7 +1388,7 @@ type FileDemandBroadcast struct {
 
 func (x *FileDemandBroadcast) Reset() {
 	*x = FileDemandBroadcast{}
-	mi := &file_message_proto_msgTypes[13]
+	mi := &file_message_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1187,7 +1400,7 @@ func (x *FileDemandBroadcast) String() string {
 func (*FileDemandBroadcast) ProtoMessage() {}
 
 func (x *FileDemandBroadcast) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[13]
+	mi := &file_message_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1200,7 +1413,7 @@ func (x *FileDemandBroadcast) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileDemandBroadcast.ProtoReflect.Descriptor instead.
 func (*FileDemandBroadcast) Descriptor() ([]byte, []int) {
-	return file_message_proto_rawDescGZIP(), []int{13}
+	return file_message_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *FileDemandBroadcast) GetFileHash() []byte {
@@ -1223,7 +1436,7 @@ const file_message_proto_rawDesc = "" +
 	"\x02ts\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x02ts\x12\x1f\n" +
 	"\vfrom_pubkey\x18\x05 \x01(\fR\n" +
 	"fromPubkey\x12\x1b\n" +
-	"\tto_pubkey\x18\x06 \x01(\fR\btoPubkey\"\xc4\b\n" +
+	"\tto_pubkey\x18\x06 \x01(\fR\btoPubkey\"\xf1\t\n" +
 	"\bEnvelope\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\rR\aversion\x12-\n" +
 	"\x06header\x18\x02 \x01(\v2\x15.api.webrtc.v1.HeaderR\x06header\x12\x1c\n" +
@@ -1242,7 +1455,9 @@ const file_message_proto_rawDesc = "" +
 	"\x16fee_pool_update_notify\x18\x10 \x01(\v2\".api.webrtc.v1.FeePoolUpdateNotifyH\x00R\x13feePoolUpdateNotify\x12C\n" +
 	"\x0efee_pool_close\x18\x11 \x01(\v2\x1b.api.webrtc.v1.FeePoolCloseH\x00R\ffeePoolClose\x12V\n" +
 	"\x15fee_pool_status_query\x18\x12 \x01(\v2!.api.webrtc.v1.FeePoolStatusQueryH\x00R\x12feePoolStatusQuery\x12_\n" +
-	"\x18fee_pool_status_response\x18\x13 \x01(\v2$.api.webrtc.v1.FeePoolStatusResponseH\x00R\x15feePoolStatusResponseB\t\n" +
+	"\x18fee_pool_status_response\x18\x13 \x01(\v2$.api.webrtc.v1.FeePoolStatusResponseH\x00R\x15feePoolStatusResponse\x12P\n" +
+	"\x13fee_pool_list_query\x18\x14 \x01(\v2\x1f.api.webrtc.v1.FeePoolListQueryH\x00R\x10feePoolListQuery\x12Y\n" +
+	"\x16fee_pool_list_response\x18\x15 \x01(\v2\".api.webrtc.v1.FeePoolListResponseH\x00R\x13feePoolListResponseB\t\n" +
 	"\apayload\"C\n" +
 	"\n" +
 	"ErrorReply\x12\x1d\n" +
@@ -1300,11 +1515,24 @@ const file_message_proto_rawDesc = "" +
 	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
 	"expires_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12!\n" +
-	"\ferror_reason\x18\t \x01(\tR\verrorReason\"0\n" +
+	"\ferror_reason\x18\t \x01(\tR\verrorReason\"<\n" +
+	"\x10FeePoolListQuery\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\rR\x05limit\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\rR\x04page\"\x82\x01\n" +
+	"\x0fFeePoolListItem\x12\x1e\n" +
+	"\vspend_tx_id\x18\x01 \x01(\fR\tspendTxId\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x127\n" +
+	"\tcreate_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\bcreateAt\"\x8d\x01\n" +
+	"\x13FeePoolListResponse\x124\n" +
+	"\x05items\x18\x01 \x03(\v2\x1e.api.webrtc.v1.FeePoolListItemR\x05items\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\rR\n" +
+	"totalCount\x12\x1f\n" +
+	"\vtotal_pages\x18\x03 \x01(\rR\n" +
+	"totalPages\"0\n" +
 	"\x11FileDemandRequest\x12\x1b\n" +
 	"\tfile_hash\x18\x01 \x01(\fR\bfileHash\"2\n" +
 	"\x13FileDemandBroadcast\x12\x1b\n" +
-	"\tfile_hash\x18\x01 \x01(\fR\bfileHash*\xe8\x02\n" +
+	"\tfile_hash\x18\x01 \x01(\fR\bfileHash*\xa7\x03\n" +
 	"\aMsgKind\x12\x14\n" +
 	"\x10KIND_UNSPECIFIED\x10\x00\x12\x0e\n" +
 	"\n" +
@@ -1320,7 +1548,9 @@ const file_message_proto_rawDesc = "" +
 	"\x1bKIND_FEE_POOL_UPDATE_NOTIFY\x10\x10\x12\x17\n" +
 	"\x13KIND_FEE_POOL_CLOSE\x10\x11\x12\x1e\n" +
 	"\x1aKIND_FEE_POOL_STATUS_QUERY\x10\x12\x12!\n" +
-	"\x1dKIND_FEE_POOL_STATUS_RESPONSE\x10\x13B6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
+	"\x1dKIND_FEE_POOL_STATUS_RESPONSE\x10\x13\x12\x1c\n" +
+	"\x18KIND_FEE_POOL_LIST_QUERY\x10\x14\x12\x1f\n" +
+	"\x1bKIND_FEE_POOL_LIST_RESPONSE\x10\x15B6Z4github.com/bitcoin-sv/KeyRTCServer/api_webrtc/gen/v1b\x06proto3"
 
 var (
 	file_message_proto_rawDescOnce sync.Once
@@ -1335,7 +1565,7 @@ func file_message_proto_rawDescGZIP() []byte {
 }
 
 var file_message_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_message_proto_goTypes = []any{
 	(MsgKind)(0),                  // 0: api.webrtc.v1.MsgKind
 	(*Header)(nil),                // 1: api.webrtc.v1.Header
@@ -1350,18 +1580,21 @@ var file_message_proto_goTypes = []any{
 	(*FeePoolClose)(nil),          // 10: api.webrtc.v1.FeePoolClose
 	(*FeePoolStatusQuery)(nil),    // 11: api.webrtc.v1.FeePoolStatusQuery
 	(*FeePoolStatusResponse)(nil), // 12: api.webrtc.v1.FeePoolStatusResponse
-	(*FileDemandRequest)(nil),     // 13: api.webrtc.v1.FileDemandRequest
-	(*FileDemandBroadcast)(nil),   // 14: api.webrtc.v1.FileDemandBroadcast
-	(*timestamppb.Timestamp)(nil), // 15: google.protobuf.Timestamp
+	(*FeePoolListQuery)(nil),      // 13: api.webrtc.v1.FeePoolListQuery
+	(*FeePoolListItem)(nil),       // 14: api.webrtc.v1.FeePoolListItem
+	(*FeePoolListResponse)(nil),   // 15: api.webrtc.v1.FeePoolListResponse
+	(*FileDemandRequest)(nil),     // 16: api.webrtc.v1.FileDemandRequest
+	(*FileDemandBroadcast)(nil),   // 17: api.webrtc.v1.FileDemandBroadcast
+	(*timestamppb.Timestamp)(nil), // 18: google.protobuf.Timestamp
 }
 var file_message_proto_depIdxs = []int32{
 	0,  // 0: api.webrtc.v1.Header.kind:type_name -> api.webrtc.v1.MsgKind
-	15, // 1: api.webrtc.v1.Header.ts:type_name -> google.protobuf.Timestamp
+	18, // 1: api.webrtc.v1.Header.ts:type_name -> google.protobuf.Timestamp
 	1,  // 2: api.webrtc.v1.Envelope.header:type_name -> api.webrtc.v1.Header
 	3,  // 3: api.webrtc.v1.Envelope.error_reply:type_name -> api.webrtc.v1.ErrorReply
 	4,  // 4: api.webrtc.v1.Envelope.ws_signaling:type_name -> api.webrtc.v1.WSSignaling
-	13, // 5: api.webrtc.v1.Envelope.file_demand_request:type_name -> api.webrtc.v1.FileDemandRequest
-	14, // 6: api.webrtc.v1.Envelope.file_demand_broadcast:type_name -> api.webrtc.v1.FileDemandBroadcast
+	16, // 5: api.webrtc.v1.Envelope.file_demand_request:type_name -> api.webrtc.v1.FileDemandRequest
+	17, // 6: api.webrtc.v1.Envelope.file_demand_broadcast:type_name -> api.webrtc.v1.FileDemandBroadcast
 	5,  // 7: api.webrtc.v1.Envelope.fee_pool_create:type_name -> api.webrtc.v1.FeePoolCreate
 	6,  // 8: api.webrtc.v1.Envelope.fee_pool_sign:type_name -> api.webrtc.v1.FeePoolSign
 	7,  // 9: api.webrtc.v1.Envelope.fee_pool_base_tx:type_name -> api.webrtc.v1.FeePoolBaseTx
@@ -1370,13 +1603,17 @@ var file_message_proto_depIdxs = []int32{
 	10, // 12: api.webrtc.v1.Envelope.fee_pool_close:type_name -> api.webrtc.v1.FeePoolClose
 	11, // 13: api.webrtc.v1.Envelope.fee_pool_status_query:type_name -> api.webrtc.v1.FeePoolStatusQuery
 	12, // 14: api.webrtc.v1.Envelope.fee_pool_status_response:type_name -> api.webrtc.v1.FeePoolStatusResponse
-	15, // 15: api.webrtc.v1.FeePoolStatusResponse.created_at:type_name -> google.protobuf.Timestamp
-	15, // 16: api.webrtc.v1.FeePoolStatusResponse.expires_at:type_name -> google.protobuf.Timestamp
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	13, // 15: api.webrtc.v1.Envelope.fee_pool_list_query:type_name -> api.webrtc.v1.FeePoolListQuery
+	15, // 16: api.webrtc.v1.Envelope.fee_pool_list_response:type_name -> api.webrtc.v1.FeePoolListResponse
+	18, // 17: api.webrtc.v1.FeePoolStatusResponse.created_at:type_name -> google.protobuf.Timestamp
+	18, // 18: api.webrtc.v1.FeePoolStatusResponse.expires_at:type_name -> google.protobuf.Timestamp
+	18, // 19: api.webrtc.v1.FeePoolListItem.create_at:type_name -> google.protobuf.Timestamp
+	14, // 20: api.webrtc.v1.FeePoolListResponse.items:type_name -> api.webrtc.v1.FeePoolListItem
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_message_proto_init() }
@@ -1397,6 +1634,8 @@ func file_message_proto_init() {
 		(*Envelope_FeePoolClose)(nil),
 		(*Envelope_FeePoolStatusQuery)(nil),
 		(*Envelope_FeePoolStatusResponse)(nil),
+		(*Envelope_FeePoolListQuery)(nil),
+		(*Envelope_FeePoolListResponse)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1404,7 +1643,7 @@ func file_message_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_proto_rawDesc), len(file_message_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -23,6 +23,8 @@ enum MsgKind {
   KIND_FEE_POOL_CLOSE = 17;           // 费用池关闭
   KIND_FEE_POOL_STATUS_QUERY = 18;    // 费用池状态查询
   KIND_FEE_POOL_STATUS_RESPONSE = 19; // 费用池状态响应
+  KIND_FEE_POOL_LIST_QUERY = 20;      // 费用池列表查询
+  KIND_FEE_POOL_LIST_RESPONSE = 21;   // 费用池列表响应
 }
 
 // ErrorCode 改用字符串，不再定义枚举。请在 ErrorReply.error_code 字段中填入具体错误字符串。
@@ -61,6 +63,8 @@ message Envelope {
     FeePoolClose fee_pool_close = 17;
     FeePoolStatusQuery fee_pool_status_query = 18;
     FeePoolStatusResponse fee_pool_status_response = 19;
+    FeePoolListQuery fee_pool_list_query = 20;
+    FeePoolListResponse fee_pool_list_response = 21;
   }
 }
 
@@ -140,6 +144,26 @@ message FeePoolStatusResponse {
   google.protobuf.Timestamp created_at = 7;     // 创建时间
   google.protobuf.Timestamp expires_at = 8;     // 过期时间（如果适用）
   string error_reason = 9;            // 错误原因（状态为error时）
+}
+
+// 费用池列表查询消息
+message FeePoolListQuery {
+  uint32 limit = 1;                  // 每页数量
+  uint32 page = 2;                   // 页码（从1开始）
+}
+
+// 费用池列表项目
+message FeePoolListItem {
+  bytes spend_tx_id = 1;             // 花费交易ID（32 字节，小端序；十六进制展示为大端序）
+  string status = 2;                 // 状态：pending, signed, active, expired, closed, error
+  google.protobuf.Timestamp create_at = 3; // 创建时间
+}
+
+// 费用池列表响应消息
+message FeePoolListResponse {
+  repeated FeePoolListItem items = 1; // 费用池列表
+  uint32 total_count = 2;            // 总数量
+  uint32 total_pages = 3;            // 总页数
 }
 
 // ------------------ 文件相关 ------------------

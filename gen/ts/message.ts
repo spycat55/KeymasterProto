@@ -37,6 +37,10 @@ export enum MsgKind {
   KIND_FEE_POOL_STATUS_QUERY = 18,
   /** KIND_FEE_POOL_STATUS_RESPONSE - 费用池状态响应 */
   KIND_FEE_POOL_STATUS_RESPONSE = 19,
+  /** KIND_FEE_POOL_LIST_QUERY - 费用池列表查询 */
+  KIND_FEE_POOL_LIST_QUERY = 20,
+  /** KIND_FEE_POOL_LIST_RESPONSE - 费用池列表响应 */
+  KIND_FEE_POOL_LIST_RESPONSE = 21,
   UNRECOGNIZED = -1,
 }
 
@@ -81,6 +85,12 @@ export function msgKindFromJSON(object: any): MsgKind {
     case 19:
     case "KIND_FEE_POOL_STATUS_RESPONSE":
       return MsgKind.KIND_FEE_POOL_STATUS_RESPONSE;
+    case 20:
+    case "KIND_FEE_POOL_LIST_QUERY":
+      return MsgKind.KIND_FEE_POOL_LIST_QUERY;
+    case 21:
+    case "KIND_FEE_POOL_LIST_RESPONSE":
+      return MsgKind.KIND_FEE_POOL_LIST_RESPONSE;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -116,6 +126,10 @@ export function msgKindToJSON(object: MsgKind): string {
       return "KIND_FEE_POOL_STATUS_QUERY";
     case MsgKind.KIND_FEE_POOL_STATUS_RESPONSE:
       return "KIND_FEE_POOL_STATUS_RESPONSE";
+    case MsgKind.KIND_FEE_POOL_LIST_QUERY:
+      return "KIND_FEE_POOL_LIST_QUERY";
+    case MsgKind.KIND_FEE_POOL_LIST_RESPONSE:
+      return "KIND_FEE_POOL_LIST_RESPONSE";
     case MsgKind.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -166,6 +180,8 @@ export interface Envelope {
   feePoolClose?: FeePoolClose | undefined;
   feePoolStatusQuery?: FeePoolStatusQuery | undefined;
   feePoolStatusResponse?: FeePoolStatusResponse | undefined;
+  feePoolListQuery?: FeePoolListQuery | undefined;
+  feePoolListResponse?: FeePoolListResponse | undefined;
 }
 
 export interface ErrorReply {
@@ -278,6 +294,34 @@ export interface FeePoolStatusResponse {
     | undefined;
   /** 错误原因（状态为error时） */
   errorReason: string;
+}
+
+/** 费用池列表查询消息 */
+export interface FeePoolListQuery {
+  /** 每页数量 */
+  limit: number;
+  /** 页码（从1开始） */
+  page: number;
+}
+
+/** 费用池列表项目 */
+export interface FeePoolListItem {
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序） */
+  spendTxId: Uint8Array;
+  /** 状态：pending, signed, active, expired, closed, error */
+  status: string;
+  /** 创建时间 */
+  createAt?: Date | undefined;
+}
+
+/** 费用池列表响应消息 */
+export interface FeePoolListResponse {
+  /** 费用池列表 */
+  items: FeePoolListItem[];
+  /** 总数量 */
+  totalCount: number;
+  /** 总页数 */
+  totalPages: number;
 }
 
 /** 文件需求请求消息 */
@@ -457,6 +501,8 @@ function createBaseEnvelope(): Envelope {
     feePoolClose: undefined,
     feePoolStatusQuery: undefined,
     feePoolStatusResponse: undefined,
+    feePoolListQuery: undefined,
+    feePoolListResponse: undefined,
   };
 }
 
@@ -509,6 +555,12 @@ export const Envelope: MessageFns<Envelope> = {
     }
     if (message.feePoolStatusResponse !== undefined) {
       FeePoolStatusResponse.encode(message.feePoolStatusResponse, writer.uint32(154).fork()).join();
+    }
+    if (message.feePoolListQuery !== undefined) {
+      FeePoolListQuery.encode(message.feePoolListQuery, writer.uint32(162).fork()).join();
+    }
+    if (message.feePoolListResponse !== undefined) {
+      FeePoolListResponse.encode(message.feePoolListResponse, writer.uint32(170).fork()).join();
     }
     return writer;
   },
@@ -648,6 +700,22 @@ export const Envelope: MessageFns<Envelope> = {
           message.feePoolStatusResponse = FeePoolStatusResponse.decode(reader, reader.uint32());
           continue;
         }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.feePoolListQuery = FeePoolListQuery.decode(reader, reader.uint32());
+          continue;
+        }
+        case 21: {
+          if (tag !== 170) {
+            break;
+          }
+
+          message.feePoolListResponse = FeePoolListResponse.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -684,6 +752,10 @@ export const Envelope: MessageFns<Envelope> = {
         : undefined,
       feePoolStatusResponse: isSet(object.feePoolStatusResponse)
         ? FeePoolStatusResponse.fromJSON(object.feePoolStatusResponse)
+        : undefined,
+      feePoolListQuery: isSet(object.feePoolListQuery) ? FeePoolListQuery.fromJSON(object.feePoolListQuery) : undefined,
+      feePoolListResponse: isSet(object.feePoolListResponse)
+        ? FeePoolListResponse.fromJSON(object.feePoolListResponse)
         : undefined,
     };
   },
@@ -738,6 +810,12 @@ export const Envelope: MessageFns<Envelope> = {
     if (message.feePoolStatusResponse !== undefined) {
       obj.feePoolStatusResponse = FeePoolStatusResponse.toJSON(message.feePoolStatusResponse);
     }
+    if (message.feePoolListQuery !== undefined) {
+      obj.feePoolListQuery = FeePoolListQuery.toJSON(message.feePoolListQuery);
+    }
+    if (message.feePoolListResponse !== undefined) {
+      obj.feePoolListResponse = FeePoolListResponse.toJSON(message.feePoolListResponse);
+    }
     return obj;
   },
 
@@ -789,6 +867,12 @@ export const Envelope: MessageFns<Envelope> = {
       (object.feePoolStatusResponse !== undefined && object.feePoolStatusResponse !== null)
         ? FeePoolStatusResponse.fromPartial(object.feePoolStatusResponse)
         : undefined;
+    message.feePoolListQuery = (object.feePoolListQuery !== undefined && object.feePoolListQuery !== null)
+      ? FeePoolListQuery.fromPartial(object.feePoolListQuery)
+      : undefined;
+    message.feePoolListResponse = (object.feePoolListResponse !== undefined && object.feePoolListResponse !== null)
+      ? FeePoolListResponse.fromPartial(object.feePoolListResponse)
+      : undefined;
     return message;
   },
 };
@@ -1813,6 +1897,266 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     message.createdAt = object.createdAt ?? undefined;
     message.expiresAt = object.expiresAt ?? undefined;
     message.errorReason = object.errorReason ?? "";
+    return message;
+  },
+};
+
+function createBaseFeePoolListQuery(): FeePoolListQuery {
+  return { limit: 0, page: 0 };
+}
+
+export const FeePoolListQuery: MessageFns<FeePoolListQuery> = {
+  encode(message: FeePoolListQuery, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.limit !== 0) {
+      writer.uint32(8).uint32(message.limit);
+    }
+    if (message.page !== 0) {
+      writer.uint32(16).uint32(message.page);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolListQuery {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolListQuery();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.page = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FeePoolListQuery {
+    return {
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      page: isSet(object.page) ? globalThis.Number(object.page) : 0,
+    };
+  },
+
+  toJSON(message: FeePoolListQuery): unknown {
+    const obj: any = {};
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.page !== 0) {
+      obj.page = Math.round(message.page);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FeePoolListQuery>, I>>(base?: I): FeePoolListQuery {
+    return FeePoolListQuery.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FeePoolListQuery>, I>>(object: I): FeePoolListQuery {
+    const message = createBaseFeePoolListQuery();
+    message.limit = object.limit ?? 0;
+    message.page = object.page ?? 0;
+    return message;
+  },
+};
+
+function createBaseFeePoolListItem(): FeePoolListItem {
+  return { spendTxId: new Uint8Array(0), status: "", createAt: undefined };
+}
+
+export const FeePoolListItem: MessageFns<FeePoolListItem> = {
+  encode(message: FeePoolListItem, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.spendTxId.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxId);
+    }
+    if (message.status !== "") {
+      writer.uint32(18).string(message.status);
+    }
+    if (message.createAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createAt), writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolListItem {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolListItem();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.spendTxId = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.status = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FeePoolListItem {
+    return {
+      spendTxId: isSet(object.spendTxId) ? bytesFromBase64(object.spendTxId) : new Uint8Array(0),
+      status: isSet(object.status) ? globalThis.String(object.status) : "",
+      createAt: isSet(object.createAt) ? fromJsonTimestamp(object.createAt) : undefined,
+    };
+  },
+
+  toJSON(message: FeePoolListItem): unknown {
+    const obj: any = {};
+    if (message.spendTxId.length !== 0) {
+      obj.spendTxId = base64FromBytes(message.spendTxId);
+    }
+    if (message.status !== "") {
+      obj.status = message.status;
+    }
+    if (message.createAt !== undefined) {
+      obj.createAt = message.createAt.toISOString();
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FeePoolListItem>, I>>(base?: I): FeePoolListItem {
+    return FeePoolListItem.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FeePoolListItem>, I>>(object: I): FeePoolListItem {
+    const message = createBaseFeePoolListItem();
+    message.spendTxId = object.spendTxId ?? new Uint8Array(0);
+    message.status = object.status ?? "";
+    message.createAt = object.createAt ?? undefined;
+    return message;
+  },
+};
+
+function createBaseFeePoolListResponse(): FeePoolListResponse {
+  return { items: [], totalCount: 0, totalPages: 0 };
+}
+
+export const FeePoolListResponse: MessageFns<FeePoolListResponse> = {
+  encode(message: FeePoolListResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.items) {
+      FeePoolListItem.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.totalCount !== 0) {
+      writer.uint32(16).uint32(message.totalCount);
+    }
+    if (message.totalPages !== 0) {
+      writer.uint32(24).uint32(message.totalPages);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolListResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolListResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.items.push(FeePoolListItem.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.totalCount = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.totalPages = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FeePoolListResponse {
+    return {
+      items: globalThis.Array.isArray(object?.items) ? object.items.map((e: any) => FeePoolListItem.fromJSON(e)) : [],
+      totalCount: isSet(object.totalCount) ? globalThis.Number(object.totalCount) : 0,
+      totalPages: isSet(object.totalPages) ? globalThis.Number(object.totalPages) : 0,
+    };
+  },
+
+  toJSON(message: FeePoolListResponse): unknown {
+    const obj: any = {};
+    if (message.items?.length) {
+      obj.items = message.items.map((e) => FeePoolListItem.toJSON(e));
+    }
+    if (message.totalCount !== 0) {
+      obj.totalCount = Math.round(message.totalCount);
+    }
+    if (message.totalPages !== 0) {
+      obj.totalPages = Math.round(message.totalPages);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FeePoolListResponse>, I>>(base?: I): FeePoolListResponse {
+    return FeePoolListResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FeePoolListResponse>, I>>(object: I): FeePoolListResponse {
+    const message = createBaseFeePoolListResponse();
+    message.items = object.items?.map((e) => FeePoolListItem.fromPartial(e)) || [];
+    message.totalCount = object.totalCount ?? 0;
+    message.totalPages = object.totalPages ?? 0;
     return message;
   },
 };

@@ -29,6 +29,10 @@ declare enum MsgKind {
     KIND_FEE_POOL_STATUS_QUERY = 18,
     /** KIND_FEE_POOL_STATUS_RESPONSE - 费用池状态响应 */
     KIND_FEE_POOL_STATUS_RESPONSE = 19,
+    /** KIND_FEE_POOL_LIST_QUERY - 费用池列表查询 */
+    KIND_FEE_POOL_LIST_QUERY = 20,
+    /** KIND_FEE_POOL_LIST_RESPONSE - 费用池列表响应 */
+    KIND_FEE_POOL_LIST_RESPONSE = 21,
     UNRECOGNIZED = -1
 }
 declare function msgKindFromJSON(object: any): MsgKind;
@@ -71,6 +75,8 @@ interface Envelope {
     feePoolClose?: FeePoolClose | undefined;
     feePoolStatusQuery?: FeePoolStatusQuery | undefined;
     feePoolStatusResponse?: FeePoolStatusResponse | undefined;
+    feePoolListQuery?: FeePoolListQuery | undefined;
+    feePoolListResponse?: FeePoolListResponse | undefined;
 }
 declare const Envelope: MessageFns<Envelope>;
 interface ErrorReply {
@@ -181,6 +187,34 @@ interface FeePoolStatusResponse {
     errorReason: string;
 }
 declare const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse>;
+/** 费用池列表查询消息 */
+interface FeePoolListQuery {
+    /** 每页数量 */
+    limit: number;
+    /** 页码（从1开始） */
+    page: number;
+}
+declare const FeePoolListQuery: MessageFns<FeePoolListQuery>;
+/** 费用池列表项目 */
+interface FeePoolListItem {
+    /** 花费交易ID（32 字节，小端序；十六进制展示为大端序） */
+    spendTxId: Uint8Array;
+    /** 状态：pending, signed, active, expired, closed, error */
+    status: string;
+    /** 创建时间 */
+    createAt?: Date | undefined;
+}
+declare const FeePoolListItem: MessageFns<FeePoolListItem>;
+/** 费用池列表响应消息 */
+interface FeePoolListResponse {
+    /** 费用池列表 */
+    items: FeePoolListItem[];
+    /** 总数量 */
+    totalCount: number;
+    /** 总页数 */
+    totalPages: number;
+}
+declare const FeePoolListResponse: MessageFns<FeePoolListResponse>;
 /** 文件需求请求消息 */
 interface FileDemandRequest {
     /** 文件哈希 */
@@ -218,4 +252,4 @@ declare function signEnvelope(env: Envelope, priv: PrivateKey): void;
 
 declare function verifyEnvelope(env: Envelope): boolean;
 
-export { type DeepPartial, Envelope, ErrorReply, type Exact, FeePoolBaseTx, FeePoolClose, FeePoolCreate, FeePoolSign, FeePoolStatusQuery, FeePoolStatusResponse, FeePoolUpdate, FeePoolUpdateNotify, FileDemandBroadcast, FileDemandRequest, Header, type MessageFns, MsgKind, WSSignaling, deterministicMarshal, msgKindFromJSON, msgKindToJSON, protobufPackage, signEnvelope, verifyEnvelope };
+export { type DeepPartial, Envelope, ErrorReply, type Exact, FeePoolBaseTx, FeePoolClose, FeePoolCreate, FeePoolListItem, FeePoolListQuery, FeePoolListResponse, FeePoolSign, FeePoolStatusQuery, FeePoolStatusResponse, FeePoolUpdate, FeePoolUpdateNotify, FileDemandBroadcast, FileDemandRequest, Header, type MessageFns, MsgKind, WSSignaling, deterministicMarshal, msgKindFromJSON, msgKindToJSON, protobufPackage, signEnvelope, verifyEnvelope };
