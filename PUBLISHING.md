@@ -56,7 +56,13 @@ git tag v0.2.0
 # 4.2 推送分支与标签
 git push origin main
 git push origin v0.2.0
+
+GOPROXY=https://proxy.golang.org go list -m -versions github.com/spycat55/KeymasterProto
+GOPROXY=https://proxy.golang.org go list -m -json github.com/spycat55/KeymasterProto@v0.3.1
+这个步骤是非常需要做的，不然 golang 会很久都没有反应
 ```
+
+
 
 ## 5. 发布 npm 包
 
