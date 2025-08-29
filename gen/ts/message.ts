@@ -261,6 +261,7 @@ export interface FeePoolStatusResponse {
   spendTxid: Uint8Array;
   /** 状态：pending, signed, active, expired, closed, error */
   status: string;
+  spendAmount: number;
   /** 服务器当前金额 */
   serverAmount: number;
   /** 交易费用 */
@@ -1622,6 +1623,7 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
   return {
     spendTxid: new Uint8Array(0),
     status: "",
+    spendAmount: 0,
     serverAmount: 0,
     fee: 0,
     sequenceNumber: 0,
@@ -1639,23 +1641,26 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.status !== "") {
       writer.uint32(18).string(message.status);
     }
+    if (message.spendAmount !== 0) {
+      writer.uint32(24).uint64(message.spendAmount);
+    }
     if (message.serverAmount !== 0) {
-      writer.uint32(24).uint64(message.serverAmount);
+      writer.uint32(32).uint64(message.serverAmount);
     }
     if (message.fee !== 0) {
-      writer.uint32(32).uint64(message.fee);
+      writer.uint32(40).uint64(message.fee);
     }
     if (message.sequenceNumber !== 0) {
-      writer.uint32(40).uint32(message.sequenceNumber);
+      writer.uint32(48).uint32(message.sequenceNumber);
     }
     if (message.createdAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(50).fork()).join();
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(58).fork()).join();
     }
     if (message.expiresAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.expiresAt), writer.uint32(58).fork()).join();
+      Timestamp.encode(toTimestamp(message.expiresAt), writer.uint32(66).fork()).join();
     }
     if (message.errorReason !== "") {
-      writer.uint32(66).string(message.errorReason);
+      writer.uint32(74).string(message.errorReason);
     }
     return writer;
   },
@@ -1688,7 +1693,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
             break;
           }
 
-          message.serverAmount = longToNumber(reader.uint64());
+          message.spendAmount = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -1696,7 +1701,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
             break;
           }
 
-          message.fee = longToNumber(reader.uint64());
+          message.serverAmount = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -1704,15 +1709,15 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
             break;
           }
 
-          message.sequenceNumber = reader.uint32();
+          message.fee = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
-          if (tag !== 50) {
+          if (tag !== 48) {
             break;
           }
 
-          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.sequenceNumber = reader.uint32();
           continue;
         }
         case 7: {
@@ -1720,11 +1725,19 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
             break;
           }
 
-          message.expiresAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         }
         case 8: {
           if (tag !== 66) {
+            break;
+          }
+
+          message.expiresAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
             break;
           }
 
@@ -1744,6 +1757,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     return {
       spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       status: isSet(object.status) ? globalThis.String(object.status) : "",
+      spendAmount: isSet(object.spendAmount) ? globalThis.Number(object.spendAmount) : 0,
       serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
       fee: isSet(object.fee) ? globalThis.Number(object.fee) : 0,
       sequenceNumber: isSet(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
@@ -1760,6 +1774,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     }
     if (message.status !== "") {
       obj.status = message.status;
+    }
+    if (message.spendAmount !== 0) {
+      obj.spendAmount = Math.round(message.spendAmount);
     }
     if (message.serverAmount !== 0) {
       obj.serverAmount = Math.round(message.serverAmount);
@@ -1789,6 +1806,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     const message = createBaseFeePoolStatusResponse();
     message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.status = object.status ?? "";
+    message.spendAmount = object.spendAmount ?? 0;
     message.serverAmount = object.serverAmount ?? 0;
     message.fee = object.fee ?? 0;
     message.sequenceNumber = object.sequenceNumber ?? 0;

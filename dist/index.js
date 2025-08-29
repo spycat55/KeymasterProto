@@ -1523,15 +1523,18 @@ var WSSignaling = {
   }
 };
 function createBaseFeePoolCreate() {
-  return { spendTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+  return { spendTx: new Uint8Array(0), inputAmount: 0, clientSignature: new Uint8Array(0) };
 }
 var FeePoolCreate = {
   encode(message, writer = new BinaryWriter()) {
     if (message.spendTx.length !== 0) {
       writer.uint32(10).bytes(message.spendTx);
     }
+    if (message.inputAmount !== 0) {
+      writer.uint32(16).uint64(message.inputAmount);
+    }
     if (message.clientSignature.length !== 0) {
-      writer.uint32(18).bytes(message.clientSignature);
+      writer.uint32(26).bytes(message.clientSignature);
     }
     return writer;
   },
@@ -1550,7 +1553,14 @@ var FeePoolCreate = {
           continue;
         }
         case 2: {
-          if (tag !== 18) {
+          if (tag !== 16) {
+            break;
+          }
+          message.inputAmount = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
             break;
           }
           message.clientSignature = reader.bytes();
@@ -1567,6 +1577,7 @@ var FeePoolCreate = {
   fromJSON(object) {
     return {
       spendTx: isSet2(object.spendTx) ? bytesFromBase64(object.spendTx) : new Uint8Array(0),
+      inputAmount: isSet2(object.inputAmount) ? globalThis.Number(object.inputAmount) : 0,
       clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
     };
   },
@@ -1574,6 +1585,9 @@ var FeePoolCreate = {
     const obj = {};
     if (message.spendTx.length !== 0) {
       obj.spendTx = base64FromBytes(message.spendTx);
+    }
+    if (message.inputAmount !== 0) {
+      obj.inputAmount = Math.round(message.inputAmount);
     }
     if (message.clientSignature.length !== 0) {
       obj.clientSignature = base64FromBytes(message.clientSignature);
@@ -1586,6 +1600,7 @@ var FeePoolCreate = {
   fromPartial(object) {
     const message = createBaseFeePoolCreate();
     message.spendTx = object.spendTx ?? new Uint8Array(0);
+    message.inputAmount = object.inputAmount ?? 0;
     message.clientSignature = object.clientSignature ?? new Uint8Array(0);
     return message;
   }
@@ -1674,15 +1689,18 @@ var FeePoolSign = {
   }
 };
 function createBaseFeePoolBaseTx() {
-  return { baseTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0), baseTx: new Uint8Array(0), clientSignature: new Uint8Array(0) };
 }
 var FeePoolBaseTx = {
   encode(message, writer = new BinaryWriter()) {
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
+    }
     if (message.baseTx.length !== 0) {
-      writer.uint32(10).bytes(message.baseTx);
+      writer.uint32(18).bytes(message.baseTx);
     }
     if (message.clientSignature.length !== 0) {
-      writer.uint32(18).bytes(message.clientSignature);
+      writer.uint32(26).bytes(message.clientSignature);
     }
     return writer;
   },
@@ -1697,11 +1715,18 @@ var FeePoolBaseTx = {
           if (tag !== 10) {
             break;
           }
-          message.baseTx = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
           if (tag !== 18) {
+            break;
+          }
+          message.baseTx = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
             break;
           }
           message.clientSignature = reader.bytes();
@@ -1717,12 +1742,16 @@ var FeePoolBaseTx = {
   },
   fromJSON(object) {
     return {
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       baseTx: isSet2(object.baseTx) ? bytesFromBase64(object.baseTx) : new Uint8Array(0),
       clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
     };
   },
   toJSON(message) {
     const obj = {};
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
+    }
     if (message.baseTx.length !== 0) {
       obj.baseTx = base64FromBytes(message.baseTx);
     }
@@ -1736,18 +1765,19 @@ var FeePoolBaseTx = {
   },
   fromPartial(object) {
     const message = createBaseFeePoolBaseTx();
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.baseTx = object.baseTx ?? new Uint8Array(0);
     message.clientSignature = object.clientSignature ?? new Uint8Array(0);
     return message;
   }
 };
 function createBaseFeePoolUpdateNotify() {
-  return { baseTxid: new Uint8Array(0), sequenceNumber: 0, serverAmount: 0, fee: 0 };
+  return { spendTxid: new Uint8Array(0), sequenceNumber: 0, serverAmount: 0, fee: 0 };
 }
 var FeePoolUpdateNotify = {
   encode(message, writer = new BinaryWriter()) {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     if (message.sequenceNumber !== 0) {
       writer.uint32(16).uint32(message.sequenceNumber);
@@ -1771,7 +1801,7 @@ var FeePoolUpdateNotify = {
           if (tag !== 10) {
             break;
           }
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
@@ -1805,7 +1835,7 @@ var FeePoolUpdateNotify = {
   },
   fromJSON(object) {
     return {
-      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
       serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
       fee: isSet2(object.fee) ? globalThis.Number(object.fee) : 0
@@ -1813,8 +1843,8 @@ var FeePoolUpdateNotify = {
   },
   toJSON(message) {
     const obj = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     if (message.sequenceNumber !== 0) {
       obj.sequenceNumber = Math.round(message.sequenceNumber);
@@ -1832,7 +1862,7 @@ var FeePoolUpdateNotify = {
   },
   fromPartial(object) {
     const message = createBaseFeePoolUpdateNotify();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.sequenceNumber = object.sequenceNumber ?? 0;
     message.serverAmount = object.serverAmount ?? 0;
     message.fee = object.fee ?? 0;
@@ -1840,15 +1870,24 @@ var FeePoolUpdateNotify = {
   }
 };
 function createBaseFeePoolUpdate() {
-  return { baseTxid: new Uint8Array(0), clientSignature: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0), sequenceNumber: 0, serverAmount: 0, fee: 0, signature: new Uint8Array(0) };
 }
 var FeePoolUpdate = {
   encode(message, writer = new BinaryWriter()) {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
-    if (message.clientSignature.length !== 0) {
-      writer.uint32(18).bytes(message.clientSignature);
+    if (message.sequenceNumber !== 0) {
+      writer.uint32(16).uint32(message.sequenceNumber);
+    }
+    if (message.serverAmount !== 0) {
+      writer.uint32(24).uint64(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      writer.uint32(32).uint64(message.fee);
+    }
+    if (message.signature.length !== 0) {
+      writer.uint32(42).bytes(message.signature);
     }
     return writer;
   },
@@ -1863,14 +1902,35 @@ var FeePoolUpdate = {
           if (tag !== 10) {
             break;
           }
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
-          if (tag !== 18) {
+          if (tag !== 16) {
             break;
           }
-          message.clientSignature = reader.bytes();
+          message.sequenceNumber = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+          message.serverAmount = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+          message.fee = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+          message.signature = reader.bytes();
           continue;
         }
       }
@@ -1883,17 +1943,29 @@ var FeePoolUpdate = {
   },
   fromJSON(object) {
     return {
-      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
-      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
+      sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
+      serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
+      fee: isSet2(object.fee) ? globalThis.Number(object.fee) : 0,
+      signature: isSet2(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0)
     };
   },
   toJSON(message) {
     const obj = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
-    if (message.clientSignature.length !== 0) {
-      obj.clientSignature = base64FromBytes(message.clientSignature);
+    if (message.sequenceNumber !== 0) {
+      obj.sequenceNumber = Math.round(message.sequenceNumber);
+    }
+    if (message.serverAmount !== 0) {
+      obj.serverAmount = Math.round(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      obj.fee = Math.round(message.fee);
+    }
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
     }
     return obj;
   },
@@ -1902,18 +1974,21 @@ var FeePoolUpdate = {
   },
   fromPartial(object) {
     const message = createBaseFeePoolUpdate();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
-    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
+    message.sequenceNumber = object.sequenceNumber ?? 0;
+    message.serverAmount = object.serverAmount ?? 0;
+    message.fee = object.fee ?? 0;
+    message.signature = object.signature ?? new Uint8Array(0);
     return message;
   }
 };
 function createBaseFeePoolClose() {
-  return { baseTxid: new Uint8Array(0), serverAmount: 0, fee: 0, clientSignature: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0), serverAmount: 0, fee: 0, signature: new Uint8Array(0) };
 }
 var FeePoolClose = {
   encode(message, writer = new BinaryWriter()) {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     if (message.serverAmount !== 0) {
       writer.uint32(16).uint64(message.serverAmount);
@@ -1921,8 +1996,8 @@ var FeePoolClose = {
     if (message.fee !== 0) {
       writer.uint32(24).uint64(message.fee);
     }
-    if (message.clientSignature.length !== 0) {
-      writer.uint32(34).bytes(message.clientSignature);
+    if (message.signature.length !== 0) {
+      writer.uint32(34).bytes(message.signature);
     }
     return writer;
   },
@@ -1937,7 +2012,7 @@ var FeePoolClose = {
           if (tag !== 10) {
             break;
           }
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
@@ -1958,7 +2033,7 @@ var FeePoolClose = {
           if (tag !== 34) {
             break;
           }
-          message.clientSignature = reader.bytes();
+          message.signature = reader.bytes();
           continue;
         }
       }
@@ -1971,16 +2046,16 @@ var FeePoolClose = {
   },
   fromJSON(object) {
     return {
-      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
       fee: isSet2(object.fee) ? globalThis.Number(object.fee) : 0,
-      clientSignature: isSet2(object.clientSignature) ? bytesFromBase64(object.clientSignature) : new Uint8Array(0)
+      signature: isSet2(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0)
     };
   },
   toJSON(message) {
     const obj = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     if (message.serverAmount !== 0) {
       obj.serverAmount = Math.round(message.serverAmount);
@@ -1988,8 +2063,8 @@ var FeePoolClose = {
     if (message.fee !== 0) {
       obj.fee = Math.round(message.fee);
     }
-    if (message.clientSignature.length !== 0) {
-      obj.clientSignature = base64FromBytes(message.clientSignature);
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
     }
     return obj;
   },
@@ -1998,20 +2073,20 @@ var FeePoolClose = {
   },
   fromPartial(object) {
     const message = createBaseFeePoolClose();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.serverAmount = object.serverAmount ?? 0;
     message.fee = object.fee ?? 0;
-    message.clientSignature = object.clientSignature ?? new Uint8Array(0);
+    message.signature = object.signature ?? new Uint8Array(0);
     return message;
   }
 };
 function createBaseFeePoolStatusQuery() {
-  return { baseTxid: new Uint8Array(0) };
+  return { spendTxid: new Uint8Array(0) };
 }
 var FeePoolStatusQuery = {
   encode(message, writer = new BinaryWriter()) {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     return writer;
   },
@@ -2026,7 +2101,7 @@ var FeePoolStatusQuery = {
           if (tag !== 10) {
             break;
           }
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
       }
@@ -2038,12 +2113,12 @@ var FeePoolStatusQuery = {
     return message;
   },
   fromJSON(object) {
-    return { baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0) };
+    return { spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0) };
   },
   toJSON(message) {
     const obj = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     return obj;
   },
@@ -2052,16 +2127,17 @@ var FeePoolStatusQuery = {
   },
   fromPartial(object) {
     const message = createBaseFeePoolStatusQuery();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     return message;
   }
 };
 function createBaseFeePoolStatusResponse() {
   return {
-    baseTxid: new Uint8Array(0),
+    spendTxid: new Uint8Array(0),
     status: "",
+    spendAmount: 0,
     serverAmount: 0,
-    clientAmount: 0,
+    fee: 0,
     sequenceNumber: 0,
     createdAt: void 0,
     expiresAt: void 0,
@@ -2070,29 +2146,32 @@ function createBaseFeePoolStatusResponse() {
 }
 var FeePoolStatusResponse = {
   encode(message, writer = new BinaryWriter()) {
-    if (message.baseTxid.length !== 0) {
-      writer.uint32(10).bytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     if (message.status !== "") {
       writer.uint32(18).string(message.status);
     }
-    if (message.serverAmount !== 0) {
-      writer.uint32(24).uint64(message.serverAmount);
+    if (message.spendAmount !== 0) {
+      writer.uint32(24).uint64(message.spendAmount);
     }
-    if (message.clientAmount !== 0) {
-      writer.uint32(32).uint64(message.clientAmount);
+    if (message.serverAmount !== 0) {
+      writer.uint32(32).uint64(message.serverAmount);
+    }
+    if (message.fee !== 0) {
+      writer.uint32(40).uint64(message.fee);
     }
     if (message.sequenceNumber !== 0) {
-      writer.uint32(40).uint32(message.sequenceNumber);
+      writer.uint32(48).uint32(message.sequenceNumber);
     }
     if (message.createdAt !== void 0) {
-      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(50).fork()).join();
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(58).fork()).join();
     }
     if (message.expiresAt !== void 0) {
-      Timestamp.encode(toTimestamp(message.expiresAt), writer.uint32(58).fork()).join();
+      Timestamp.encode(toTimestamp(message.expiresAt), writer.uint32(66).fork()).join();
     }
     if (message.errorReason !== "") {
-      writer.uint32(66).string(message.errorReason);
+      writer.uint32(74).string(message.errorReason);
     }
     return writer;
   },
@@ -2107,7 +2186,7 @@ var FeePoolStatusResponse = {
           if (tag !== 10) {
             break;
           }
-          message.baseTxid = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
@@ -2121,39 +2200,46 @@ var FeePoolStatusResponse = {
           if (tag !== 24) {
             break;
           }
-          message.serverAmount = longToNumber2(reader.uint64());
+          message.spendAmount = longToNumber2(reader.uint64());
           continue;
         }
         case 4: {
           if (tag !== 32) {
             break;
           }
-          message.clientAmount = longToNumber2(reader.uint64());
+          message.serverAmount = longToNumber2(reader.uint64());
           continue;
         }
         case 5: {
           if (tag !== 40) {
             break;
           }
-          message.sequenceNumber = reader.uint32();
+          message.fee = longToNumber2(reader.uint64());
           continue;
         }
         case 6: {
-          if (tag !== 50) {
+          if (tag !== 48) {
             break;
           }
-          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.sequenceNumber = reader.uint32();
           continue;
         }
         case 7: {
           if (tag !== 58) {
             break;
           }
-          message.expiresAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         }
         case 8: {
           if (tag !== 66) {
+            break;
+          }
+          message.expiresAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
             break;
           }
           message.errorReason = reader.string();
@@ -2169,10 +2255,11 @@ var FeePoolStatusResponse = {
   },
   fromJSON(object) {
     return {
-      baseTxid: isSet2(object.baseTxid) ? bytesFromBase64(object.baseTxid) : new Uint8Array(0),
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       status: isSet2(object.status) ? globalThis.String(object.status) : "",
+      spendAmount: isSet2(object.spendAmount) ? globalThis.Number(object.spendAmount) : 0,
       serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
-      clientAmount: isSet2(object.clientAmount) ? globalThis.Number(object.clientAmount) : 0,
+      fee: isSet2(object.fee) ? globalThis.Number(object.fee) : 0,
       sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
       createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
       expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
@@ -2181,17 +2268,20 @@ var FeePoolStatusResponse = {
   },
   toJSON(message) {
     const obj = {};
-    if (message.baseTxid.length !== 0) {
-      obj.baseTxid = base64FromBytes(message.baseTxid);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     if (message.status !== "") {
       obj.status = message.status;
     }
+    if (message.spendAmount !== 0) {
+      obj.spendAmount = Math.round(message.spendAmount);
+    }
     if (message.serverAmount !== 0) {
       obj.serverAmount = Math.round(message.serverAmount);
     }
-    if (message.clientAmount !== 0) {
-      obj.clientAmount = Math.round(message.clientAmount);
+    if (message.fee !== 0) {
+      obj.fee = Math.round(message.fee);
     }
     if (message.sequenceNumber !== 0) {
       obj.sequenceNumber = Math.round(message.sequenceNumber);
@@ -2212,10 +2302,11 @@ var FeePoolStatusResponse = {
   },
   fromPartial(object) {
     const message = createBaseFeePoolStatusResponse();
-    message.baseTxid = object.baseTxid ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.status = object.status ?? "";
+    message.spendAmount = object.spendAmount ?? 0;
     message.serverAmount = object.serverAmount ?? 0;
-    message.clientAmount = object.clientAmount ?? 0;
+    message.fee = object.fee ?? 0;
     message.sequenceNumber = object.sequenceNumber ?? 0;
     message.createdAt = object.createdAt ?? void 0;
     message.expiresAt = object.expiresAt ?? void 0;

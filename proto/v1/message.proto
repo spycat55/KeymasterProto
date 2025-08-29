@@ -133,12 +133,13 @@ message FeePoolStatusQuery {
 message FeePoolStatusResponse {
   bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
   string status = 2;                  // 状态：pending, signed, active, expired, closed, error
-  uint64 server_amount = 3;           // 服务器当前金额
-  uint64 fee = 4;                     // 交易费用
-  uint32 sequence_number = 5;         // 当前序列号
-  google.protobuf.Timestamp created_at = 6;     // 创建时间
-  google.protobuf.Timestamp expires_at = 7;     // 过期时间（如果适用）
-  string error_reason = 8;            // 错误原因（状态为error时）
+  uint64 spend_amount = 3;
+  uint64 server_amount = 4;           // 服务器当前金额
+  uint64 fee = 5;                     // 交易费用
+  uint32 sequence_number = 6;         // 当前序列号
+  google.protobuf.Timestamp created_at = 7;     // 创建时间
+  google.protobuf.Timestamp expires_at = 8;     // 过期时间（如果适用）
+  string error_reason = 9;            // 错误原因（状态为error时）
 }
 
 // ------------------ 文件相关 ------------------
