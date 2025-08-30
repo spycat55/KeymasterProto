@@ -2430,7 +2430,7 @@ var FeePoolListQuery = {
   }
 };
 function createBaseFeePoolListItem() {
-  return { spendTxId: new Uint8Array(0), status: "", createAt: void 0 };
+  return { spendTxId: new Uint8Array(0), status: "", createAt: void 0, isSettled: false };
 }
 var FeePoolListItem = {
   encode(message, writer = new BinaryWriter()) {
@@ -2442,6 +2442,9 @@ var FeePoolListItem = {
     }
     if (message.createAt !== void 0) {
       Timestamp.encode(toTimestamp(message.createAt), writer.uint32(26).fork()).join();
+    }
+    if (message.isSettled !== false) {
+      writer.uint32(32).bool(message.isSettled);
     }
     return writer;
   },
@@ -2473,6 +2476,13 @@ var FeePoolListItem = {
           message.createAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+          message.isSettled = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2485,7 +2495,8 @@ var FeePoolListItem = {
     return {
       spendTxId: isSet2(object.spendTxId) ? bytesFromBase64(object.spendTxId) : new Uint8Array(0),
       status: isSet2(object.status) ? globalThis.String(object.status) : "",
-      createAt: isSet2(object.createAt) ? fromJsonTimestamp(object.createAt) : void 0
+      createAt: isSet2(object.createAt) ? fromJsonTimestamp(object.createAt) : void 0,
+      isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false
     };
   },
   toJSON(message) {
@@ -2499,6 +2510,9 @@ var FeePoolListItem = {
     if (message.createAt !== void 0) {
       obj.createAt = message.createAt.toISOString();
     }
+    if (message.isSettled !== false) {
+      obj.isSettled = message.isSettled;
+    }
     return obj;
   },
   create(base) {
@@ -2509,6 +2523,7 @@ var FeePoolListItem = {
     message.spendTxId = object.spendTxId ?? new Uint8Array(0);
     message.status = object.status ?? "";
     message.createAt = object.createAt ?? void 0;
+    message.isSettled = object.isSettled ?? false;
     return message;
   }
 };

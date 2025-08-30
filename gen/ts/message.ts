@@ -311,7 +311,11 @@ export interface FeePoolListItem {
   /** 状态：pending, signed, active, expired, closed, error */
   status: string;
   /** 创建时间 */
-  createAt?: Date | undefined;
+  createAt?:
+    | Date
+    | undefined;
+  /** 是否结算（是否关闭了费用池，要回了余额） */
+  isSettled: boolean;
 }
 
 /** 费用池列表响应消息 */
@@ -1978,7 +1982,7 @@ export const FeePoolListQuery: MessageFns<FeePoolListQuery> = {
 };
 
 function createBaseFeePoolListItem(): FeePoolListItem {
-  return { spendTxId: new Uint8Array(0), status: "", createAt: undefined };
+  return { spendTxId: new Uint8Array(0), status: "", createAt: undefined, isSettled: false };
 }
 
 export const FeePoolListItem: MessageFns<FeePoolListItem> = {
@@ -1991,6 +1995,9 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
     }
     if (message.createAt !== undefined) {
       Timestamp.encode(toTimestamp(message.createAt), writer.uint32(26).fork()).join();
+    }
+    if (message.isSettled !== false) {
+      writer.uint32(32).bool(message.isSettled);
     }
     return writer;
   },
@@ -2026,6 +2033,14 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
           message.createAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isSettled = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2040,6 +2055,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
       spendTxId: isSet(object.spendTxId) ? bytesFromBase64(object.spendTxId) : new Uint8Array(0),
       status: isSet(object.status) ? globalThis.String(object.status) : "",
       createAt: isSet(object.createAt) ? fromJsonTimestamp(object.createAt) : undefined,
+      isSettled: isSet(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
     };
   },
 
@@ -2054,6 +2070,9 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
     if (message.createAt !== undefined) {
       obj.createAt = message.createAt.toISOString();
     }
+    if (message.isSettled !== false) {
+      obj.isSettled = message.isSettled;
+    }
     return obj;
   },
 
@@ -2065,6 +2084,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
     message.spendTxId = object.spendTxId ?? new Uint8Array(0);
     message.status = object.status ?? "";
     message.createAt = object.createAt ?? undefined;
+    message.isSettled = object.isSettled ?? false;
     return message;
   },
 };

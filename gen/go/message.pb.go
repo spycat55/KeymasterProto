@@ -1217,6 +1217,7 @@ type FeePoolListItem struct {
 	SpendTxId     []byte                 `protobuf:"bytes,1,opt,name=spend_tx_id,json=spendTxId,proto3" json:"spend_tx_id,omitempty"` // 花费交易ID（32 字节，小端序；十六进制展示为大端序）
 	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`                          // 状态：pending, signed, active, expired, closed, error
 	CreateAt      *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=create_at,json=createAt,proto3" json:"create_at,omitempty"`      // 创建时间
+	IsSettled     bool                   `protobuf:"varint,4,opt,name=is_settled,json=isSettled,proto3" json:"is_settled,omitempty"`  // 是否结算（是否关闭了费用池，要回了余额）
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1270,6 +1271,13 @@ func (x *FeePoolListItem) GetCreateAt() *timestamppb.Timestamp {
 		return x.CreateAt
 	}
 	return nil
+}
+
+func (x *FeePoolListItem) GetIsSettled() bool {
+	if x != nil {
+		return x.IsSettled
+	}
+	return false
 }
 
 // 费用池列表响应消息
@@ -1518,11 +1526,13 @@ const file_message_proto_rawDesc = "" +
 	"\ferror_reason\x18\t \x01(\tR\verrorReason\"<\n" +
 	"\x10FeePoolListQuery\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\rR\x04page\"\x82\x01\n" +
+	"\x04page\x18\x02 \x01(\rR\x04page\"\xa1\x01\n" +
 	"\x0fFeePoolListItem\x12\x1e\n" +
 	"\vspend_tx_id\x18\x01 \x01(\fR\tspendTxId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x127\n" +
-	"\tcreate_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\bcreateAt\"\x8d\x01\n" +
+	"\tcreate_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\bcreateAt\x12\x1d\n" +
+	"\n" +
+	"is_settled\x18\x04 \x01(\bR\tisSettled\"\x8d\x01\n" +
 	"\x13FeePoolListResponse\x124\n" +
 	"\x05items\x18\x01 \x03(\v2\x1e.api.webrtc.v1.FeePoolListItemR\x05items\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\rR\n" +

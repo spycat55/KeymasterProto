@@ -203,6 +203,8 @@ interface FeePoolListItem {
     status: string;
     /** 创建时间 */
     createAt?: Date | undefined;
+    /** 是否结算（是否关闭了费用池，要回了余额） */
+    isSettled: boolean;
 }
 declare const FeePoolListItem: MessageFns<FeePoolListItem>;
 /** 费用池列表响应消息 */
