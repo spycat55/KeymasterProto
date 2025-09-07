@@ -1,5 +1,28 @@
 # Release Notes
 
+## v0.5.1 (2025-09-07)
+
+### 变更
+- 费用池列表协议更新：`FeePoolListItem` 新增字段
+  - `uint64 remaining_service_seconds = 5;`（剩余服务时间，单位：秒）
+  - `bool is_close = 6;`（是否关闭）
+- bump npm 版本至 `0.5.1`
+
+### 兼容性
+- 向后兼容的字段新增（不影响现有客户端/服务端解码）
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.5.1
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.5.1
+```
+
 ## v0.5.0 (2025-08-30)
 
 ### 变更

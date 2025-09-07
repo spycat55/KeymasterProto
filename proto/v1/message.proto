@@ -158,6 +158,8 @@ message FeePoolListItem {
   string status = 2;                 // 状态：pending, signed, active, expired, closed, error
   google.protobuf.Timestamp create_at = 3; // 创建时间
   bool is_settled = 4;               // 是否结算（是否关闭了费用池，要回了余额）
+  uint64 remaining_service_seconds = 5; // 剩余服务时间（秒）
+  bool is_close = 6;                 // 是否关闭
 }
 
 // 费用池列表响应消息

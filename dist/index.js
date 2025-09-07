@@ -2430,7 +2430,14 @@ var FeePoolListQuery = {
   }
 };
 function createBaseFeePoolListItem() {
-  return { spendTxId: new Uint8Array(0), status: "", createAt: void 0, isSettled: false };
+  return {
+    spendTxId: new Uint8Array(0),
+    status: "",
+    createAt: void 0,
+    isSettled: false,
+    remainingServiceSeconds: 0,
+    isClose: false
+  };
 }
 var FeePoolListItem = {
   encode(message, writer = new BinaryWriter()) {
@@ -2445,6 +2452,12 @@ var FeePoolListItem = {
     }
     if (message.isSettled !== false) {
       writer.uint32(32).bool(message.isSettled);
+    }
+    if (message.remainingServiceSeconds !== 0) {
+      writer.uint32(40).uint64(message.remainingServiceSeconds);
+    }
+    if (message.isClose !== false) {
+      writer.uint32(48).bool(message.isClose);
     }
     return writer;
   },
@@ -2483,6 +2496,20 @@ var FeePoolListItem = {
           message.isSettled = reader.bool();
           continue;
         }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+          message.remainingServiceSeconds = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+          message.isClose = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2496,7 +2523,9 @@ var FeePoolListItem = {
       spendTxId: isSet2(object.spendTxId) ? bytesFromBase64(object.spendTxId) : new Uint8Array(0),
       status: isSet2(object.status) ? globalThis.String(object.status) : "",
       createAt: isSet2(object.createAt) ? fromJsonTimestamp(object.createAt) : void 0,
-      isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false
+      isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
+      remainingServiceSeconds: isSet2(object.remainingServiceSeconds) ? globalThis.Number(object.remainingServiceSeconds) : 0,
+      isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false
     };
   },
   toJSON(message) {
@@ -2513,6 +2542,12 @@ var FeePoolListItem = {
     if (message.isSettled !== false) {
       obj.isSettled = message.isSettled;
     }
+    if (message.remainingServiceSeconds !== 0) {
+      obj.remainingServiceSeconds = Math.round(message.remainingServiceSeconds);
+    }
+    if (message.isClose !== false) {
+      obj.isClose = message.isClose;
+    }
     return obj;
   },
   create(base) {
@@ -2524,6 +2559,8 @@ var FeePoolListItem = {
     message.status = object.status ?? "";
     message.createAt = object.createAt ?? void 0;
     message.isSettled = object.isSettled ?? false;
+    message.remainingServiceSeconds = object.remainingServiceSeconds ?? 0;
+    message.isClose = object.isClose ?? false;
     return message;
   }
 };
