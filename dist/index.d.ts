@@ -185,6 +185,8 @@ interface FeePoolStatusResponse {
     expiresAt?: Date | undefined;
     /** 错误原因（状态为error时） */
     errorReason: string;
+    /** 未花费 update 金额 */
+    unspentUpdateAmount: number;
 }
 declare const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse>;
 /** 费用池列表查询消息 */

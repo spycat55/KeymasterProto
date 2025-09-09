@@ -2188,7 +2188,8 @@ function createBaseFeePoolStatusResponse() {
     sequenceNumber: 0,
     createdAt: void 0,
     expiresAt: void 0,
-    errorReason: ""
+    errorReason: "",
+    unspentUpdateAmount: 0
   };
 }
 var FeePoolStatusResponse = {
@@ -2219,6 +2220,9 @@ var FeePoolStatusResponse = {
     }
     if (message.errorReason !== "") {
       writer.uint32(74).string(message.errorReason);
+    }
+    if (message.unspentUpdateAmount !== 0) {
+      writer.uint32(80).uint64(message.unspentUpdateAmount);
     }
     return writer;
   },
@@ -2292,6 +2296,13 @@ var FeePoolStatusResponse = {
           message.errorReason = reader.string();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+          message.unspentUpdateAmount = longToNumber2(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2310,7 +2321,8 @@ var FeePoolStatusResponse = {
       sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
       createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
       expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
-      errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : ""
+      errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : "",
+      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0
     };
   },
   toJSON(message) {
@@ -2342,6 +2354,9 @@ var FeePoolStatusResponse = {
     if (message.errorReason !== "") {
       obj.errorReason = message.errorReason;
     }
+    if (message.unspentUpdateAmount !== 0) {
+      obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
+    }
     return obj;
   },
   create(base) {
@@ -2358,6 +2373,7 @@ var FeePoolStatusResponse = {
     message.createdAt = object.createdAt ?? void 0;
     message.expiresAt = object.expiresAt ?? void 0;
     message.errorReason = object.errorReason ?? "";
+    message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     return message;
   }
 };
