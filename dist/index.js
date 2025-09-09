@@ -2436,7 +2436,8 @@ function createBaseFeePoolListItem() {
     createAt: void 0,
     isSettled: false,
     remainingServiceSeconds: 0,
-    isClose: false
+    isClose: false,
+    unspentUpdateAmount: 0
   };
 }
 var FeePoolListItem = {
@@ -2458,6 +2459,9 @@ var FeePoolListItem = {
     }
     if (message.isClose !== false) {
       writer.uint32(48).bool(message.isClose);
+    }
+    if (message.unspentUpdateAmount !== 0) {
+      writer.uint32(56).uint64(message.unspentUpdateAmount);
     }
     return writer;
   },
@@ -2510,6 +2514,13 @@ var FeePoolListItem = {
           message.isClose = reader.bool();
           continue;
         }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+          message.unspentUpdateAmount = longToNumber2(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2525,7 +2536,8 @@ var FeePoolListItem = {
       createAt: isSet2(object.createAt) ? fromJsonTimestamp(object.createAt) : void 0,
       isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       remainingServiceSeconds: isSet2(object.remainingServiceSeconds) ? globalThis.Number(object.remainingServiceSeconds) : 0,
-      isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false
+      isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
+      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0
     };
   },
   toJSON(message) {
@@ -2548,6 +2560,9 @@ var FeePoolListItem = {
     if (message.isClose !== false) {
       obj.isClose = message.isClose;
     }
+    if (message.unspentUpdateAmount !== 0) {
+      obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
+    }
     return obj;
   },
   create(base) {
@@ -2561,6 +2576,7 @@ var FeePoolListItem = {
     message.isSettled = object.isSettled ?? false;
     message.remainingServiceSeconds = object.remainingServiceSeconds ?? 0;
     message.isClose = object.isClose ?? false;
+    message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     return message;
   }
 };

@@ -1220,6 +1220,7 @@ type FeePoolListItem struct {
 	IsSettled               bool                   `protobuf:"varint,4,opt,name=is_settled,json=isSettled,proto3" json:"is_settled,omitempty"`                                             // 是否结算（是否关闭了费用池，要回了余额）
 	RemainingServiceSeconds uint64                 `protobuf:"varint,5,opt,name=remaining_service_seconds,json=remainingServiceSeconds,proto3" json:"remaining_service_seconds,omitempty"` // 剩余服务时间（秒）
 	IsClose                 bool                   `protobuf:"varint,6,opt,name=is_close,json=isClose,proto3" json:"is_close,omitempty"`                                                   // 是否关闭
+	UnspentUpdateAmount     uint64                 `protobuf:"varint,7,opt,name=unspent_update_amount,json=unspentUpdateAmount,proto3" json:"unspent_update_amount,omitempty"`             // 未花费 update 金额
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
@@ -1294,6 +1295,13 @@ func (x *FeePoolListItem) GetIsClose() bool {
 		return x.IsClose
 	}
 	return false
+}
+
+func (x *FeePoolListItem) GetUnspentUpdateAmount() uint64 {
+	if x != nil {
+		return x.UnspentUpdateAmount
+	}
+	return 0
 }
 
 // 费用池列表响应消息
@@ -1542,7 +1550,7 @@ const file_message_proto_rawDesc = "" +
 	"\ferror_reason\x18\t \x01(\tR\verrorReason\"<\n" +
 	"\x10FeePoolListQuery\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\rR\x04page\"\xf8\x01\n" +
+	"\x04page\x18\x02 \x01(\rR\x04page\"\xac\x02\n" +
 	"\x0fFeePoolListItem\x12\x1e\n" +
 	"\vspend_tx_id\x18\x01 \x01(\fR\tspendTxId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x127\n" +
@@ -1550,7 +1558,8 @@ const file_message_proto_rawDesc = "" +
 	"\n" +
 	"is_settled\x18\x04 \x01(\bR\tisSettled\x12:\n" +
 	"\x19remaining_service_seconds\x18\x05 \x01(\x04R\x17remainingServiceSeconds\x12\x19\n" +
-	"\bis_close\x18\x06 \x01(\bR\aisClose\"\x8d\x01\n" +
+	"\bis_close\x18\x06 \x01(\bR\aisClose\x122\n" +
+	"\x15unspent_update_amount\x18\a \x01(\x04R\x13unspentUpdateAmount\"\x8d\x01\n" +
 	"\x13FeePoolListResponse\x124\n" +
 	"\x05items\x18\x01 \x03(\v2\x1e.api.webrtc.v1.FeePoolListItemR\x05items\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\rR\n" +

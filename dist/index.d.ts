@@ -209,6 +209,8 @@ interface FeePoolListItem {
     remainingServiceSeconds: number;
     /** 是否关闭 */
     isClose: boolean;
+    /** 未花费 update 金额 */
+    unspentUpdateAmount: number;
 }
 declare const FeePoolListItem: MessageFns<FeePoolListItem>;
 /** 费用池列表响应消息 */
