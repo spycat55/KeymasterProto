@@ -144,6 +144,7 @@ message FeePoolStatusResponse {
   google.protobuf.Timestamp created_at = 7;     // 创建时间
   google.protobuf.Timestamp expires_at = 8;     // 过期时间（如果适用）
   string error_reason = 9;            // 错误原因（状态为error时）
+  uint64 unspent_update_amount = 10;  // 未花费 update 金额
 }
 
 // 费用池列表查询消息

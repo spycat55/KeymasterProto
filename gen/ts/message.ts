@@ -294,6 +294,8 @@ export interface FeePoolStatusResponse {
     | undefined;
   /** 错误原因（状态为error时） */
   errorReason: string;
+  /** 未花费 update 金额 */
+  unspentUpdateAmount: number;
 }
 
 /** 费用池列表查询消息 */
@@ -1724,6 +1726,7 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
     createdAt: undefined,
     expiresAt: undefined,
     errorReason: "",
+    unspentUpdateAmount: 0,
   };
 }
 
@@ -1755,6 +1758,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     }
     if (message.errorReason !== "") {
       writer.uint32(74).string(message.errorReason);
+    }
+    if (message.unspentUpdateAmount !== 0) {
+      writer.uint32(80).uint64(message.unspentUpdateAmount);
     }
     return writer;
   },
@@ -1838,6 +1844,14 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
           message.errorReason = reader.string();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.unspentUpdateAmount = longToNumber(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1858,6 +1872,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
       createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
       expiresAt: isSet(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : undefined,
       errorReason: isSet(object.errorReason) ? globalThis.String(object.errorReason) : "",
+      unspentUpdateAmount: isSet(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
     };
   },
 
@@ -1890,6 +1905,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.errorReason !== "") {
       obj.errorReason = message.errorReason;
     }
+    if (message.unspentUpdateAmount !== 0) {
+      obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
+    }
     return obj;
   },
 
@@ -1907,6 +1925,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     message.createdAt = object.createdAt ?? undefined;
     message.expiresAt = object.expiresAt ?? undefined;
     message.errorReason = object.errorReason ?? "";
+    message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     return message;
   },
 };

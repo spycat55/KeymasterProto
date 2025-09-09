@@ -1051,18 +1051,19 @@ func (x *FeePoolStatusQuery) GetSpendTxid() []byte {
 
 // 费用池状态响应消息
 type FeePoolStatusResponse struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	SpendTxid      []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"` // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
-	Status         string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`                        // 状态：pending, signed, active, expired, closed, error
-	SpendAmount    uint64                 `protobuf:"varint,3,opt,name=spend_amount,json=spendAmount,proto3" json:"spend_amount,omitempty"`
-	ServerAmount   uint64                 `protobuf:"varint,4,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`       // 服务器当前金额
-	Fee            uint64                 `protobuf:"varint,5,opt,name=fee,proto3" json:"fee,omitempty"`                                             // 交易费用
-	SequenceNumber uint32                 `protobuf:"varint,6,opt,name=sequence_number,json=sequenceNumber,proto3" json:"sequence_number,omitempty"` // 当前序列号
-	CreatedAt      *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                 // 创建时间
-	ExpiresAt      *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`                 // 过期时间（如果适用）
-	ErrorReason    string                 `protobuf:"bytes,9,opt,name=error_reason,json=errorReason,proto3" json:"error_reason,omitempty"`           // 错误原因（状态为error时）
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	SpendTxid           []byte                 `protobuf:"bytes,1,opt,name=spend_txid,json=spendTxid,proto3" json:"spend_txid,omitempty"` // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
+	Status              string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`                        // 状态：pending, signed, active, expired, closed, error
+	SpendAmount         uint64                 `protobuf:"varint,3,opt,name=spend_amount,json=spendAmount,proto3" json:"spend_amount,omitempty"`
+	ServerAmount        uint64                 `protobuf:"varint,4,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`                         // 服务器当前金额
+	Fee                 uint64                 `protobuf:"varint,5,opt,name=fee,proto3" json:"fee,omitempty"`                                                               // 交易费用
+	SequenceNumber      uint32                 `protobuf:"varint,6,opt,name=sequence_number,json=sequenceNumber,proto3" json:"sequence_number,omitempty"`                   // 当前序列号
+	CreatedAt           *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                                   // 创建时间
+	ExpiresAt           *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`                                   // 过期时间（如果适用）
+	ErrorReason         string                 `protobuf:"bytes,9,opt,name=error_reason,json=errorReason,proto3" json:"error_reason,omitempty"`                             // 错误原因（状态为error时）
+	UnspentUpdateAmount uint64                 `protobuf:"varint,10,opt,name=unspent_update_amount,json=unspentUpdateAmount,proto3" json:"unspent_update_amount,omitempty"` // 未花费 update 金额
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *FeePoolStatusResponse) Reset() {
@@ -1156,6 +1157,13 @@ func (x *FeePoolStatusResponse) GetErrorReason() string {
 		return x.ErrorReason
 	}
 	return ""
+}
+
+func (x *FeePoolStatusResponse) GetUnspentUpdateAmount() uint64 {
+	if x != nil {
+		return x.UnspentUpdateAmount
+	}
+	return 0
 }
 
 // 费用池列表查询消息
@@ -1534,7 +1542,7 @@ const file_message_proto_rawDesc = "" +
 	"\tsignature\x18\x04 \x01(\fR\tsignature\"3\n" +
 	"\x12FeePoolStatusQuery\x12\x1d\n" +
 	"\n" +
-	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\xea\x02\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\x9e\x03\n" +
 	"\x15FeePoolStatusResponse\x12\x1d\n" +
 	"\n" +
 	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12\x16\n" +
@@ -1547,7 +1555,9 @@ const file_message_proto_rawDesc = "" +
 	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
 	"expires_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12!\n" +
-	"\ferror_reason\x18\t \x01(\tR\verrorReason\"<\n" +
+	"\ferror_reason\x18\t \x01(\tR\verrorReason\x122\n" +
+	"\x15unspent_update_amount\x18\n" +
+	" \x01(\x04R\x13unspentUpdateAmount\"<\n" +
 	"\x10FeePoolListQuery\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\rR\x04page\"\xac\x02\n" +

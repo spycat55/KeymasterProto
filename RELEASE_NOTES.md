@@ -1,5 +1,28 @@
 # Release Notes
 
+## v0.5.3 (2025-09-09)
+
+### 变更
+- bump npm 版本至 0.5.3
+
+### 兼容性
+- 保持向后兼容
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.5.3
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.5.3
+```
+
+## v0.5.1 (2025-09-07)
+# Release Notes
+
 ## v0.5.1 (2025-09-07)
 
 ### 变更
