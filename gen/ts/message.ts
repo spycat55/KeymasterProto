@@ -296,6 +296,8 @@ export interface FeePoolStatusResponse {
   errorReason: string;
   /** 未花费 update 金额 */
   unspentUpdateAmount: number;
+  /** 是否关闭 */
+  isClose: boolean;
 }
 
 /** 费用池列表查询消息 */
@@ -1727,6 +1729,7 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
     expiresAt: undefined,
     errorReason: "",
     unspentUpdateAmount: 0,
+    isClose: false,
   };
 }
 
@@ -1761,6 +1764,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     }
     if (message.unspentUpdateAmount !== 0) {
       writer.uint32(80).uint64(message.unspentUpdateAmount);
+    }
+    if (message.isClose !== false) {
+      writer.uint32(88).bool(message.isClose);
     }
     return writer;
   },
@@ -1852,6 +1858,14 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
           message.unspentUpdateAmount = longToNumber(reader.uint64());
           continue;
         }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.isClose = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1873,6 +1887,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
       expiresAt: isSet(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : undefined,
       errorReason: isSet(object.errorReason) ? globalThis.String(object.errorReason) : "",
       unspentUpdateAmount: isSet(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
+      isClose: isSet(object.isClose) ? globalThis.Boolean(object.isClose) : false,
     };
   },
 
@@ -1908,6 +1923,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.unspentUpdateAmount !== 0) {
       obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
     }
+    if (message.isClose !== false) {
+      obj.isClose = message.isClose;
+    }
     return obj;
   },
 
@@ -1926,6 +1944,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     message.expiresAt = object.expiresAt ?? undefined;
     message.errorReason = object.errorReason ?? "";
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
+    message.isClose = object.isClose ?? false;
     return message;
   },
 };
