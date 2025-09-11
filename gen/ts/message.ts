@@ -298,6 +298,8 @@ export interface FeePoolStatusResponse {
   unspentUpdateAmount: number;
   /** 是否关闭 */
   isClose: boolean;
+  /** 是否结算 */
+  isSettled: boolean;
 }
 
 /** 费用池列表查询消息 */
@@ -1730,6 +1732,7 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
     errorReason: "",
     unspentUpdateAmount: 0,
     isClose: false,
+    isSettled: false,
   };
 }
 
@@ -1767,6 +1770,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     }
     if (message.isClose !== false) {
       writer.uint32(88).bool(message.isClose);
+    }
+    if (message.isSettled !== false) {
+      writer.uint32(96).bool(message.isSettled);
     }
     return writer;
   },
@@ -1866,6 +1872,14 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
           message.isClose = reader.bool();
           continue;
         }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.isSettled = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1888,6 +1902,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
       errorReason: isSet(object.errorReason) ? globalThis.String(object.errorReason) : "",
       unspentUpdateAmount: isSet(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
       isClose: isSet(object.isClose) ? globalThis.Boolean(object.isClose) : false,
+      isSettled: isSet(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
     };
   },
 
@@ -1926,6 +1941,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.isClose !== false) {
       obj.isClose = message.isClose;
     }
+    if (message.isSettled !== false) {
+      obj.isSettled = message.isSettled;
+    }
     return obj;
   },
 
@@ -1945,6 +1963,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     message.errorReason = object.errorReason ?? "";
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     message.isClose = object.isClose ?? false;
+    message.isSettled = object.isSettled ?? false;
     return message;
   },
 };

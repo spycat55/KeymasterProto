@@ -1063,6 +1063,7 @@ type FeePoolStatusResponse struct {
 	ErrorReason         string                 `protobuf:"bytes,9,opt,name=error_reason,json=errorReason,proto3" json:"error_reason,omitempty"`                             // 错误原因（状态为error时）
 	UnspentUpdateAmount uint64                 `protobuf:"varint,10,opt,name=unspent_update_amount,json=unspentUpdateAmount,proto3" json:"unspent_update_amount,omitempty"` // 未花费 update 金额
 	IsClose             bool                   `protobuf:"varint,11,opt,name=is_close,json=isClose,proto3" json:"is_close,omitempty"`                                       // 是否关闭
+	IsSettled           bool                   `protobuf:"varint,12,opt,name=is_settled,json=isSettled,proto3" json:"is_settled,omitempty"`                                 // 是否结算
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -1170,6 +1171,13 @@ func (x *FeePoolStatusResponse) GetUnspentUpdateAmount() uint64 {
 func (x *FeePoolStatusResponse) GetIsClose() bool {
 	if x != nil {
 		return x.IsClose
+	}
+	return false
+}
+
+func (x *FeePoolStatusResponse) GetIsSettled() bool {
+	if x != nil {
+		return x.IsSettled
 	}
 	return false
 }
@@ -1550,7 +1558,7 @@ const file_message_proto_rawDesc = "" +
 	"\tsignature\x18\x04 \x01(\fR\tsignature\"3\n" +
 	"\x12FeePoolStatusQuery\x12\x1d\n" +
 	"\n" +
-	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\xb9\x03\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\xd8\x03\n" +
 	"\x15FeePoolStatusResponse\x12\x1d\n" +
 	"\n" +
 	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12\x16\n" +
@@ -1566,7 +1574,9 @@ const file_message_proto_rawDesc = "" +
 	"\ferror_reason\x18\t \x01(\tR\verrorReason\x122\n" +
 	"\x15unspent_update_amount\x18\n" +
 	" \x01(\x04R\x13unspentUpdateAmount\x12\x19\n" +
-	"\bis_close\x18\v \x01(\bR\aisClose\"<\n" +
+	"\bis_close\x18\v \x01(\bR\aisClose\x12\x1d\n" +
+	"\n" +
+	"is_settled\x18\f \x01(\bR\tisSettled\"<\n" +
 	"\x10FeePoolListQuery\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\rR\x04page\"\xac\x02\n" +

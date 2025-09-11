@@ -187,6 +187,10 @@ interface FeePoolStatusResponse {
     errorReason: string;
     /** 未花费 update 金额 */
     unspentUpdateAmount: number;
+    /** 是否关闭 */
+    isClose: boolean;
+    /** 是否结算 */
+    isSettled: boolean;
 }
 declare const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse>;
 /** 费用池列表查询消息 */

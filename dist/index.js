@@ -2189,7 +2189,9 @@ function createBaseFeePoolStatusResponse() {
     createdAt: void 0,
     expiresAt: void 0,
     errorReason: "",
-    unspentUpdateAmount: 0
+    unspentUpdateAmount: 0,
+    isClose: false,
+    isSettled: false
   };
 }
 var FeePoolStatusResponse = {
@@ -2223,6 +2225,12 @@ var FeePoolStatusResponse = {
     }
     if (message.unspentUpdateAmount !== 0) {
       writer.uint32(80).uint64(message.unspentUpdateAmount);
+    }
+    if (message.isClose !== false) {
+      writer.uint32(88).bool(message.isClose);
+    }
+    if (message.isSettled !== false) {
+      writer.uint32(96).bool(message.isSettled);
     }
     return writer;
   },
@@ -2303,6 +2311,20 @@ var FeePoolStatusResponse = {
           message.unspentUpdateAmount = longToNumber2(reader.uint64());
           continue;
         }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+          message.isClose = reader.bool();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+          message.isSettled = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2322,7 +2344,9 @@ var FeePoolStatusResponse = {
       createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
       expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
       errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : "",
-      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0
+      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
+      isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
+      isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false
     };
   },
   toJSON(message) {
@@ -2357,6 +2381,12 @@ var FeePoolStatusResponse = {
     if (message.unspentUpdateAmount !== 0) {
       obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
     }
+    if (message.isClose !== false) {
+      obj.isClose = message.isClose;
+    }
+    if (message.isSettled !== false) {
+      obj.isSettled = message.isSettled;
+    }
     return obj;
   },
   create(base) {
@@ -2374,6 +2404,8 @@ var FeePoolStatusResponse = {
     message.expiresAt = object.expiresAt ?? void 0;
     message.errorReason = object.errorReason ?? "";
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
+    message.isClose = object.isClose ?? false;
+    message.isSettled = object.isSettled ?? false;
     return message;
   }
 };

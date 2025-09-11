@@ -146,6 +146,7 @@ message FeePoolStatusResponse {
   string error_reason = 9;            // 错误原因（状态为error时）
   uint64 unspent_update_amount = 10;  // 未花费 update 金额
   bool is_close = 11;                 // 是否关闭
+  bool is_settled = 12;                // 是否结算
 }
 
 // 费用池列表查询消息
