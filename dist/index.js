@@ -2191,7 +2191,9 @@ function createBaseFeePoolStatusResponse() {
     errorReason: "",
     unspentUpdateAmount: 0,
     isClose: false,
-    isSettled: false
+    isSettled: false,
+    baseTxHex: "",
+    spendTxHex: ""
   };
 }
 var FeePoolStatusResponse = {
@@ -2231,6 +2233,12 @@ var FeePoolStatusResponse = {
     }
     if (message.isSettled !== false) {
       writer.uint32(96).bool(message.isSettled);
+    }
+    if (message.baseTxHex !== "") {
+      writer.uint32(106).string(message.baseTxHex);
+    }
+    if (message.spendTxHex !== "") {
+      writer.uint32(114).string(message.spendTxHex);
     }
     return writer;
   },
@@ -2325,6 +2333,20 @@ var FeePoolStatusResponse = {
           message.isSettled = reader.bool();
           continue;
         }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+          message.baseTxHex = reader.string();
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+          message.spendTxHex = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2346,7 +2368,9 @@ var FeePoolStatusResponse = {
       errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : "",
       unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
       isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
-      isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false
+      isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
+      baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
+      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : ""
     };
   },
   toJSON(message) {
@@ -2387,6 +2411,12 @@ var FeePoolStatusResponse = {
     if (message.isSettled !== false) {
       obj.isSettled = message.isSettled;
     }
+    if (message.baseTxHex !== "") {
+      obj.baseTxHex = message.baseTxHex;
+    }
+    if (message.spendTxHex !== "") {
+      obj.spendTxHex = message.spendTxHex;
+    }
     return obj;
   },
   create(base) {
@@ -2406,6 +2436,8 @@ var FeePoolStatusResponse = {
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     message.isClose = object.isClose ?? false;
     message.isSettled = object.isSettled ?? false;
+    message.baseTxHex = object.baseTxHex ?? "";
+    message.spendTxHex = object.spendTxHex ?? "";
     return message;
   }
 };
@@ -2485,7 +2517,9 @@ function createBaseFeePoolListItem() {
     isSettled: false,
     remainingServiceSeconds: 0,
     isClose: false,
-    unspentUpdateAmount: 0
+    unspentUpdateAmount: 0,
+    baseTxHex: "",
+    spendTxHex: ""
   };
 }
 var FeePoolListItem = {
@@ -2510,6 +2544,12 @@ var FeePoolListItem = {
     }
     if (message.unspentUpdateAmount !== 0) {
       writer.uint32(56).uint64(message.unspentUpdateAmount);
+    }
+    if (message.baseTxHex !== "") {
+      writer.uint32(66).string(message.baseTxHex);
+    }
+    if (message.spendTxHex !== "") {
+      writer.uint32(74).string(message.spendTxHex);
     }
     return writer;
   },
@@ -2569,6 +2609,20 @@ var FeePoolListItem = {
           message.unspentUpdateAmount = longToNumber2(reader.uint64());
           continue;
         }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+          message.baseTxHex = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+          message.spendTxHex = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2585,7 +2639,9 @@ var FeePoolListItem = {
       isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       remainingServiceSeconds: isSet2(object.remainingServiceSeconds) ? globalThis.Number(object.remainingServiceSeconds) : 0,
       isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
-      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0
+      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
+      baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
+      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : ""
     };
   },
   toJSON(message) {
@@ -2611,6 +2667,12 @@ var FeePoolListItem = {
     if (message.unspentUpdateAmount !== 0) {
       obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
     }
+    if (message.baseTxHex !== "") {
+      obj.baseTxHex = message.baseTxHex;
+    }
+    if (message.spendTxHex !== "") {
+      obj.spendTxHex = message.spendTxHex;
+    }
     return obj;
   },
   create(base) {
@@ -2625,6 +2687,8 @@ var FeePoolListItem = {
     message.remainingServiceSeconds = object.remainingServiceSeconds ?? 0;
     message.isClose = object.isClose ?? false;
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
+    message.baseTxHex = object.baseTxHex ?? "";
+    message.spendTxHex = object.spendTxHex ?? "";
     return message;
   }
 };

@@ -191,6 +191,10 @@ interface FeePoolStatusResponse {
     isClose: boolean;
     /** 是否结算 */
     isSettled: boolean;
+    /** 基础交易的十六进制表示 */
+    baseTxHex: string;
+    /** 花费交易的十六进制表示 */
+    spendTxHex: string;
 }
 declare const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse>;
 /** 费用池列表查询消息 */
@@ -217,6 +221,10 @@ interface FeePoolListItem {
     isClose: boolean;
     /** 未花费 update 金额 */
     unspentUpdateAmount: number;
+    /** 基础交易的十六进制表示 */
+    baseTxHex: string;
+    /** 花费交易的十六进制表示 */
+    spendTxHex: string;
 }
 declare const FeePoolListItem: MessageFns<FeePoolListItem>;
 /** 费用池列表响应消息 */
