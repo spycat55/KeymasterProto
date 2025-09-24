@@ -1,3 +1,26 @@
+## v0.6.0 (2025-09-24)
+
+### 变更
+- `FeePoolStatusResponse` 与 `FeePoolListItem` 新增交易十六进制字段：
+  - `string base_tx_hex`
+  - `string spend_tx_hex`
+- bump npm 版本至 0.6.0
+
+### 兼容性
+- 新增字段，保持向后兼容
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.6.0
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.6.0
+```
+
 ## v0.5.4 (2025-09-11)
 
 ### 变更

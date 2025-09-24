@@ -147,6 +147,8 @@ message FeePoolStatusResponse {
   uint64 unspent_update_amount = 10;  // 未花费 update 金额
   bool is_close = 11;                 // 是否关闭
   bool is_settled = 12;                // 是否结算
+  string base_tx_hex = 13;            // 基础交易的十六进制表示
+  string spend_tx_hex = 14;           // 花费交易的十六进制表示
 }
 
 // 费用池列表查询消息
@@ -164,6 +166,8 @@ message FeePoolListItem {
   uint64 remaining_service_seconds = 5; // 剩余服务时间（秒）
   bool is_close = 6;                 // 是否关闭
   uint64 unspent_update_amount = 7;  // 未花费 update 金额
+  string base_tx_hex = 8;            // 基础交易的十六进制表示
+  string spend_tx_hex = 9;           // 花费交易的十六进制表示
 }
 
 // 费用池列表响应消息
