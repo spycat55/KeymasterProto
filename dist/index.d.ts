@@ -195,6 +195,8 @@ interface FeePoolStatusResponse {
     baseTxHex: string;
     /** 花费交易的十六进制表示 */
     spendTxHex: string;
+    /** 花费交易费用 */
+    spendTxFee: number;
 }
 declare const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse>;
 /** 费用池列表查询消息 */
@@ -225,6 +227,8 @@ interface FeePoolListItem {
     baseTxHex: string;
     /** 花费交易的十六进制表示 */
     spendTxHex: string;
+    /** 花费交易费用 */
+    spendTxFee: number;
 }
 declare const FeePoolListItem: MessageFns<FeePoolListItem>;
 /** 费用池列表响应消息 */

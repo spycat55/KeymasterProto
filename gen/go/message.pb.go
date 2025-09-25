@@ -1066,6 +1066,7 @@ type FeePoolStatusResponse struct {
 	IsSettled           bool                   `protobuf:"varint,12,opt,name=is_settled,json=isSettled,proto3" json:"is_settled,omitempty"`                                 // 是否结算
 	BaseTxHex           string                 `protobuf:"bytes,13,opt,name=base_tx_hex,json=baseTxHex,proto3" json:"base_tx_hex,omitempty"`                                // 基础交易的十六进制表示
 	SpendTxHex          string                 `protobuf:"bytes,14,opt,name=spend_tx_hex,json=spendTxHex,proto3" json:"spend_tx_hex,omitempty"`                             // 花费交易的十六进制表示
+	SpendTxFee          uint64                 `protobuf:"varint,15,opt,name=spend_tx_fee,json=spendTxFee,proto3" json:"spend_tx_fee,omitempty"`                            // 花费交易费用
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -1198,6 +1199,13 @@ func (x *FeePoolStatusResponse) GetSpendTxHex() string {
 	return ""
 }
 
+func (x *FeePoolStatusResponse) GetSpendTxFee() uint64 {
+	if x != nil {
+		return x.SpendTxFee
+	}
+	return 0
+}
+
 // 费用池列表查询消息
 type FeePoolListQuery struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -1263,6 +1271,7 @@ type FeePoolListItem struct {
 	UnspentUpdateAmount     uint64                 `protobuf:"varint,7,opt,name=unspent_update_amount,json=unspentUpdateAmount,proto3" json:"unspent_update_amount,omitempty"`             // 未花费 update 金额
 	BaseTxHex               string                 `protobuf:"bytes,8,opt,name=base_tx_hex,json=baseTxHex,proto3" json:"base_tx_hex,omitempty"`                                            // 基础交易的十六进制表示
 	SpendTxHex              string                 `protobuf:"bytes,9,opt,name=spend_tx_hex,json=spendTxHex,proto3" json:"spend_tx_hex,omitempty"`                                         // 花费交易的十六进制表示
+	SpendTxFee              uint64                 `protobuf:"varint,10,opt,name=spend_tx_fee,json=spendTxFee,proto3" json:"spend_tx_fee,omitempty"`                                       // 花费交易费用
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
@@ -1358,6 +1367,13 @@ func (x *FeePoolListItem) GetSpendTxHex() string {
 		return x.SpendTxHex
 	}
 	return ""
+}
+
+func (x *FeePoolListItem) GetSpendTxFee() uint64 {
+	if x != nil {
+		return x.SpendTxFee
+	}
+	return 0
 }
 
 // 费用池列表响应消息
@@ -1590,7 +1606,7 @@ const file_message_proto_rawDesc = "" +
 	"\tsignature\x18\x04 \x01(\fR\tsignature\"3\n" +
 	"\x12FeePoolStatusQuery\x12\x1d\n" +
 	"\n" +
-	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\x9a\x04\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\xbc\x04\n" +
 	"\x15FeePoolStatusResponse\x12\x1d\n" +
 	"\n" +
 	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12\x16\n" +
@@ -1611,10 +1627,12 @@ const file_message_proto_rawDesc = "" +
 	"is_settled\x18\f \x01(\bR\tisSettled\x12\x1e\n" +
 	"\vbase_tx_hex\x18\r \x01(\tR\tbaseTxHex\x12 \n" +
 	"\fspend_tx_hex\x18\x0e \x01(\tR\n" +
-	"spendTxHex\"<\n" +
+	"spendTxHex\x12 \n" +
+	"\fspend_tx_fee\x18\x0f \x01(\x04R\n" +
+	"spendTxFee\"<\n" +
 	"\x10FeePoolListQuery\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\rR\x04page\"\xee\x02\n" +
+	"\x04page\x18\x02 \x01(\rR\x04page\"\x90\x03\n" +
 	"\x0fFeePoolListItem\x12\x1e\n" +
 	"\vspend_tx_id\x18\x01 \x01(\fR\tspendTxId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x127\n" +
@@ -1626,7 +1644,10 @@ const file_message_proto_rawDesc = "" +
 	"\x15unspent_update_amount\x18\a \x01(\x04R\x13unspentUpdateAmount\x12\x1e\n" +
 	"\vbase_tx_hex\x18\b \x01(\tR\tbaseTxHex\x12 \n" +
 	"\fspend_tx_hex\x18\t \x01(\tR\n" +
-	"spendTxHex\"\x8d\x01\n" +
+	"spendTxHex\x12 \n" +
+	"\fspend_tx_fee\x18\n" +
+	" \x01(\x04R\n" +
+	"spendTxFee\"\x8d\x01\n" +
 	"\x13FeePoolListResponse\x124\n" +
 	"\x05items\x18\x01 \x03(\v2\x1e.api.webrtc.v1.FeePoolListItemR\x05items\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\rR\n" +

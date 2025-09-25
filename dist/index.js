@@ -2193,7 +2193,8 @@ function createBaseFeePoolStatusResponse() {
     isClose: false,
     isSettled: false,
     baseTxHex: "",
-    spendTxHex: ""
+    spendTxHex: "",
+    spendTxFee: 0
   };
 }
 var FeePoolStatusResponse = {
@@ -2239,6 +2240,9 @@ var FeePoolStatusResponse = {
     }
     if (message.spendTxHex !== "") {
       writer.uint32(114).string(message.spendTxHex);
+    }
+    if (message.spendTxFee !== 0) {
+      writer.uint32(120).uint64(message.spendTxFee);
     }
     return writer;
   },
@@ -2347,6 +2351,13 @@ var FeePoolStatusResponse = {
           message.spendTxHex = reader.string();
           continue;
         }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+          message.spendTxFee = longToNumber2(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2370,7 +2381,8 @@ var FeePoolStatusResponse = {
       isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
       isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
-      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : ""
+      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
+      spendTxFee: isSet2(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0
     };
   },
   toJSON(message) {
@@ -2417,6 +2429,9 @@ var FeePoolStatusResponse = {
     if (message.spendTxHex !== "") {
       obj.spendTxHex = message.spendTxHex;
     }
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
+    }
     return obj;
   },
   create(base) {
@@ -2438,6 +2453,7 @@ var FeePoolStatusResponse = {
     message.isSettled = object.isSettled ?? false;
     message.baseTxHex = object.baseTxHex ?? "";
     message.spendTxHex = object.spendTxHex ?? "";
+    message.spendTxFee = object.spendTxFee ?? 0;
     return message;
   }
 };
@@ -2519,7 +2535,8 @@ function createBaseFeePoolListItem() {
     isClose: false,
     unspentUpdateAmount: 0,
     baseTxHex: "",
-    spendTxHex: ""
+    spendTxHex: "",
+    spendTxFee: 0
   };
 }
 var FeePoolListItem = {
@@ -2550,6 +2567,9 @@ var FeePoolListItem = {
     }
     if (message.spendTxHex !== "") {
       writer.uint32(74).string(message.spendTxHex);
+    }
+    if (message.spendTxFee !== 0) {
+      writer.uint32(80).uint64(message.spendTxFee);
     }
     return writer;
   },
@@ -2623,6 +2643,13 @@ var FeePoolListItem = {
           message.spendTxHex = reader.string();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+          message.spendTxFee = longToNumber2(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2641,7 +2668,8 @@ var FeePoolListItem = {
       isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
       unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
       baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
-      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : ""
+      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
+      spendTxFee: isSet2(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0
     };
   },
   toJSON(message) {
@@ -2673,6 +2701,9 @@ var FeePoolListItem = {
     if (message.spendTxHex !== "") {
       obj.spendTxHex = message.spendTxHex;
     }
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
+    }
     return obj;
   },
   create(base) {
@@ -2689,6 +2720,7 @@ var FeePoolListItem = {
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     message.baseTxHex = object.baseTxHex ?? "";
     message.spendTxHex = object.spendTxHex ?? "";
+    message.spendTxFee = object.spendTxFee ?? 0;
     return message;
   }
 };

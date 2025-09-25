@@ -304,6 +304,8 @@ export interface FeePoolStatusResponse {
   baseTxHex: string;
   /** 花费交易的十六进制表示 */
   spendTxHex: string;
+  /** 花费交易费用 */
+  spendTxFee: number;
 }
 
 /** 费用池列表查询消息 */
@@ -336,6 +338,8 @@ export interface FeePoolListItem {
   baseTxHex: string;
   /** 花费交易的十六进制表示 */
   spendTxHex: string;
+  /** 花费交易费用 */
+  spendTxFee: number;
 }
 
 /** 费用池列表响应消息 */
@@ -1743,6 +1747,7 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
     isSettled: false,
     baseTxHex: "",
     spendTxHex: "",
+    spendTxFee: 0,
   };
 }
 
@@ -1789,6 +1794,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     }
     if (message.spendTxHex !== "") {
       writer.uint32(114).string(message.spendTxHex);
+    }
+    if (message.spendTxFee !== 0) {
+      writer.uint32(120).uint64(message.spendTxFee);
     }
     return writer;
   },
@@ -1912,6 +1920,14 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
           message.spendTxHex = reader.string();
           continue;
         }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+
+          message.spendTxFee = longToNumber(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1937,6 +1953,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
       isSettled: isSet(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       baseTxHex: isSet(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
       spendTxHex: isSet(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
+      spendTxFee: isSet(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
     };
   },
 
@@ -1984,6 +2001,9 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.spendTxHex !== "") {
       obj.spendTxHex = message.spendTxHex;
     }
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
+    }
     return obj;
   },
 
@@ -2006,6 +2026,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     message.isSettled = object.isSettled ?? false;
     message.baseTxHex = object.baseTxHex ?? "";
     message.spendTxHex = object.spendTxHex ?? "";
+    message.spendTxFee = object.spendTxFee ?? 0;
     return message;
   },
 };
@@ -2097,6 +2118,7 @@ function createBaseFeePoolListItem(): FeePoolListItem {
     unspentUpdateAmount: 0,
     baseTxHex: "",
     spendTxHex: "",
+    spendTxFee: 0,
   };
 }
 
@@ -2128,6 +2150,9 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
     }
     if (message.spendTxHex !== "") {
       writer.uint32(74).string(message.spendTxHex);
+    }
+    if (message.spendTxFee !== 0) {
+      writer.uint32(80).uint64(message.spendTxFee);
     }
     return writer;
   },
@@ -2211,6 +2236,14 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
           message.spendTxHex = reader.string();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.spendTxFee = longToNumber(reader.uint64());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2233,6 +2266,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
       unspentUpdateAmount: isSet(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
       baseTxHex: isSet(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
       spendTxHex: isSet(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
+      spendTxFee: isSet(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
     };
   },
 
@@ -2265,6 +2299,9 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
     if (message.spendTxHex !== "") {
       obj.spendTxHex = message.spendTxHex;
     }
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
+    }
     return obj;
   },
 
@@ -2282,6 +2319,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     message.baseTxHex = object.baseTxHex ?? "";
     message.spendTxHex = object.spendTxHex ?? "";
+    message.spendTxFee = object.spendTxFee ?? 0;
     return message;
   },
 };
