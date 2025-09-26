@@ -2184,7 +2184,7 @@ function createBaseFeePoolStatusResponse() {
     status: "",
     spendAmount: 0,
     serverAmount: 0,
-    fee: 0,
+    spendTxFee: 0,
     sequenceNumber: 0,
     createdAt: void 0,
     expiresAt: void 0,
@@ -2193,8 +2193,7 @@ function createBaseFeePoolStatusResponse() {
     isClose: false,
     isSettled: false,
     baseTxHex: "",
-    spendTxHex: "",
-    spendTxFee: 0
+    spendTxHex: ""
   };
 }
 var FeePoolStatusResponse = {
@@ -2211,8 +2210,8 @@ var FeePoolStatusResponse = {
     if (message.serverAmount !== 0) {
       writer.uint32(32).uint64(message.serverAmount);
     }
-    if (message.fee !== 0) {
-      writer.uint32(40).uint64(message.fee);
+    if (message.spendTxFee !== 0) {
+      writer.uint32(40).uint64(message.spendTxFee);
     }
     if (message.sequenceNumber !== 0) {
       writer.uint32(48).uint32(message.sequenceNumber);
@@ -2240,9 +2239,6 @@ var FeePoolStatusResponse = {
     }
     if (message.spendTxHex !== "") {
       writer.uint32(114).string(message.spendTxHex);
-    }
-    if (message.spendTxFee !== 0) {
-      writer.uint32(120).uint64(message.spendTxFee);
     }
     return writer;
   },
@@ -2285,7 +2281,7 @@ var FeePoolStatusResponse = {
           if (tag !== 40) {
             break;
           }
-          message.fee = longToNumber2(reader.uint64());
+          message.spendTxFee = longToNumber2(reader.uint64());
           continue;
         }
         case 6: {
@@ -2351,13 +2347,6 @@ var FeePoolStatusResponse = {
           message.spendTxHex = reader.string();
           continue;
         }
-        case 15: {
-          if (tag !== 120) {
-            break;
-          }
-          message.spendTxFee = longToNumber2(reader.uint64());
-          continue;
-        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2372,7 +2361,7 @@ var FeePoolStatusResponse = {
       status: isSet2(object.status) ? globalThis.String(object.status) : "",
       spendAmount: isSet2(object.spendAmount) ? globalThis.Number(object.spendAmount) : 0,
       serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
-      fee: isSet2(object.fee) ? globalThis.Number(object.fee) : 0,
+      spendTxFee: isSet2(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
       sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
       createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
       expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
@@ -2381,8 +2370,7 @@ var FeePoolStatusResponse = {
       isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
       isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
-      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
-      spendTxFee: isSet2(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0
+      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : ""
     };
   },
   toJSON(message) {
@@ -2399,8 +2387,8 @@ var FeePoolStatusResponse = {
     if (message.serverAmount !== 0) {
       obj.serverAmount = Math.round(message.serverAmount);
     }
-    if (message.fee !== 0) {
-      obj.fee = Math.round(message.fee);
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
     }
     if (message.sequenceNumber !== 0) {
       obj.sequenceNumber = Math.round(message.sequenceNumber);
@@ -2429,9 +2417,6 @@ var FeePoolStatusResponse = {
     if (message.spendTxHex !== "") {
       obj.spendTxHex = message.spendTxHex;
     }
-    if (message.spendTxFee !== 0) {
-      obj.spendTxFee = Math.round(message.spendTxFee);
-    }
     return obj;
   },
   create(base) {
@@ -2443,7 +2428,7 @@ var FeePoolStatusResponse = {
     message.status = object.status ?? "";
     message.spendAmount = object.spendAmount ?? 0;
     message.serverAmount = object.serverAmount ?? 0;
-    message.fee = object.fee ?? 0;
+    message.spendTxFee = object.spendTxFee ?? 0;
     message.sequenceNumber = object.sequenceNumber ?? 0;
     message.createdAt = object.createdAt ?? void 0;
     message.expiresAt = object.expiresAt ?? void 0;
@@ -2453,7 +2438,6 @@ var FeePoolStatusResponse = {
     message.isSettled = object.isSettled ?? false;
     message.baseTxHex = object.baseTxHex ?? "";
     message.spendTxHex = object.spendTxHex ?? "";
-    message.spendTxFee = object.spendTxFee ?? 0;
     return message;
   }
 };

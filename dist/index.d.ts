@@ -176,7 +176,7 @@ interface FeePoolStatusResponse {
     /** 服务器当前金额 */
     serverAmount: number;
     /** 交易费用 */
-    fee: number;
+    spendTxFee: number;
     /** 当前序列号 */
     sequenceNumber: number;
     /** 创建时间 */
@@ -195,8 +195,6 @@ interface FeePoolStatusResponse {
     baseTxHex: string;
     /** 花费交易的十六进制表示 */
     spendTxHex: string;
-    /** 花费交易费用 */
-    spendTxFee: number;
 }
 declare const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse>;
 /** 费用池列表查询消息 */

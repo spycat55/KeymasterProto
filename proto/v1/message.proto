@@ -139,7 +139,7 @@ message FeePoolStatusResponse {
   string status = 2;                  // 状态：pending, signed, active, expired, closed, error
   uint64 spend_amount = 3;
   uint64 server_amount = 4;           // 服务器当前金额
-  uint64 fee = 5;                     // 交易费用
+  uint64 spend_tx_fee = 5;                     // 交易费用
   uint32 sequence_number = 6;         // 当前序列号
   google.protobuf.Timestamp created_at = 7;     // 创建时间
   google.protobuf.Timestamp expires_at = 8;     // 过期时间（如果适用）
@@ -149,7 +149,6 @@ message FeePoolStatusResponse {
   bool is_settled = 12;                // 是否结算
   string base_tx_hex = 13;            // 基础交易的十六进制表示
   string spend_tx_hex = 14;           // 花费交易的十六进制表示
-  uint64 spend_tx_fee = 15;           // 花费交易费用
 }
 
 // 费用池列表查询消息

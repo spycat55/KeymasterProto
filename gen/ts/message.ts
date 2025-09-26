@@ -281,7 +281,7 @@ export interface FeePoolStatusResponse {
   /** 服务器当前金额 */
   serverAmount: number;
   /** 交易费用 */
-  fee: number;
+  spendTxFee: number;
   /** 当前序列号 */
   sequenceNumber: number;
   /** 创建时间 */
@@ -304,8 +304,6 @@ export interface FeePoolStatusResponse {
   baseTxHex: string;
   /** 花费交易的十六进制表示 */
   spendTxHex: string;
-  /** 花费交易费用 */
-  spendTxFee: number;
 }
 
 /** 费用池列表查询消息 */
@@ -1737,7 +1735,7 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
     status: "",
     spendAmount: 0,
     serverAmount: 0,
-    fee: 0,
+    spendTxFee: 0,
     sequenceNumber: 0,
     createdAt: undefined,
     expiresAt: undefined,
@@ -1747,7 +1745,6 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
     isSettled: false,
     baseTxHex: "",
     spendTxHex: "",
-    spendTxFee: 0,
   };
 }
 
@@ -1765,8 +1762,8 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.serverAmount !== 0) {
       writer.uint32(32).uint64(message.serverAmount);
     }
-    if (message.fee !== 0) {
-      writer.uint32(40).uint64(message.fee);
+    if (message.spendTxFee !== 0) {
+      writer.uint32(40).uint64(message.spendTxFee);
     }
     if (message.sequenceNumber !== 0) {
       writer.uint32(48).uint32(message.sequenceNumber);
@@ -1794,9 +1791,6 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     }
     if (message.spendTxHex !== "") {
       writer.uint32(114).string(message.spendTxHex);
-    }
-    if (message.spendTxFee !== 0) {
-      writer.uint32(120).uint64(message.spendTxFee);
     }
     return writer;
   },
@@ -1845,7 +1839,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
             break;
           }
 
-          message.fee = longToNumber(reader.uint64());
+          message.spendTxFee = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -1920,14 +1914,6 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
           message.spendTxHex = reader.string();
           continue;
         }
-        case 15: {
-          if (tag !== 120) {
-            break;
-          }
-
-          message.spendTxFee = longToNumber(reader.uint64());
-          continue;
-        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1943,7 +1929,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
       status: isSet(object.status) ? globalThis.String(object.status) : "",
       spendAmount: isSet(object.spendAmount) ? globalThis.Number(object.spendAmount) : 0,
       serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
-      fee: isSet(object.fee) ? globalThis.Number(object.fee) : 0,
+      spendTxFee: isSet(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
       sequenceNumber: isSet(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
       createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
       expiresAt: isSet(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : undefined,
@@ -1953,7 +1939,6 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
       isSettled: isSet(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       baseTxHex: isSet(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
       spendTxHex: isSet(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
-      spendTxFee: isSet(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
     };
   },
 
@@ -1971,8 +1956,8 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.serverAmount !== 0) {
       obj.serverAmount = Math.round(message.serverAmount);
     }
-    if (message.fee !== 0) {
-      obj.fee = Math.round(message.fee);
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
     }
     if (message.sequenceNumber !== 0) {
       obj.sequenceNumber = Math.round(message.sequenceNumber);
@@ -2001,9 +1986,6 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     if (message.spendTxHex !== "") {
       obj.spendTxHex = message.spendTxHex;
     }
-    if (message.spendTxFee !== 0) {
-      obj.spendTxFee = Math.round(message.spendTxFee);
-    }
     return obj;
   },
 
@@ -2016,7 +1998,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     message.status = object.status ?? "";
     message.spendAmount = object.spendAmount ?? 0;
     message.serverAmount = object.serverAmount ?? 0;
-    message.fee = object.fee ?? 0;
+    message.spendTxFee = object.spendTxFee ?? 0;
     message.sequenceNumber = object.sequenceNumber ?? 0;
     message.createdAt = object.createdAt ?? undefined;
     message.expiresAt = object.expiresAt ?? undefined;
@@ -2026,7 +2008,6 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     message.isSettled = object.isSettled ?? false;
     message.baseTxHex = object.baseTxHex ?? "";
     message.spendTxHex = object.spendTxHex ?? "";
-    message.spendTxFee = object.spendTxFee ?? 0;
     return message;
   },
 };

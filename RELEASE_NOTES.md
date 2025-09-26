@@ -1,3 +1,26 @@
+## v0.6.2 (2025-09-26)
+
+### 变更
+- `FeePoolStatusResponse` 字段调整：
+  - 将 `fee` 字段重命名为 `spend_tx_fee`
+  - 删除了重复的 `spend_tx_fee` 字段
+- bump npm 版本至 0.6.2
+
+### 兼容性
+- 字段重命名，可能影响向后兼容性
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.6.2
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.6.2
+```
+
 ## v0.6.0 (2025-09-24)
 
 ### 变更

@@ -1056,7 +1056,7 @@ type FeePoolStatusResponse struct {
 	Status              string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`                        // 状态：pending, signed, active, expired, closed, error
 	SpendAmount         uint64                 `protobuf:"varint,3,opt,name=spend_amount,json=spendAmount,proto3" json:"spend_amount,omitempty"`
 	ServerAmount        uint64                 `protobuf:"varint,4,opt,name=server_amount,json=serverAmount,proto3" json:"server_amount,omitempty"`                         // 服务器当前金额
-	Fee                 uint64                 `protobuf:"varint,5,opt,name=fee,proto3" json:"fee,omitempty"`                                                               // 交易费用
+	SpendTxFee          uint64                 `protobuf:"varint,5,opt,name=spend_tx_fee,json=spendTxFee,proto3" json:"spend_tx_fee,omitempty"`                             // 交易费用
 	SequenceNumber      uint32                 `protobuf:"varint,6,opt,name=sequence_number,json=sequenceNumber,proto3" json:"sequence_number,omitempty"`                   // 当前序列号
 	CreatedAt           *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                                   // 创建时间
 	ExpiresAt           *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`                                   // 过期时间（如果适用）
@@ -1066,7 +1066,6 @@ type FeePoolStatusResponse struct {
 	IsSettled           bool                   `protobuf:"varint,12,opt,name=is_settled,json=isSettled,proto3" json:"is_settled,omitempty"`                                 // 是否结算
 	BaseTxHex           string                 `protobuf:"bytes,13,opt,name=base_tx_hex,json=baseTxHex,proto3" json:"base_tx_hex,omitempty"`                                // 基础交易的十六进制表示
 	SpendTxHex          string                 `protobuf:"bytes,14,opt,name=spend_tx_hex,json=spendTxHex,proto3" json:"spend_tx_hex,omitempty"`                             // 花费交易的十六进制表示
-	SpendTxFee          uint64                 `protobuf:"varint,15,opt,name=spend_tx_fee,json=spendTxFee,proto3" json:"spend_tx_fee,omitempty"`                            // 花费交易费用
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -1129,9 +1128,9 @@ func (x *FeePoolStatusResponse) GetServerAmount() uint64 {
 	return 0
 }
 
-func (x *FeePoolStatusResponse) GetFee() uint64 {
+func (x *FeePoolStatusResponse) GetSpendTxFee() uint64 {
 	if x != nil {
-		return x.Fee
+		return x.SpendTxFee
 	}
 	return 0
 }
@@ -1197,13 +1196,6 @@ func (x *FeePoolStatusResponse) GetSpendTxHex() string {
 		return x.SpendTxHex
 	}
 	return ""
-}
-
-func (x *FeePoolStatusResponse) GetSpendTxFee() uint64 {
-	if x != nil {
-		return x.SpendTxFee
-	}
-	return 0
 }
 
 // 费用池列表查询消息
@@ -1606,14 +1598,15 @@ const file_message_proto_rawDesc = "" +
 	"\tsignature\x18\x04 \x01(\fR\tsignature\"3\n" +
 	"\x12FeePoolStatusQuery\x12\x1d\n" +
 	"\n" +
-	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\xbc\x04\n" +
+	"spend_txid\x18\x01 \x01(\fR\tspendTxid\"\xaa\x04\n" +
 	"\x15FeePoolStatusResponse\x12\x1d\n" +
 	"\n" +
 	"spend_txid\x18\x01 \x01(\fR\tspendTxid\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12!\n" +
 	"\fspend_amount\x18\x03 \x01(\x04R\vspendAmount\x12#\n" +
-	"\rserver_amount\x18\x04 \x01(\x04R\fserverAmount\x12\x10\n" +
-	"\x03fee\x18\x05 \x01(\x04R\x03fee\x12'\n" +
+	"\rserver_amount\x18\x04 \x01(\x04R\fserverAmount\x12 \n" +
+	"\fspend_tx_fee\x18\x05 \x01(\x04R\n" +
+	"spendTxFee\x12'\n" +
 	"\x0fsequence_number\x18\x06 \x01(\rR\x0esequenceNumber\x129\n" +
 	"\n" +
 	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
@@ -1627,9 +1620,7 @@ const file_message_proto_rawDesc = "" +
 	"is_settled\x18\f \x01(\bR\tisSettled\x12\x1e\n" +
 	"\vbase_tx_hex\x18\r \x01(\tR\tbaseTxHex\x12 \n" +
 	"\fspend_tx_hex\x18\x0e \x01(\tR\n" +
-	"spendTxHex\x12 \n" +
-	"\fspend_tx_fee\x18\x0f \x01(\x04R\n" +
-	"spendTxFee\"<\n" +
+	"spendTxHex\"<\n" +
 	"\x10FeePoolListQuery\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\rR\x05limit\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\rR\x04page\"\x90\x03\n" +
