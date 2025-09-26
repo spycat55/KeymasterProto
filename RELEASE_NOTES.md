@@ -1,3 +1,24 @@
+## v0.7.0 (2025-09-26)
+
+### 变更
+- FeePoolListItem 字段调整
+- bump npm 版本至 0.7.0
+
+### 兼容性
+- 保持向后兼容
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.7.0
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.7.0
+```
+
 ## v0.6.2 (2025-09-26)
 
 ### 变更

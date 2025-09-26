@@ -317,27 +317,39 @@ export interface FeePoolListQuery {
 /** 费用池列表项目 */
 export interface FeePoolListItem {
   /** 花费交易ID（32 字节，小端序；十六进制展示为大端序） */
-  spendTxId: Uint8Array;
+  spendTxid: Uint8Array;
   /** 状态：pending, signed, active, expired, closed, error */
   status: string;
+  /** 客户端投入的总金额 */
+  spendAmount: number;
+  /** 当前服务器金额 */
+  serverAmount: number;
+  /** 花费交易费用 */
+  spendTxFee: number;
+  /** 当前序列号 */
+  sequenceNumber: number;
   /** 创建时间 */
-  createAt?:
+  createdAt?:
     | Date
     | undefined;
-  /** 是否结算（是否关闭了费用池，要回了余额） */
-  isSettled: boolean;
-  /** 剩余服务时间（秒） */
-  remainingServiceSeconds: number;
+  /** 过期时间（如果适用） */
+  expiresAt?:
+    | Date
+    | undefined;
+  /** 错误原因（状态为 error 时可用） */
+  errorReason: string;
+  /** 未花费的 update 金额 */
+  unspentUpdateAmount: number;
   /** 是否关闭 */
   isClose: boolean;
-  /** 未花费 update 金额 */
-  unspentUpdateAmount: number;
+  /** 是否结算 */
+  isSettled: boolean;
   /** 基础交易的十六进制表示 */
   baseTxHex: string;
   /** 花费交易的十六进制表示 */
   spendTxHex: string;
-  /** 花费交易费用 */
-  spendTxFee: number;
+  /** 剩余服务时间（秒） */
+  remainingServiceSeconds: number;
 }
 
 /** 费用池列表响应消息 */
@@ -2090,50 +2102,70 @@ export const FeePoolListQuery: MessageFns<FeePoolListQuery> = {
 
 function createBaseFeePoolListItem(): FeePoolListItem {
   return {
-    spendTxId: new Uint8Array(0),
+    spendTxid: new Uint8Array(0),
     status: "",
-    createAt: undefined,
-    isSettled: false,
-    remainingServiceSeconds: 0,
-    isClose: false,
+    spendAmount: 0,
+    serverAmount: 0,
+    spendTxFee: 0,
+    sequenceNumber: 0,
+    createdAt: undefined,
+    expiresAt: undefined,
+    errorReason: "",
     unspentUpdateAmount: 0,
+    isClose: false,
+    isSettled: false,
     baseTxHex: "",
     spendTxHex: "",
-    spendTxFee: 0,
+    remainingServiceSeconds: 0,
   };
 }
 
 export const FeePoolListItem: MessageFns<FeePoolListItem> = {
   encode(message: FeePoolListItem, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.spendTxId.length !== 0) {
-      writer.uint32(10).bytes(message.spendTxId);
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
     }
     if (message.status !== "") {
       writer.uint32(18).string(message.status);
     }
-    if (message.createAt !== undefined) {
-      Timestamp.encode(toTimestamp(message.createAt), writer.uint32(26).fork()).join();
+    if (message.spendAmount !== 0) {
+      writer.uint32(24).uint64(message.spendAmount);
     }
-    if (message.isSettled !== false) {
-      writer.uint32(32).bool(message.isSettled);
-    }
-    if (message.remainingServiceSeconds !== 0) {
-      writer.uint32(40).uint64(message.remainingServiceSeconds);
-    }
-    if (message.isClose !== false) {
-      writer.uint32(48).bool(message.isClose);
-    }
-    if (message.unspentUpdateAmount !== 0) {
-      writer.uint32(56).uint64(message.unspentUpdateAmount);
-    }
-    if (message.baseTxHex !== "") {
-      writer.uint32(66).string(message.baseTxHex);
-    }
-    if (message.spendTxHex !== "") {
-      writer.uint32(74).string(message.spendTxHex);
+    if (message.serverAmount !== 0) {
+      writer.uint32(32).uint64(message.serverAmount);
     }
     if (message.spendTxFee !== 0) {
-      writer.uint32(80).uint64(message.spendTxFee);
+      writer.uint32(40).uint64(message.spendTxFee);
+    }
+    if (message.sequenceNumber !== 0) {
+      writer.uint32(48).uint32(message.sequenceNumber);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(58).fork()).join();
+    }
+    if (message.expiresAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.expiresAt), writer.uint32(66).fork()).join();
+    }
+    if (message.errorReason !== "") {
+      writer.uint32(74).string(message.errorReason);
+    }
+    if (message.unspentUpdateAmount !== 0) {
+      writer.uint32(80).uint64(message.unspentUpdateAmount);
+    }
+    if (message.isClose !== false) {
+      writer.uint32(88).bool(message.isClose);
+    }
+    if (message.isSettled !== false) {
+      writer.uint32(96).bool(message.isSettled);
+    }
+    if (message.baseTxHex !== "") {
+      writer.uint32(106).string(message.baseTxHex);
+    }
+    if (message.spendTxHex !== "") {
+      writer.uint32(114).string(message.spendTxHex);
+    }
+    if (message.remainingServiceSeconds !== 0) {
+      writer.uint32(120).uint64(message.remainingServiceSeconds);
     }
     return writer;
   },
@@ -2150,7 +2182,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
             break;
           }
 
-          message.spendTxId = reader.bytes();
+          message.spendTxid = reader.bytes();
           continue;
         }
         case 2: {
@@ -2162,11 +2194,11 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
           continue;
         }
         case 3: {
-          if (tag !== 26) {
+          if (tag !== 24) {
             break;
           }
 
-          message.createAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.spendAmount = longToNumber(reader.uint64());
           continue;
         }
         case 4: {
@@ -2174,7 +2206,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
             break;
           }
 
-          message.isSettled = reader.bool();
+          message.serverAmount = longToNumber(reader.uint64());
           continue;
         }
         case 5: {
@@ -2182,7 +2214,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
             break;
           }
 
-          message.remainingServiceSeconds = longToNumber(reader.uint64());
+          message.spendTxFee = longToNumber(reader.uint64());
           continue;
         }
         case 6: {
@@ -2190,15 +2222,15 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
             break;
           }
 
-          message.isClose = reader.bool();
+          message.sequenceNumber = reader.uint32();
           continue;
         }
         case 7: {
-          if (tag !== 56) {
+          if (tag !== 58) {
             break;
           }
 
-          message.unspentUpdateAmount = longToNumber(reader.uint64());
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         }
         case 8: {
@@ -2206,7 +2238,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
             break;
           }
 
-          message.baseTxHex = reader.string();
+          message.expiresAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           continue;
         }
         case 9: {
@@ -2214,7 +2246,7 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
             break;
           }
 
-          message.spendTxHex = reader.string();
+          message.errorReason = reader.string();
           continue;
         }
         case 10: {
@@ -2222,7 +2254,47 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
             break;
           }
 
-          message.spendTxFee = longToNumber(reader.uint64());
+          message.unspentUpdateAmount = longToNumber(reader.uint64());
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.isClose = reader.bool();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.isSettled = reader.bool();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.baseTxHex = reader.string();
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+
+          message.spendTxHex = reader.string();
+          continue;
+        }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+
+          message.remainingServiceSeconds = longToNumber(reader.uint64());
           continue;
         }
       }
@@ -2236,43 +2308,63 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
 
   fromJSON(object: any): FeePoolListItem {
     return {
-      spendTxId: isSet(object.spendTxId) ? bytesFromBase64(object.spendTxId) : new Uint8Array(0),
+      spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       status: isSet(object.status) ? globalThis.String(object.status) : "",
-      createAt: isSet(object.createAt) ? fromJsonTimestamp(object.createAt) : undefined,
+      spendAmount: isSet(object.spendAmount) ? globalThis.Number(object.spendAmount) : 0,
+      serverAmount: isSet(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
+      spendTxFee: isSet(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
+      sequenceNumber: isSet(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
+      createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
+      expiresAt: isSet(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : undefined,
+      errorReason: isSet(object.errorReason) ? globalThis.String(object.errorReason) : "",
+      unspentUpdateAmount: isSet(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
+      isClose: isSet(object.isClose) ? globalThis.Boolean(object.isClose) : false,
       isSettled: isSet(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
+      baseTxHex: isSet(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
+      spendTxHex: isSet(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
       remainingServiceSeconds: isSet(object.remainingServiceSeconds)
         ? globalThis.Number(object.remainingServiceSeconds)
         : 0,
-      isClose: isSet(object.isClose) ? globalThis.Boolean(object.isClose) : false,
-      unspentUpdateAmount: isSet(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
-      baseTxHex: isSet(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
-      spendTxHex: isSet(object.spendTxHex) ? globalThis.String(object.spendTxHex) : "",
-      spendTxFee: isSet(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
     };
   },
 
   toJSON(message: FeePoolListItem): unknown {
     const obj: any = {};
-    if (message.spendTxId.length !== 0) {
-      obj.spendTxId = base64FromBytes(message.spendTxId);
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
     }
     if (message.status !== "") {
       obj.status = message.status;
     }
-    if (message.createAt !== undefined) {
-      obj.createAt = message.createAt.toISOString();
+    if (message.spendAmount !== 0) {
+      obj.spendAmount = Math.round(message.spendAmount);
     }
-    if (message.isSettled !== false) {
-      obj.isSettled = message.isSettled;
+    if (message.serverAmount !== 0) {
+      obj.serverAmount = Math.round(message.serverAmount);
     }
-    if (message.remainingServiceSeconds !== 0) {
-      obj.remainingServiceSeconds = Math.round(message.remainingServiceSeconds);
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
+    }
+    if (message.sequenceNumber !== 0) {
+      obj.sequenceNumber = Math.round(message.sequenceNumber);
+    }
+    if (message.createdAt !== undefined) {
+      obj.createdAt = message.createdAt.toISOString();
+    }
+    if (message.expiresAt !== undefined) {
+      obj.expiresAt = message.expiresAt.toISOString();
+    }
+    if (message.errorReason !== "") {
+      obj.errorReason = message.errorReason;
+    }
+    if (message.unspentUpdateAmount !== 0) {
+      obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
     }
     if (message.isClose !== false) {
       obj.isClose = message.isClose;
     }
-    if (message.unspentUpdateAmount !== 0) {
-      obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
+    if (message.isSettled !== false) {
+      obj.isSettled = message.isSettled;
     }
     if (message.baseTxHex !== "") {
       obj.baseTxHex = message.baseTxHex;
@@ -2280,8 +2372,8 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
     if (message.spendTxHex !== "") {
       obj.spendTxHex = message.spendTxHex;
     }
-    if (message.spendTxFee !== 0) {
-      obj.spendTxFee = Math.round(message.spendTxFee);
+    if (message.remainingServiceSeconds !== 0) {
+      obj.remainingServiceSeconds = Math.round(message.remainingServiceSeconds);
     }
     return obj;
   },
@@ -2291,16 +2383,21 @@ export const FeePoolListItem: MessageFns<FeePoolListItem> = {
   },
   fromPartial<I extends Exact<DeepPartial<FeePoolListItem>, I>>(object: I): FeePoolListItem {
     const message = createBaseFeePoolListItem();
-    message.spendTxId = object.spendTxId ?? new Uint8Array(0);
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.status = object.status ?? "";
-    message.createAt = object.createAt ?? undefined;
-    message.isSettled = object.isSettled ?? false;
-    message.remainingServiceSeconds = object.remainingServiceSeconds ?? 0;
-    message.isClose = object.isClose ?? false;
+    message.spendAmount = object.spendAmount ?? 0;
+    message.serverAmount = object.serverAmount ?? 0;
+    message.spendTxFee = object.spendTxFee ?? 0;
+    message.sequenceNumber = object.sequenceNumber ?? 0;
+    message.createdAt = object.createdAt ?? undefined;
+    message.expiresAt = object.expiresAt ?? undefined;
+    message.errorReason = object.errorReason ?? "";
     message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
+    message.isClose = object.isClose ?? false;
+    message.isSettled = object.isSettled ?? false;
     message.baseTxHex = object.baseTxHex ?? "";
     message.spendTxHex = object.spendTxHex ?? "";
-    message.spendTxFee = object.spendTxFee ?? 0;
+    message.remainingServiceSeconds = object.remainingServiceSeconds ?? 0;
     return message;
   },
 };

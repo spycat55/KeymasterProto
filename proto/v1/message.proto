@@ -159,16 +159,21 @@ message FeePoolListQuery {
 
 // 费用池列表项目
 message FeePoolListItem {
-  bytes spend_tx_id = 1;             // 花费交易ID（32 字节，小端序；十六进制展示为大端序）
-  string status = 2;                 // 状态：pending, signed, active, expired, closed, error
-  google.protobuf.Timestamp create_at = 3; // 创建时间
-  bool is_settled = 4;               // 是否结算（是否关闭了费用池，要回了余额）
-  uint64 remaining_service_seconds = 5; // 剩余服务时间（秒）
-  bool is_close = 6;                 // 是否关闭
-  uint64 unspent_update_amount = 7;  // 未花费 update 金额
-  string base_tx_hex = 8;            // 基础交易的十六进制表示
-  string spend_tx_hex = 9;           // 花费交易的十六进制表示
-  uint64 spend_tx_fee = 10;          // 花费交易费用
+  bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序）
+  string status = 2;                   // 状态：pending, signed, active, expired, closed, error
+  uint64 spend_amount = 3;             // 客户端投入的总金额
+  uint64 server_amount = 4;            // 当前服务器金额
+  uint64 spend_tx_fee = 5;             // 花费交易费用
+  uint32 sequence_number = 6;          // 当前序列号
+  google.protobuf.Timestamp created_at = 7; // 创建时间
+  google.protobuf.Timestamp expires_at = 8; // 过期时间（如果适用）
+  string error_reason = 9;             // 错误原因（状态为 error 时可用）
+  uint64 unspent_update_amount = 10;   // 未花费的 update 金额
+  bool is_close = 11;                  // 是否关闭
+  bool is_settled = 12;                // 是否结算
+  string base_tx_hex = 13;             // 基础交易的十六进制表示
+  string spend_tx_hex = 14;            // 花费交易的十六进制表示
+  uint64 remaining_service_seconds = 15; // 剩余服务时间（秒）
 }
 
 // 费用池列表响应消息

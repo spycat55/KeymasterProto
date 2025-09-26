@@ -208,25 +208,35 @@ declare const FeePoolListQuery: MessageFns<FeePoolListQuery>;
 /** 费用池列表项目 */
 interface FeePoolListItem {
     /** 花费交易ID（32 字节，小端序；十六进制展示为大端序） */
-    spendTxId: Uint8Array;
+    spendTxid: Uint8Array;
     /** 状态：pending, signed, active, expired, closed, error */
     status: string;
+    /** 客户端投入的总金额 */
+    spendAmount: number;
+    /** 当前服务器金额 */
+    serverAmount: number;
+    /** 花费交易费用 */
+    spendTxFee: number;
+    /** 当前序列号 */
+    sequenceNumber: number;
     /** 创建时间 */
-    createAt?: Date | undefined;
-    /** 是否结算（是否关闭了费用池，要回了余额） */
-    isSettled: boolean;
-    /** 剩余服务时间（秒） */
-    remainingServiceSeconds: number;
+    createdAt?: Date | undefined;
+    /** 过期时间（如果适用） */
+    expiresAt?: Date | undefined;
+    /** 错误原因（状态为 error 时可用） */
+    errorReason: string;
+    /** 未花费的 update 金额 */
+    unspentUpdateAmount: number;
     /** 是否关闭 */
     isClose: boolean;
-    /** 未花费 update 金额 */
-    unspentUpdateAmount: number;
+    /** 是否结算 */
+    isSettled: boolean;
     /** 基础交易的十六进制表示 */
     baseTxHex: string;
     /** 花费交易的十六进制表示 */
     spendTxHex: string;
-    /** 花费交易费用 */
-    spendTxFee: number;
+    /** 剩余服务时间（秒） */
+    remainingServiceSeconds: number;
 }
 declare const FeePoolListItem: MessageFns<FeePoolListItem>;
 /** 费用池列表响应消息 */
