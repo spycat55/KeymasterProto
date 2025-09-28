@@ -1,3 +1,27 @@
+## v0.8.0 (2025-09-28)
+
+### 变更
+- 协议文件更新：`proto/v1/message.proto` 字段优化和完善
+- 重新生成 Go 代码：更新 `gen/go/message.pb.go`
+- 重新生成 TypeScript 代码：更新 `gen/ts/message.ts`
+- 构建产物更新：`dist/index.js` 和 `dist/index.d.ts`
+- bump npm 版本至 0.8.0
+
+### 兼容性
+- 保持向后兼容
+
+### 安装
+
+#### Go Module
+```bash
+go get github.com/spycat55/KeymasterProto@v0.8.0
+```
+
+#### npm Package
+```bash
+npm install keymaster_proto@0.8.0
+```
+
 ## v0.7.0 (2025-09-26)
 
 ### 变更
