@@ -21,10 +21,12 @@ enum MsgKind {
   KIND_FEE_POOL_UPDATE = 15;          // 费用池更新
   KIND_FEE_POOL_UPDATE_NOTIFY = 16;   // 费用池更新通知（服务器发送给客户端）
   KIND_FEE_POOL_CLOSE = 17;           // 费用池关闭
-  KIND_FEE_POOL_STATUS_QUERY = 18;    // 费用池状态查询
-  KIND_FEE_POOL_STATUS_RESPONSE = 19; // 费用池状态响应
-  KIND_FEE_POOL_LIST_QUERY = 20;      // 费用池列表查询
-  KIND_FEE_POOL_LIST_RESPONSE = 21;   // 费用池列表响应
+  KIND_FEE_POOL_SESSION_QUERY = 18;    // 费用池会话状态查询
+  KIND_FEE_POOL_SESSION_RESPONSE = 19; // 费用池会话状态响应
+  KIND_FEE_POOL_LIST_QUERY = 20;       // 费用池列表查询
+  KIND_FEE_POOL_LIST_RESPONSE = 21;    // 费用池列表响应
+  KIND_FEE_POOL_QUERY = 22;            // 单个费用池查询
+  KIND_FEE_POOL_RESPONSE = 23;         // 单个费用池响应
 }
 
 // ErrorCode 改用字符串，不再定义枚举。请在 ErrorReply.error_code 字段中填入具体错误字符串。
@@ -61,10 +63,12 @@ message Envelope {
     FeePoolUpdate fee_pool_update = 15;
     FeePoolUpdateNotify fee_pool_update_notify = 16;
     FeePoolClose fee_pool_close = 17;
-    FeePoolStatusQuery fee_pool_status_query = 18;
-    FeePoolStatusResponse fee_pool_status_response = 19;
+    FeePoolSessionQuery fee_pool_session_query = 18;
+    FeePoolSessionResponse fee_pool_session_response = 19;
     FeePoolListQuery fee_pool_list_query = 20;
     FeePoolListResponse fee_pool_list_response = 21;
+    FeePoolQuery fee_pool_query = 22;
+    FeePoolResponse fee_pool_response = 23;
   }
 }
 
@@ -128,13 +132,24 @@ message FeePoolClose {
   bytes signature = 4;                // 签名
 }
 
-// 费用池状态查询消息
-message FeePoolStatusQuery {
-  bytes spend_txid = 1;                // 花费交易ID（可选，为空则查询客户端所有费用池）
+// 费用池会话查询消息
+message FeePoolSessionQuery {
 }
 
-// 费用池状态响应消息
-message FeePoolStatusResponse {
+// 费用池会话响应消息
+message FeePoolSessionResponse {
+  bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；选填）
+  google.protobuf.Timestamp expiration_at = 2;     // 到期时间，选填
+  string error_reason = 3;            // 错误原因（如果状态为error时填写）
+}
+
+// 费用池查询消息
+message FeePoolQuery {
+  bytes spend_txid = 1;                // 花费交易ID（必选）查看单一费用池信息
+}
+
+// 费用池响应消息
+message FeePoolResponse {
   bytes spend_txid = 1;                // 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空）
   string status = 2;                  // 状态：pending, signed, active, expired, closed, error
   uint64 spend_amount = 3;

@@ -38,9 +38,11 @@ __export(index_exports, {
   FeePoolListItem: () => FeePoolListItem,
   FeePoolListQuery: () => FeePoolListQuery,
   FeePoolListResponse: () => FeePoolListResponse,
+  FeePoolQuery: () => FeePoolQuery,
+  FeePoolResponse: () => FeePoolResponse,
+  FeePoolSessionQuery: () => FeePoolSessionQuery,
+  FeePoolSessionResponse: () => FeePoolSessionResponse,
   FeePoolSign: () => FeePoolSign,
-  FeePoolStatusQuery: () => FeePoolStatusQuery,
-  FeePoolStatusResponse: () => FeePoolStatusResponse,
   FeePoolUpdate: () => FeePoolUpdate,
   FeePoolUpdateNotify: () => FeePoolUpdateNotify,
   FileDemandBroadcast: () => FileDemandBroadcast,
@@ -874,10 +876,12 @@ var MsgKind = /* @__PURE__ */ ((MsgKind2) => {
   MsgKind2[MsgKind2["KIND_FEE_POOL_UPDATE"] = 15] = "KIND_FEE_POOL_UPDATE";
   MsgKind2[MsgKind2["KIND_FEE_POOL_UPDATE_NOTIFY"] = 16] = "KIND_FEE_POOL_UPDATE_NOTIFY";
   MsgKind2[MsgKind2["KIND_FEE_POOL_CLOSE"] = 17] = "KIND_FEE_POOL_CLOSE";
-  MsgKind2[MsgKind2["KIND_FEE_POOL_STATUS_QUERY"] = 18] = "KIND_FEE_POOL_STATUS_QUERY";
-  MsgKind2[MsgKind2["KIND_FEE_POOL_STATUS_RESPONSE"] = 19] = "KIND_FEE_POOL_STATUS_RESPONSE";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_SESSION_QUERY"] = 18] = "KIND_FEE_POOL_SESSION_QUERY";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_SESSION_RESPONSE"] = 19] = "KIND_FEE_POOL_SESSION_RESPONSE";
   MsgKind2[MsgKind2["KIND_FEE_POOL_LIST_QUERY"] = 20] = "KIND_FEE_POOL_LIST_QUERY";
   MsgKind2[MsgKind2["KIND_FEE_POOL_LIST_RESPONSE"] = 21] = "KIND_FEE_POOL_LIST_RESPONSE";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_QUERY"] = 22] = "KIND_FEE_POOL_QUERY";
+  MsgKind2[MsgKind2["KIND_FEE_POOL_RESPONSE"] = 23] = "KIND_FEE_POOL_RESPONSE";
   MsgKind2[MsgKind2["UNRECOGNIZED"] = -1] = "UNRECOGNIZED";
   return MsgKind2;
 })(MsgKind || {});
@@ -917,17 +921,23 @@ function msgKindFromJSON(object) {
     case "KIND_FEE_POOL_CLOSE":
       return 17 /* KIND_FEE_POOL_CLOSE */;
     case 18:
-    case "KIND_FEE_POOL_STATUS_QUERY":
-      return 18 /* KIND_FEE_POOL_STATUS_QUERY */;
+    case "KIND_FEE_POOL_SESSION_QUERY":
+      return 18 /* KIND_FEE_POOL_SESSION_QUERY */;
     case 19:
-    case "KIND_FEE_POOL_STATUS_RESPONSE":
-      return 19 /* KIND_FEE_POOL_STATUS_RESPONSE */;
+    case "KIND_FEE_POOL_SESSION_RESPONSE":
+      return 19 /* KIND_FEE_POOL_SESSION_RESPONSE */;
     case 20:
     case "KIND_FEE_POOL_LIST_QUERY":
       return 20 /* KIND_FEE_POOL_LIST_QUERY */;
     case 21:
     case "KIND_FEE_POOL_LIST_RESPONSE":
       return 21 /* KIND_FEE_POOL_LIST_RESPONSE */;
+    case 22:
+    case "KIND_FEE_POOL_QUERY":
+      return 22 /* KIND_FEE_POOL_QUERY */;
+    case 23:
+    case "KIND_FEE_POOL_RESPONSE":
+      return 23 /* KIND_FEE_POOL_RESPONSE */;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -958,14 +968,18 @@ function msgKindToJSON(object) {
       return "KIND_FEE_POOL_UPDATE_NOTIFY";
     case 17 /* KIND_FEE_POOL_CLOSE */:
       return "KIND_FEE_POOL_CLOSE";
-    case 18 /* KIND_FEE_POOL_STATUS_QUERY */:
-      return "KIND_FEE_POOL_STATUS_QUERY";
-    case 19 /* KIND_FEE_POOL_STATUS_RESPONSE */:
-      return "KIND_FEE_POOL_STATUS_RESPONSE";
+    case 18 /* KIND_FEE_POOL_SESSION_QUERY */:
+      return "KIND_FEE_POOL_SESSION_QUERY";
+    case 19 /* KIND_FEE_POOL_SESSION_RESPONSE */:
+      return "KIND_FEE_POOL_SESSION_RESPONSE";
     case 20 /* KIND_FEE_POOL_LIST_QUERY */:
       return "KIND_FEE_POOL_LIST_QUERY";
     case 21 /* KIND_FEE_POOL_LIST_RESPONSE */:
       return "KIND_FEE_POOL_LIST_RESPONSE";
+    case 22 /* KIND_FEE_POOL_QUERY */:
+      return "KIND_FEE_POOL_QUERY";
+    case 23 /* KIND_FEE_POOL_RESPONSE */:
+      return "KIND_FEE_POOL_RESPONSE";
     case -1 /* UNRECOGNIZED */:
     default:
       return "UNRECOGNIZED";
@@ -1122,10 +1136,12 @@ function createBaseEnvelope() {
     feePoolUpdate: void 0,
     feePoolUpdateNotify: void 0,
     feePoolClose: void 0,
-    feePoolStatusQuery: void 0,
-    feePoolStatusResponse: void 0,
+    feePoolSessionQuery: void 0,
+    feePoolSessionResponse: void 0,
     feePoolListQuery: void 0,
-    feePoolListResponse: void 0
+    feePoolListResponse: void 0,
+    feePoolQuery: void 0,
+    feePoolResponse: void 0
   };
 }
 var Envelope = {
@@ -1172,17 +1188,23 @@ var Envelope = {
     if (message.feePoolClose !== void 0) {
       FeePoolClose.encode(message.feePoolClose, writer.uint32(138).fork()).join();
     }
-    if (message.feePoolStatusQuery !== void 0) {
-      FeePoolStatusQuery.encode(message.feePoolStatusQuery, writer.uint32(146).fork()).join();
+    if (message.feePoolSessionQuery !== void 0) {
+      FeePoolSessionQuery.encode(message.feePoolSessionQuery, writer.uint32(146).fork()).join();
     }
-    if (message.feePoolStatusResponse !== void 0) {
-      FeePoolStatusResponse.encode(message.feePoolStatusResponse, writer.uint32(154).fork()).join();
+    if (message.feePoolSessionResponse !== void 0) {
+      FeePoolSessionResponse.encode(message.feePoolSessionResponse, writer.uint32(154).fork()).join();
     }
     if (message.feePoolListQuery !== void 0) {
       FeePoolListQuery.encode(message.feePoolListQuery, writer.uint32(162).fork()).join();
     }
     if (message.feePoolListResponse !== void 0) {
       FeePoolListResponse.encode(message.feePoolListResponse, writer.uint32(170).fork()).join();
+    }
+    if (message.feePoolQuery !== void 0) {
+      FeePoolQuery.encode(message.feePoolQuery, writer.uint32(178).fork()).join();
+    }
+    if (message.feePoolResponse !== void 0) {
+      FeePoolResponse.encode(message.feePoolResponse, writer.uint32(186).fork()).join();
     }
     return writer;
   },
@@ -1295,14 +1317,14 @@ var Envelope = {
           if (tag !== 146) {
             break;
           }
-          message.feePoolStatusQuery = FeePoolStatusQuery.decode(reader, reader.uint32());
+          message.feePoolSessionQuery = FeePoolSessionQuery.decode(reader, reader.uint32());
           continue;
         }
         case 19: {
           if (tag !== 154) {
             break;
           }
-          message.feePoolStatusResponse = FeePoolStatusResponse.decode(reader, reader.uint32());
+          message.feePoolSessionResponse = FeePoolSessionResponse.decode(reader, reader.uint32());
           continue;
         }
         case 20: {
@@ -1317,6 +1339,20 @@ var Envelope = {
             break;
           }
           message.feePoolListResponse = FeePoolListResponse.decode(reader, reader.uint32());
+          continue;
+        }
+        case 22: {
+          if (tag !== 178) {
+            break;
+          }
+          message.feePoolQuery = FeePoolQuery.decode(reader, reader.uint32());
+          continue;
+        }
+        case 23: {
+          if (tag !== 186) {
+            break;
+          }
+          message.feePoolResponse = FeePoolResponse.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -1343,10 +1379,12 @@ var Envelope = {
       feePoolUpdate: isSet2(object.feePoolUpdate) ? FeePoolUpdate.fromJSON(object.feePoolUpdate) : void 0,
       feePoolUpdateNotify: isSet2(object.feePoolUpdateNotify) ? FeePoolUpdateNotify.fromJSON(object.feePoolUpdateNotify) : void 0,
       feePoolClose: isSet2(object.feePoolClose) ? FeePoolClose.fromJSON(object.feePoolClose) : void 0,
-      feePoolStatusQuery: isSet2(object.feePoolStatusQuery) ? FeePoolStatusQuery.fromJSON(object.feePoolStatusQuery) : void 0,
-      feePoolStatusResponse: isSet2(object.feePoolStatusResponse) ? FeePoolStatusResponse.fromJSON(object.feePoolStatusResponse) : void 0,
+      feePoolSessionQuery: isSet2(object.feePoolSessionQuery) ? FeePoolSessionQuery.fromJSON(object.feePoolSessionQuery) : void 0,
+      feePoolSessionResponse: isSet2(object.feePoolSessionResponse) ? FeePoolSessionResponse.fromJSON(object.feePoolSessionResponse) : void 0,
       feePoolListQuery: isSet2(object.feePoolListQuery) ? FeePoolListQuery.fromJSON(object.feePoolListQuery) : void 0,
-      feePoolListResponse: isSet2(object.feePoolListResponse) ? FeePoolListResponse.fromJSON(object.feePoolListResponse) : void 0
+      feePoolListResponse: isSet2(object.feePoolListResponse) ? FeePoolListResponse.fromJSON(object.feePoolListResponse) : void 0,
+      feePoolQuery: isSet2(object.feePoolQuery) ? FeePoolQuery.fromJSON(object.feePoolQuery) : void 0,
+      feePoolResponse: isSet2(object.feePoolResponse) ? FeePoolResponse.fromJSON(object.feePoolResponse) : void 0
     };
   },
   toJSON(message) {
@@ -1393,17 +1431,23 @@ var Envelope = {
     if (message.feePoolClose !== void 0) {
       obj.feePoolClose = FeePoolClose.toJSON(message.feePoolClose);
     }
-    if (message.feePoolStatusQuery !== void 0) {
-      obj.feePoolStatusQuery = FeePoolStatusQuery.toJSON(message.feePoolStatusQuery);
+    if (message.feePoolSessionQuery !== void 0) {
+      obj.feePoolSessionQuery = FeePoolSessionQuery.toJSON(message.feePoolSessionQuery);
     }
-    if (message.feePoolStatusResponse !== void 0) {
-      obj.feePoolStatusResponse = FeePoolStatusResponse.toJSON(message.feePoolStatusResponse);
+    if (message.feePoolSessionResponse !== void 0) {
+      obj.feePoolSessionResponse = FeePoolSessionResponse.toJSON(message.feePoolSessionResponse);
     }
     if (message.feePoolListQuery !== void 0) {
       obj.feePoolListQuery = FeePoolListQuery.toJSON(message.feePoolListQuery);
     }
     if (message.feePoolListResponse !== void 0) {
       obj.feePoolListResponse = FeePoolListResponse.toJSON(message.feePoolListResponse);
+    }
+    if (message.feePoolQuery !== void 0) {
+      obj.feePoolQuery = FeePoolQuery.toJSON(message.feePoolQuery);
+    }
+    if (message.feePoolResponse !== void 0) {
+      obj.feePoolResponse = FeePoolResponse.toJSON(message.feePoolResponse);
     }
     return obj;
   },
@@ -1426,10 +1470,12 @@ var Envelope = {
     message.feePoolUpdate = object.feePoolUpdate !== void 0 && object.feePoolUpdate !== null ? FeePoolUpdate.fromPartial(object.feePoolUpdate) : void 0;
     message.feePoolUpdateNotify = object.feePoolUpdateNotify !== void 0 && object.feePoolUpdateNotify !== null ? FeePoolUpdateNotify.fromPartial(object.feePoolUpdateNotify) : void 0;
     message.feePoolClose = object.feePoolClose !== void 0 && object.feePoolClose !== null ? FeePoolClose.fromPartial(object.feePoolClose) : void 0;
-    message.feePoolStatusQuery = object.feePoolStatusQuery !== void 0 && object.feePoolStatusQuery !== null ? FeePoolStatusQuery.fromPartial(object.feePoolStatusQuery) : void 0;
-    message.feePoolStatusResponse = object.feePoolStatusResponse !== void 0 && object.feePoolStatusResponse !== null ? FeePoolStatusResponse.fromPartial(object.feePoolStatusResponse) : void 0;
+    message.feePoolSessionQuery = object.feePoolSessionQuery !== void 0 && object.feePoolSessionQuery !== null ? FeePoolSessionQuery.fromPartial(object.feePoolSessionQuery) : void 0;
+    message.feePoolSessionResponse = object.feePoolSessionResponse !== void 0 && object.feePoolSessionResponse !== null ? FeePoolSessionResponse.fromPartial(object.feePoolSessionResponse) : void 0;
     message.feePoolListQuery = object.feePoolListQuery !== void 0 && object.feePoolListQuery !== null ? FeePoolListQuery.fromPartial(object.feePoolListQuery) : void 0;
     message.feePoolListResponse = object.feePoolListResponse !== void 0 && object.feePoolListResponse !== null ? FeePoolListResponse.fromPartial(object.feePoolListResponse) : void 0;
+    message.feePoolQuery = object.feePoolQuery !== void 0 && object.feePoolQuery !== null ? FeePoolQuery.fromPartial(object.feePoolQuery) : void 0;
+    message.feePoolResponse = object.feePoolResponse !== void 0 && object.feePoolResponse !== null ? FeePoolResponse.fromPartial(object.feePoolResponse) : void 0;
     return message;
   }
 };
@@ -2127,10 +2173,130 @@ var FeePoolClose = {
     return message;
   }
 };
-function createBaseFeePoolStatusQuery() {
+function createBaseFeePoolSessionQuery() {
+  return {};
+}
+var FeePoolSessionQuery = {
+  encode(_, writer = new BinaryWriter()) {
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolSessionQuery();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(_) {
+    return {};
+  },
+  toJSON(_) {
+    const obj = {};
+    return obj;
+  },
+  create(base) {
+    return FeePoolSessionQuery.fromPartial(base ?? {});
+  },
+  fromPartial(_) {
+    const message = createBaseFeePoolSessionQuery();
+    return message;
+  }
+};
+function createBaseFeePoolSessionResponse() {
+  return { spendTxid: new Uint8Array(0), expirationAt: void 0, errorReason: "" };
+}
+var FeePoolSessionResponse = {
+  encode(message, writer = new BinaryWriter()) {
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
+    }
+    if (message.expirationAt !== void 0) {
+      Timestamp.encode(toTimestamp(message.expirationAt), writer.uint32(18).fork()).join();
+    }
+    if (message.errorReason !== "") {
+      writer.uint32(26).string(message.errorReason);
+    }
+    return writer;
+  },
+  decode(input, length) {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === void 0 ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolSessionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+          message.spendTxid = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+          message.expirationAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+          message.errorReason = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+  fromJSON(object) {
+    return {
+      spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
+      expirationAt: isSet2(object.expirationAt) ? fromJsonTimestamp(object.expirationAt) : void 0,
+      errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : ""
+    };
+  },
+  toJSON(message) {
+    const obj = {};
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
+    }
+    if (message.expirationAt !== void 0) {
+      obj.expirationAt = message.expirationAt.toISOString();
+    }
+    if (message.errorReason !== "") {
+      obj.errorReason = message.errorReason;
+    }
+    return obj;
+  },
+  create(base) {
+    return FeePoolSessionResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object) {
+    const message = createBaseFeePoolSessionResponse();
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
+    message.expirationAt = object.expirationAt ?? void 0;
+    message.errorReason = object.errorReason ?? "";
+    return message;
+  }
+};
+function createBaseFeePoolQuery() {
   return { spendTxid: new Uint8Array(0) };
 }
-var FeePoolStatusQuery = {
+var FeePoolQuery = {
   encode(message, writer = new BinaryWriter()) {
     if (message.spendTxid.length !== 0) {
       writer.uint32(10).bytes(message.spendTxid);
@@ -2140,7 +2306,7 @@ var FeePoolStatusQuery = {
   decode(input, length) {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === void 0 ? reader.len : reader.pos + length;
-    const message = createBaseFeePoolStatusQuery();
+    const message = createBaseFeePoolQuery();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2170,15 +2336,15 @@ var FeePoolStatusQuery = {
     return obj;
   },
   create(base) {
-    return FeePoolStatusQuery.fromPartial(base ?? {});
+    return FeePoolQuery.fromPartial(base ?? {});
   },
   fromPartial(object) {
-    const message = createBaseFeePoolStatusQuery();
+    const message = createBaseFeePoolQuery();
     message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     return message;
   }
 };
-function createBaseFeePoolStatusResponse() {
+function createBaseFeePoolResponse() {
   return {
     spendTxid: new Uint8Array(0),
     status: "",
@@ -2196,7 +2362,7 @@ function createBaseFeePoolStatusResponse() {
     spendTxHex: ""
   };
 }
-var FeePoolStatusResponse = {
+var FeePoolResponse = {
   encode(message, writer = new BinaryWriter()) {
     if (message.spendTxid.length !== 0) {
       writer.uint32(10).bytes(message.spendTxid);
@@ -2245,7 +2411,7 @@ var FeePoolStatusResponse = {
   decode(input, length) {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === void 0 ? reader.len : reader.pos + length;
-    const message = createBaseFeePoolStatusResponse();
+    const message = createBaseFeePoolResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2420,10 +2586,10 @@ var FeePoolStatusResponse = {
     return obj;
   },
   create(base) {
-    return FeePoolStatusResponse.fromPartial(base ?? {});
+    return FeePoolResponse.fromPartial(base ?? {});
   },
   fromPartial(object) {
-    const message = createBaseFeePoolStatusResponse();
+    const message = createBaseFeePoolResponse();
     message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.status = object.status ?? "";
     message.spendAmount = object.spendAmount ?? 0;
@@ -3083,9 +3249,11 @@ function verifyEnvelope(env) {
   FeePoolListItem,
   FeePoolListQuery,
   FeePoolListResponse,
+  FeePoolQuery,
+  FeePoolResponse,
+  FeePoolSessionQuery,
+  FeePoolSessionResponse,
   FeePoolSign,
-  FeePoolStatusQuery,
-  FeePoolStatusResponse,
   FeePoolUpdate,
   FeePoolUpdateNotify,
   FileDemandBroadcast,

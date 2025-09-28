@@ -25,14 +25,18 @@ declare enum MsgKind {
     KIND_FEE_POOL_UPDATE_NOTIFY = 16,
     /** KIND_FEE_POOL_CLOSE - 费用池关闭 */
     KIND_FEE_POOL_CLOSE = 17,
-    /** KIND_FEE_POOL_STATUS_QUERY - 费用池状态查询 */
-    KIND_FEE_POOL_STATUS_QUERY = 18,
-    /** KIND_FEE_POOL_STATUS_RESPONSE - 费用池状态响应 */
-    KIND_FEE_POOL_STATUS_RESPONSE = 19,
+    /** KIND_FEE_POOL_SESSION_QUERY - 费用池会话状态查询 */
+    KIND_FEE_POOL_SESSION_QUERY = 18,
+    /** KIND_FEE_POOL_SESSION_RESPONSE - 费用池会话状态响应 */
+    KIND_FEE_POOL_SESSION_RESPONSE = 19,
     /** KIND_FEE_POOL_LIST_QUERY - 费用池列表查询 */
     KIND_FEE_POOL_LIST_QUERY = 20,
     /** KIND_FEE_POOL_LIST_RESPONSE - 费用池列表响应 */
     KIND_FEE_POOL_LIST_RESPONSE = 21,
+    /** KIND_FEE_POOL_QUERY - 单个费用池查询 */
+    KIND_FEE_POOL_QUERY = 22,
+    /** KIND_FEE_POOL_RESPONSE - 单个费用池响应 */
+    KIND_FEE_POOL_RESPONSE = 23,
     UNRECOGNIZED = -1
 }
 declare function msgKindFromJSON(object: any): MsgKind;
@@ -73,10 +77,12 @@ interface Envelope {
     feePoolUpdate?: FeePoolUpdate | undefined;
     feePoolUpdateNotify?: FeePoolUpdateNotify | undefined;
     feePoolClose?: FeePoolClose | undefined;
-    feePoolStatusQuery?: FeePoolStatusQuery | undefined;
-    feePoolStatusResponse?: FeePoolStatusResponse | undefined;
+    feePoolSessionQuery?: FeePoolSessionQuery | undefined;
+    feePoolSessionResponse?: FeePoolSessionResponse | undefined;
     feePoolListQuery?: FeePoolListQuery | undefined;
     feePoolListResponse?: FeePoolListResponse | undefined;
+    feePoolQuery?: FeePoolQuery | undefined;
+    feePoolResponse?: FeePoolResponse | undefined;
 }
 declare const Envelope: MessageFns<Envelope>;
 interface ErrorReply {
@@ -160,14 +166,28 @@ interface FeePoolClose {
     signature: Uint8Array;
 }
 declare const FeePoolClose: MessageFns<FeePoolClose>;
-/** 费用池状态查询消息 */
-interface FeePoolStatusQuery {
-    /** 花费交易ID（可选，为空则查询客户端所有费用池） */
+/** 费用池会话查询消息 */
+interface FeePoolSessionQuery {
+}
+declare const FeePoolSessionQuery: MessageFns<FeePoolSessionQuery>;
+/** 费用池会话响应消息 */
+interface FeePoolSessionResponse {
+    /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；选填） */
+    spendTxid: Uint8Array;
+    /** 到期时间，选填 */
+    expirationAt?: Date | undefined;
+    /** 错误原因（如果状态为error时填写） */
+    errorReason: string;
+}
+declare const FeePoolSessionResponse: MessageFns<FeePoolSessionResponse>;
+/** 费用池查询消息 */
+interface FeePoolQuery {
+    /** 花费交易ID（必选）查看单一费用池信息 */
     spendTxid: Uint8Array;
 }
-declare const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery>;
-/** 费用池状态响应消息 */
-interface FeePoolStatusResponse {
+declare const FeePoolQuery: MessageFns<FeePoolQuery>;
+/** 费用池响应消息 */
+interface FeePoolResponse {
     /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
     spendTxid: Uint8Array;
     /** 状态：pending, signed, active, expired, closed, error */
@@ -196,7 +216,7 @@ interface FeePoolStatusResponse {
     /** 花费交易的十六进制表示 */
     spendTxHex: string;
 }
-declare const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse>;
+declare const FeePoolResponse: MessageFns<FeePoolResponse>;
 /** 费用池列表查询消息 */
 interface FeePoolListQuery {
     /** 每页数量 */
@@ -286,4 +306,4 @@ declare function signEnvelope(env: Envelope, priv: PrivateKey): void;
 
 declare function verifyEnvelope(env: Envelope): boolean;
 
-export { type DeepPartial, Envelope, ErrorReply, type Exact, FeePoolBaseTx, FeePoolClose, FeePoolCreate, FeePoolListItem, FeePoolListQuery, FeePoolListResponse, FeePoolSign, FeePoolStatusQuery, FeePoolStatusResponse, FeePoolUpdate, FeePoolUpdateNotify, FileDemandBroadcast, FileDemandRequest, Header, type MessageFns, MsgKind, WSSignaling, deterministicMarshal, msgKindFromJSON, msgKindToJSON, protobufPackage, signEnvelope, verifyEnvelope };
+export { type DeepPartial, Envelope, ErrorReply, type Exact, FeePoolBaseTx, FeePoolClose, FeePoolCreate, FeePoolListItem, FeePoolListQuery, FeePoolListResponse, FeePoolQuery, FeePoolResponse, FeePoolSessionQuery, FeePoolSessionResponse, FeePoolSign, FeePoolUpdate, FeePoolUpdateNotify, FileDemandBroadcast, FileDemandRequest, Header, type MessageFns, MsgKind, WSSignaling, deterministicMarshal, msgKindFromJSON, msgKindToJSON, protobufPackage, signEnvelope, verifyEnvelope };

@@ -33,14 +33,18 @@ export enum MsgKind {
   KIND_FEE_POOL_UPDATE_NOTIFY = 16,
   /** KIND_FEE_POOL_CLOSE - 费用池关闭 */
   KIND_FEE_POOL_CLOSE = 17,
-  /** KIND_FEE_POOL_STATUS_QUERY - 费用池状态查询 */
-  KIND_FEE_POOL_STATUS_QUERY = 18,
-  /** KIND_FEE_POOL_STATUS_RESPONSE - 费用池状态响应 */
-  KIND_FEE_POOL_STATUS_RESPONSE = 19,
+  /** KIND_FEE_POOL_SESSION_QUERY - 费用池会话状态查询 */
+  KIND_FEE_POOL_SESSION_QUERY = 18,
+  /** KIND_FEE_POOL_SESSION_RESPONSE - 费用池会话状态响应 */
+  KIND_FEE_POOL_SESSION_RESPONSE = 19,
   /** KIND_FEE_POOL_LIST_QUERY - 费用池列表查询 */
   KIND_FEE_POOL_LIST_QUERY = 20,
   /** KIND_FEE_POOL_LIST_RESPONSE - 费用池列表响应 */
   KIND_FEE_POOL_LIST_RESPONSE = 21,
+  /** KIND_FEE_POOL_QUERY - 单个费用池查询 */
+  KIND_FEE_POOL_QUERY = 22,
+  /** KIND_FEE_POOL_RESPONSE - 单个费用池响应 */
+  KIND_FEE_POOL_RESPONSE = 23,
   UNRECOGNIZED = -1,
 }
 
@@ -80,17 +84,23 @@ export function msgKindFromJSON(object: any): MsgKind {
     case "KIND_FEE_POOL_CLOSE":
       return MsgKind.KIND_FEE_POOL_CLOSE;
     case 18:
-    case "KIND_FEE_POOL_STATUS_QUERY":
-      return MsgKind.KIND_FEE_POOL_STATUS_QUERY;
+    case "KIND_FEE_POOL_SESSION_QUERY":
+      return MsgKind.KIND_FEE_POOL_SESSION_QUERY;
     case 19:
-    case "KIND_FEE_POOL_STATUS_RESPONSE":
-      return MsgKind.KIND_FEE_POOL_STATUS_RESPONSE;
+    case "KIND_FEE_POOL_SESSION_RESPONSE":
+      return MsgKind.KIND_FEE_POOL_SESSION_RESPONSE;
     case 20:
     case "KIND_FEE_POOL_LIST_QUERY":
       return MsgKind.KIND_FEE_POOL_LIST_QUERY;
     case 21:
     case "KIND_FEE_POOL_LIST_RESPONSE":
       return MsgKind.KIND_FEE_POOL_LIST_RESPONSE;
+    case 22:
+    case "KIND_FEE_POOL_QUERY":
+      return MsgKind.KIND_FEE_POOL_QUERY;
+    case 23:
+    case "KIND_FEE_POOL_RESPONSE":
+      return MsgKind.KIND_FEE_POOL_RESPONSE;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -122,14 +132,18 @@ export function msgKindToJSON(object: MsgKind): string {
       return "KIND_FEE_POOL_UPDATE_NOTIFY";
     case MsgKind.KIND_FEE_POOL_CLOSE:
       return "KIND_FEE_POOL_CLOSE";
-    case MsgKind.KIND_FEE_POOL_STATUS_QUERY:
-      return "KIND_FEE_POOL_STATUS_QUERY";
-    case MsgKind.KIND_FEE_POOL_STATUS_RESPONSE:
-      return "KIND_FEE_POOL_STATUS_RESPONSE";
+    case MsgKind.KIND_FEE_POOL_SESSION_QUERY:
+      return "KIND_FEE_POOL_SESSION_QUERY";
+    case MsgKind.KIND_FEE_POOL_SESSION_RESPONSE:
+      return "KIND_FEE_POOL_SESSION_RESPONSE";
     case MsgKind.KIND_FEE_POOL_LIST_QUERY:
       return "KIND_FEE_POOL_LIST_QUERY";
     case MsgKind.KIND_FEE_POOL_LIST_RESPONSE:
       return "KIND_FEE_POOL_LIST_RESPONSE";
+    case MsgKind.KIND_FEE_POOL_QUERY:
+      return "KIND_FEE_POOL_QUERY";
+    case MsgKind.KIND_FEE_POOL_RESPONSE:
+      return "KIND_FEE_POOL_RESPONSE";
     case MsgKind.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -178,10 +192,12 @@ export interface Envelope {
   feePoolUpdate?: FeePoolUpdate | undefined;
   feePoolUpdateNotify?: FeePoolUpdateNotify | undefined;
   feePoolClose?: FeePoolClose | undefined;
-  feePoolStatusQuery?: FeePoolStatusQuery | undefined;
-  feePoolStatusResponse?: FeePoolStatusResponse | undefined;
+  feePoolSessionQuery?: FeePoolSessionQuery | undefined;
+  feePoolSessionResponse?: FeePoolSessionResponse | undefined;
   feePoolListQuery?: FeePoolListQuery | undefined;
   feePoolListResponse?: FeePoolListResponse | undefined;
+  feePoolQuery?: FeePoolQuery | undefined;
+  feePoolResponse?: FeePoolResponse | undefined;
 }
 
 export interface ErrorReply {
@@ -265,14 +281,30 @@ export interface FeePoolClose {
   signature: Uint8Array;
 }
 
-/** 费用池状态查询消息 */
-export interface FeePoolStatusQuery {
-  /** 花费交易ID（可选，为空则查询客户端所有费用池） */
+/** 费用池会话查询消息 */
+export interface FeePoolSessionQuery {
+}
+
+/** 费用池会话响应消息 */
+export interface FeePoolSessionResponse {
+  /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；选填） */
+  spendTxid: Uint8Array;
+  /** 到期时间，选填 */
+  expirationAt?:
+    | Date
+    | undefined;
+  /** 错误原因（如果状态为error时填写） */
+  errorReason: string;
+}
+
+/** 费用池查询消息 */
+export interface FeePoolQuery {
+  /** 花费交易ID（必选）查看单一费用池信息 */
   spendTxid: Uint8Array;
 }
 
-/** 费用池状态响应消息 */
-export interface FeePoolStatusResponse {
+/** 费用池响应消息 */
+export interface FeePoolResponse {
   /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；必填且不可为空） */
   spendTxid: Uint8Array;
   /** 状态：pending, signed, active, expired, closed, error */
@@ -537,10 +569,12 @@ function createBaseEnvelope(): Envelope {
     feePoolUpdate: undefined,
     feePoolUpdateNotify: undefined,
     feePoolClose: undefined,
-    feePoolStatusQuery: undefined,
-    feePoolStatusResponse: undefined,
+    feePoolSessionQuery: undefined,
+    feePoolSessionResponse: undefined,
     feePoolListQuery: undefined,
     feePoolListResponse: undefined,
+    feePoolQuery: undefined,
+    feePoolResponse: undefined,
   };
 }
 
@@ -588,17 +622,23 @@ export const Envelope: MessageFns<Envelope> = {
     if (message.feePoolClose !== undefined) {
       FeePoolClose.encode(message.feePoolClose, writer.uint32(138).fork()).join();
     }
-    if (message.feePoolStatusQuery !== undefined) {
-      FeePoolStatusQuery.encode(message.feePoolStatusQuery, writer.uint32(146).fork()).join();
+    if (message.feePoolSessionQuery !== undefined) {
+      FeePoolSessionQuery.encode(message.feePoolSessionQuery, writer.uint32(146).fork()).join();
     }
-    if (message.feePoolStatusResponse !== undefined) {
-      FeePoolStatusResponse.encode(message.feePoolStatusResponse, writer.uint32(154).fork()).join();
+    if (message.feePoolSessionResponse !== undefined) {
+      FeePoolSessionResponse.encode(message.feePoolSessionResponse, writer.uint32(154).fork()).join();
     }
     if (message.feePoolListQuery !== undefined) {
       FeePoolListQuery.encode(message.feePoolListQuery, writer.uint32(162).fork()).join();
     }
     if (message.feePoolListResponse !== undefined) {
       FeePoolListResponse.encode(message.feePoolListResponse, writer.uint32(170).fork()).join();
+    }
+    if (message.feePoolQuery !== undefined) {
+      FeePoolQuery.encode(message.feePoolQuery, writer.uint32(178).fork()).join();
+    }
+    if (message.feePoolResponse !== undefined) {
+      FeePoolResponse.encode(message.feePoolResponse, writer.uint32(186).fork()).join();
     }
     return writer;
   },
@@ -727,7 +767,7 @@ export const Envelope: MessageFns<Envelope> = {
             break;
           }
 
-          message.feePoolStatusQuery = FeePoolStatusQuery.decode(reader, reader.uint32());
+          message.feePoolSessionQuery = FeePoolSessionQuery.decode(reader, reader.uint32());
           continue;
         }
         case 19: {
@@ -735,7 +775,7 @@ export const Envelope: MessageFns<Envelope> = {
             break;
           }
 
-          message.feePoolStatusResponse = FeePoolStatusResponse.decode(reader, reader.uint32());
+          message.feePoolSessionResponse = FeePoolSessionResponse.decode(reader, reader.uint32());
           continue;
         }
         case 20: {
@@ -752,6 +792,22 @@ export const Envelope: MessageFns<Envelope> = {
           }
 
           message.feePoolListResponse = FeePoolListResponse.decode(reader, reader.uint32());
+          continue;
+        }
+        case 22: {
+          if (tag !== 178) {
+            break;
+          }
+
+          message.feePoolQuery = FeePoolQuery.decode(reader, reader.uint32());
+          continue;
+        }
+        case 23: {
+          if (tag !== 186) {
+            break;
+          }
+
+          message.feePoolResponse = FeePoolResponse.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -785,16 +841,18 @@ export const Envelope: MessageFns<Envelope> = {
         ? FeePoolUpdateNotify.fromJSON(object.feePoolUpdateNotify)
         : undefined,
       feePoolClose: isSet(object.feePoolClose) ? FeePoolClose.fromJSON(object.feePoolClose) : undefined,
-      feePoolStatusQuery: isSet(object.feePoolStatusQuery)
-        ? FeePoolStatusQuery.fromJSON(object.feePoolStatusQuery)
+      feePoolSessionQuery: isSet(object.feePoolSessionQuery)
+        ? FeePoolSessionQuery.fromJSON(object.feePoolSessionQuery)
         : undefined,
-      feePoolStatusResponse: isSet(object.feePoolStatusResponse)
-        ? FeePoolStatusResponse.fromJSON(object.feePoolStatusResponse)
+      feePoolSessionResponse: isSet(object.feePoolSessionResponse)
+        ? FeePoolSessionResponse.fromJSON(object.feePoolSessionResponse)
         : undefined,
       feePoolListQuery: isSet(object.feePoolListQuery) ? FeePoolListQuery.fromJSON(object.feePoolListQuery) : undefined,
       feePoolListResponse: isSet(object.feePoolListResponse)
         ? FeePoolListResponse.fromJSON(object.feePoolListResponse)
         : undefined,
+      feePoolQuery: isSet(object.feePoolQuery) ? FeePoolQuery.fromJSON(object.feePoolQuery) : undefined,
+      feePoolResponse: isSet(object.feePoolResponse) ? FeePoolResponse.fromJSON(object.feePoolResponse) : undefined,
     };
   },
 
@@ -842,17 +900,23 @@ export const Envelope: MessageFns<Envelope> = {
     if (message.feePoolClose !== undefined) {
       obj.feePoolClose = FeePoolClose.toJSON(message.feePoolClose);
     }
-    if (message.feePoolStatusQuery !== undefined) {
-      obj.feePoolStatusQuery = FeePoolStatusQuery.toJSON(message.feePoolStatusQuery);
+    if (message.feePoolSessionQuery !== undefined) {
+      obj.feePoolSessionQuery = FeePoolSessionQuery.toJSON(message.feePoolSessionQuery);
     }
-    if (message.feePoolStatusResponse !== undefined) {
-      obj.feePoolStatusResponse = FeePoolStatusResponse.toJSON(message.feePoolStatusResponse);
+    if (message.feePoolSessionResponse !== undefined) {
+      obj.feePoolSessionResponse = FeePoolSessionResponse.toJSON(message.feePoolSessionResponse);
     }
     if (message.feePoolListQuery !== undefined) {
       obj.feePoolListQuery = FeePoolListQuery.toJSON(message.feePoolListQuery);
     }
     if (message.feePoolListResponse !== undefined) {
       obj.feePoolListResponse = FeePoolListResponse.toJSON(message.feePoolListResponse);
+    }
+    if (message.feePoolQuery !== undefined) {
+      obj.feePoolQuery = FeePoolQuery.toJSON(message.feePoolQuery);
+    }
+    if (message.feePoolResponse !== undefined) {
+      obj.feePoolResponse = FeePoolResponse.toJSON(message.feePoolResponse);
     }
     return obj;
   },
@@ -898,18 +962,24 @@ export const Envelope: MessageFns<Envelope> = {
     message.feePoolClose = (object.feePoolClose !== undefined && object.feePoolClose !== null)
       ? FeePoolClose.fromPartial(object.feePoolClose)
       : undefined;
-    message.feePoolStatusQuery = (object.feePoolStatusQuery !== undefined && object.feePoolStatusQuery !== null)
-      ? FeePoolStatusQuery.fromPartial(object.feePoolStatusQuery)
+    message.feePoolSessionQuery = (object.feePoolSessionQuery !== undefined && object.feePoolSessionQuery !== null)
+      ? FeePoolSessionQuery.fromPartial(object.feePoolSessionQuery)
       : undefined;
-    message.feePoolStatusResponse =
-      (object.feePoolStatusResponse !== undefined && object.feePoolStatusResponse !== null)
-        ? FeePoolStatusResponse.fromPartial(object.feePoolStatusResponse)
+    message.feePoolSessionResponse =
+      (object.feePoolSessionResponse !== undefined && object.feePoolSessionResponse !== null)
+        ? FeePoolSessionResponse.fromPartial(object.feePoolSessionResponse)
         : undefined;
     message.feePoolListQuery = (object.feePoolListQuery !== undefined && object.feePoolListQuery !== null)
       ? FeePoolListQuery.fromPartial(object.feePoolListQuery)
       : undefined;
     message.feePoolListResponse = (object.feePoolListResponse !== undefined && object.feePoolListResponse !== null)
       ? FeePoolListResponse.fromPartial(object.feePoolListResponse)
+      : undefined;
+    message.feePoolQuery = (object.feePoolQuery !== undefined && object.feePoolQuery !== null)
+      ? FeePoolQuery.fromPartial(object.feePoolQuery)
+      : undefined;
+    message.feePoolResponse = (object.feePoolResponse !== undefined && object.feePoolResponse !== null)
+      ? FeePoolResponse.fromPartial(object.feePoolResponse)
       : undefined;
     return message;
   },
@@ -1683,22 +1753,157 @@ export const FeePoolClose: MessageFns<FeePoolClose> = {
   },
 };
 
-function createBaseFeePoolStatusQuery(): FeePoolStatusQuery {
+function createBaseFeePoolSessionQuery(): FeePoolSessionQuery {
+  return {};
+}
+
+export const FeePoolSessionQuery: MessageFns<FeePoolSessionQuery> = {
+  encode(_: FeePoolSessionQuery, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolSessionQuery {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolSessionQuery();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): FeePoolSessionQuery {
+    return {};
+  },
+
+  toJSON(_: FeePoolSessionQuery): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FeePoolSessionQuery>, I>>(base?: I): FeePoolSessionQuery {
+    return FeePoolSessionQuery.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FeePoolSessionQuery>, I>>(_: I): FeePoolSessionQuery {
+    const message = createBaseFeePoolSessionQuery();
+    return message;
+  },
+};
+
+function createBaseFeePoolSessionResponse(): FeePoolSessionResponse {
+  return { spendTxid: new Uint8Array(0), expirationAt: undefined, errorReason: "" };
+}
+
+export const FeePoolSessionResponse: MessageFns<FeePoolSessionResponse> = {
+  encode(message: FeePoolSessionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.spendTxid.length !== 0) {
+      writer.uint32(10).bytes(message.spendTxid);
+    }
+    if (message.expirationAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.expirationAt), writer.uint32(18).fork()).join();
+    }
+    if (message.errorReason !== "") {
+      writer.uint32(26).string(message.errorReason);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolSessionResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeePoolSessionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.spendTxid = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.expirationAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.errorReason = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FeePoolSessionResponse {
+    return {
+      spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
+      expirationAt: isSet(object.expirationAt) ? fromJsonTimestamp(object.expirationAt) : undefined,
+      errorReason: isSet(object.errorReason) ? globalThis.String(object.errorReason) : "",
+    };
+  },
+
+  toJSON(message: FeePoolSessionResponse): unknown {
+    const obj: any = {};
+    if (message.spendTxid.length !== 0) {
+      obj.spendTxid = base64FromBytes(message.spendTxid);
+    }
+    if (message.expirationAt !== undefined) {
+      obj.expirationAt = message.expirationAt.toISOString();
+    }
+    if (message.errorReason !== "") {
+      obj.errorReason = message.errorReason;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FeePoolSessionResponse>, I>>(base?: I): FeePoolSessionResponse {
+    return FeePoolSessionResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FeePoolSessionResponse>, I>>(object: I): FeePoolSessionResponse {
+    const message = createBaseFeePoolSessionResponse();
+    message.spendTxid = object.spendTxid ?? new Uint8Array(0);
+    message.expirationAt = object.expirationAt ?? undefined;
+    message.errorReason = object.errorReason ?? "";
+    return message;
+  },
+};
+
+function createBaseFeePoolQuery(): FeePoolQuery {
   return { spendTxid: new Uint8Array(0) };
 }
 
-export const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery> = {
-  encode(message: FeePoolStatusQuery, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const FeePoolQuery: MessageFns<FeePoolQuery> = {
+  encode(message: FeePoolQuery, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.spendTxid.length !== 0) {
       writer.uint32(10).bytes(message.spendTxid);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolStatusQuery {
+  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolQuery {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFeePoolStatusQuery();
+    const message = createBaseFeePoolQuery();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1719,11 +1924,11 @@ export const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery> = {
     return message;
   },
 
-  fromJSON(object: any): FeePoolStatusQuery {
+  fromJSON(object: any): FeePoolQuery {
     return { spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0) };
   },
 
-  toJSON(message: FeePoolStatusQuery): unknown {
+  toJSON(message: FeePoolQuery): unknown {
     const obj: any = {};
     if (message.spendTxid.length !== 0) {
       obj.spendTxid = base64FromBytes(message.spendTxid);
@@ -1731,17 +1936,17 @@ export const FeePoolStatusQuery: MessageFns<FeePoolStatusQuery> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<FeePoolStatusQuery>, I>>(base?: I): FeePoolStatusQuery {
-    return FeePoolStatusQuery.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<FeePoolQuery>, I>>(base?: I): FeePoolQuery {
+    return FeePoolQuery.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<FeePoolStatusQuery>, I>>(object: I): FeePoolStatusQuery {
-    const message = createBaseFeePoolStatusQuery();
+  fromPartial<I extends Exact<DeepPartial<FeePoolQuery>, I>>(object: I): FeePoolQuery {
+    const message = createBaseFeePoolQuery();
     message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
+function createBaseFeePoolResponse(): FeePoolResponse {
   return {
     spendTxid: new Uint8Array(0),
     status: "",
@@ -1760,8 +1965,8 @@ function createBaseFeePoolStatusResponse(): FeePoolStatusResponse {
   };
 }
 
-export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
-  encode(message: FeePoolStatusResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const FeePoolResponse: MessageFns<FeePoolResponse> = {
+  encode(message: FeePoolResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.spendTxid.length !== 0) {
       writer.uint32(10).bytes(message.spendTxid);
     }
@@ -1807,10 +2012,10 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolStatusResponse {
+  decode(input: BinaryReader | Uint8Array, length?: number): FeePoolResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFeePoolStatusResponse();
+    const message = createBaseFeePoolResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1935,7 +2140,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     return message;
   },
 
-  fromJSON(object: any): FeePoolStatusResponse {
+  fromJSON(object: any): FeePoolResponse {
     return {
       spendTxid: isSet(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
       status: isSet(object.status) ? globalThis.String(object.status) : "",
@@ -1954,7 +2159,7 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     };
   },
 
-  toJSON(message: FeePoolStatusResponse): unknown {
+  toJSON(message: FeePoolResponse): unknown {
     const obj: any = {};
     if (message.spendTxid.length !== 0) {
       obj.spendTxid = base64FromBytes(message.spendTxid);
@@ -2001,11 +2206,11 @@ export const FeePoolStatusResponse: MessageFns<FeePoolStatusResponse> = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<FeePoolStatusResponse>, I>>(base?: I): FeePoolStatusResponse {
-    return FeePoolStatusResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<FeePoolResponse>, I>>(base?: I): FeePoolResponse {
+    return FeePoolResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<FeePoolStatusResponse>, I>>(object: I): FeePoolStatusResponse {
-    const message = createBaseFeePoolStatusResponse();
+  fromPartial<I extends Exact<DeepPartial<FeePoolResponse>, I>>(object: I): FeePoolResponse {
+    const message = createBaseFeePoolResponse();
     message.spendTxid = object.spendTxid ?? new Uint8Array(0);
     message.status = object.status ?? "";
     message.spendAmount = object.spendAmount ?? 0;
