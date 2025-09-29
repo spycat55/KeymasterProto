@@ -2211,18 +2211,58 @@ var FeePoolSessionQuery = {
   }
 };
 function createBaseFeePoolSessionResponse() {
-  return { spendTxid: new Uint8Array(0), expirationAt: void 0, errorReason: "" };
+  return {
+    spendTxid: new Uint8Array(0),
+    spendAmount: 0,
+    serverAmount: 0,
+    spendTxFee: 0,
+    sequenceNumber: 0,
+    createdAt: void 0,
+    expiresAt: void 0,
+    errorReason: "",
+    isClose: false,
+    isSettled: false,
+    baseTxHex: "",
+    spendTxHex: ""
+  };
 }
 var FeePoolSessionResponse = {
   encode(message, writer = new BinaryWriter()) {
     if (message.spendTxid.length !== 0) {
       writer.uint32(10).bytes(message.spendTxid);
     }
-    if (message.expirationAt !== void 0) {
-      Timestamp.encode(toTimestamp(message.expirationAt), writer.uint32(18).fork()).join();
+    if (message.spendAmount !== 0) {
+      writer.uint32(24).uint64(message.spendAmount);
+    }
+    if (message.serverAmount !== 0) {
+      writer.uint32(32).uint64(message.serverAmount);
+    }
+    if (message.spendTxFee !== 0) {
+      writer.uint32(40).uint64(message.spendTxFee);
+    }
+    if (message.sequenceNumber !== 0) {
+      writer.uint32(48).uint32(message.sequenceNumber);
+    }
+    if (message.createdAt !== void 0) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(58).fork()).join();
+    }
+    if (message.expiresAt !== void 0) {
+      Timestamp.encode(toTimestamp(message.expiresAt), writer.uint32(66).fork()).join();
     }
     if (message.errorReason !== "") {
-      writer.uint32(26).string(message.errorReason);
+      writer.uint32(74).string(message.errorReason);
+    }
+    if (message.isClose !== false) {
+      writer.uint32(88).bool(message.isClose);
+    }
+    if (message.isSettled !== false) {
+      writer.uint32(96).bool(message.isSettled);
+    }
+    if (message.baseTxHex !== "") {
+      writer.uint32(106).string(message.baseTxHex);
+    }
+    if (message.spendTxHex !== "") {
+      writer.uint32(114).string(message.spendTxHex);
     }
     return writer;
   },
@@ -2240,18 +2280,81 @@ var FeePoolSessionResponse = {
           message.spendTxid = reader.bytes();
           continue;
         }
-        case 2: {
-          if (tag !== 18) {
+        case 3: {
+          if (tag !== 24) {
             break;
           }
-          message.expirationAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.spendAmount = longToNumber2(reader.uint64());
           continue;
         }
-        case 3: {
-          if (tag !== 26) {
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+          message.serverAmount = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+          message.spendTxFee = longToNumber2(reader.uint64());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+          message.sequenceNumber = reader.uint32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+          message.expiresAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
             break;
           }
           message.errorReason = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+          message.isClose = reader.bool();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+          message.isSettled = reader.bool();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+          message.baseTxHex = reader.string();
+          continue;
+        }
+        case 14: {
+          if (tag !== 114) {
+            break;
+          }
+          message.spendTxHex = reader.string();
           continue;
         }
       }
@@ -2265,8 +2368,17 @@ var FeePoolSessionResponse = {
   fromJSON(object) {
     return {
       spendTxid: isSet2(object.spendTxid) ? bytesFromBase64(object.spendTxid) : new Uint8Array(0),
-      expirationAt: isSet2(object.expirationAt) ? fromJsonTimestamp(object.expirationAt) : void 0,
-      errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : ""
+      spendAmount: isSet2(object.spendAmount) ? globalThis.Number(object.spendAmount) : 0,
+      serverAmount: isSet2(object.serverAmount) ? globalThis.Number(object.serverAmount) : 0,
+      spendTxFee: isSet2(object.spendTxFee) ? globalThis.Number(object.spendTxFee) : 0,
+      sequenceNumber: isSet2(object.sequenceNumber) ? globalThis.Number(object.sequenceNumber) : 0,
+      createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
+      expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
+      errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : "",
+      isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
+      isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
+      baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
+      spendTxHex: isSet2(object.spendTxHex) ? globalThis.String(object.spendTxHex) : ""
     };
   },
   toJSON(message) {
@@ -2274,11 +2386,38 @@ var FeePoolSessionResponse = {
     if (message.spendTxid.length !== 0) {
       obj.spendTxid = base64FromBytes(message.spendTxid);
     }
-    if (message.expirationAt !== void 0) {
-      obj.expirationAt = message.expirationAt.toISOString();
+    if (message.spendAmount !== 0) {
+      obj.spendAmount = Math.round(message.spendAmount);
+    }
+    if (message.serverAmount !== 0) {
+      obj.serverAmount = Math.round(message.serverAmount);
+    }
+    if (message.spendTxFee !== 0) {
+      obj.spendTxFee = Math.round(message.spendTxFee);
+    }
+    if (message.sequenceNumber !== 0) {
+      obj.sequenceNumber = Math.round(message.sequenceNumber);
+    }
+    if (message.createdAt !== void 0) {
+      obj.createdAt = message.createdAt.toISOString();
+    }
+    if (message.expiresAt !== void 0) {
+      obj.expiresAt = message.expiresAt.toISOString();
     }
     if (message.errorReason !== "") {
       obj.errorReason = message.errorReason;
+    }
+    if (message.isClose !== false) {
+      obj.isClose = message.isClose;
+    }
+    if (message.isSettled !== false) {
+      obj.isSettled = message.isSettled;
+    }
+    if (message.baseTxHex !== "") {
+      obj.baseTxHex = message.baseTxHex;
+    }
+    if (message.spendTxHex !== "") {
+      obj.spendTxHex = message.spendTxHex;
     }
     return obj;
   },
@@ -2288,8 +2427,17 @@ var FeePoolSessionResponse = {
   fromPartial(object) {
     const message = createBaseFeePoolSessionResponse();
     message.spendTxid = object.spendTxid ?? new Uint8Array(0);
-    message.expirationAt = object.expirationAt ?? void 0;
+    message.spendAmount = object.spendAmount ?? 0;
+    message.serverAmount = object.serverAmount ?? 0;
+    message.spendTxFee = object.spendTxFee ?? 0;
+    message.sequenceNumber = object.sequenceNumber ?? 0;
+    message.createdAt = object.createdAt ?? void 0;
+    message.expiresAt = object.expiresAt ?? void 0;
     message.errorReason = object.errorReason ?? "";
+    message.isClose = object.isClose ?? false;
+    message.isSettled = object.isSettled ?? false;
+    message.baseTxHex = object.baseTxHex ?? "";
+    message.spendTxHex = object.spendTxHex ?? "";
     return message;
   }
 };
@@ -2355,7 +2503,6 @@ function createBaseFeePoolResponse() {
     createdAt: void 0,
     expiresAt: void 0,
     errorReason: "",
-    unspentUpdateAmount: 0,
     isClose: false,
     isSettled: false,
     baseTxHex: "",
@@ -2390,9 +2537,6 @@ var FeePoolResponse = {
     }
     if (message.errorReason !== "") {
       writer.uint32(74).string(message.errorReason);
-    }
-    if (message.unspentUpdateAmount !== 0) {
-      writer.uint32(80).uint64(message.unspentUpdateAmount);
     }
     if (message.isClose !== false) {
       writer.uint32(88).bool(message.isClose);
@@ -2478,13 +2622,6 @@ var FeePoolResponse = {
           message.errorReason = reader.string();
           continue;
         }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-          message.unspentUpdateAmount = longToNumber2(reader.uint64());
-          continue;
-        }
         case 11: {
           if (tag !== 88) {
             break;
@@ -2532,7 +2669,6 @@ var FeePoolResponse = {
       createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
       expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
       errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : "",
-      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
       isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
       isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
@@ -2568,9 +2704,6 @@ var FeePoolResponse = {
     if (message.errorReason !== "") {
       obj.errorReason = message.errorReason;
     }
-    if (message.unspentUpdateAmount !== 0) {
-      obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
-    }
     if (message.isClose !== false) {
       obj.isClose = message.isClose;
     }
@@ -2599,7 +2732,6 @@ var FeePoolResponse = {
     message.createdAt = object.createdAt ?? void 0;
     message.expiresAt = object.expiresAt ?? void 0;
     message.errorReason = object.errorReason ?? "";
-    message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     message.isClose = object.isClose ?? false;
     message.isSettled = object.isSettled ?? false;
     message.baseTxHex = object.baseTxHex ?? "";
@@ -2686,7 +2818,6 @@ function createBaseFeePoolListItem() {
     createdAt: void 0,
     expiresAt: void 0,
     errorReason: "",
-    unspentUpdateAmount: 0,
     isClose: false,
     isSettled: false,
     baseTxHex: "",
@@ -2722,9 +2853,6 @@ var FeePoolListItem = {
     }
     if (message.errorReason !== "") {
       writer.uint32(74).string(message.errorReason);
-    }
-    if (message.unspentUpdateAmount !== 0) {
-      writer.uint32(80).uint64(message.unspentUpdateAmount);
     }
     if (message.isClose !== false) {
       writer.uint32(88).bool(message.isClose);
@@ -2813,13 +2941,6 @@ var FeePoolListItem = {
           message.errorReason = reader.string();
           continue;
         }
-        case 10: {
-          if (tag !== 80) {
-            break;
-          }
-          message.unspentUpdateAmount = longToNumber2(reader.uint64());
-          continue;
-        }
         case 11: {
           if (tag !== 88) {
             break;
@@ -2874,7 +2995,6 @@ var FeePoolListItem = {
       createdAt: isSet2(object.createdAt) ? fromJsonTimestamp(object.createdAt) : void 0,
       expiresAt: isSet2(object.expiresAt) ? fromJsonTimestamp(object.expiresAt) : void 0,
       errorReason: isSet2(object.errorReason) ? globalThis.String(object.errorReason) : "",
-      unspentUpdateAmount: isSet2(object.unspentUpdateAmount) ? globalThis.Number(object.unspentUpdateAmount) : 0,
       isClose: isSet2(object.isClose) ? globalThis.Boolean(object.isClose) : false,
       isSettled: isSet2(object.isSettled) ? globalThis.Boolean(object.isSettled) : false,
       baseTxHex: isSet2(object.baseTxHex) ? globalThis.String(object.baseTxHex) : "",
@@ -2911,9 +3031,6 @@ var FeePoolListItem = {
     if (message.errorReason !== "") {
       obj.errorReason = message.errorReason;
     }
-    if (message.unspentUpdateAmount !== 0) {
-      obj.unspentUpdateAmount = Math.round(message.unspentUpdateAmount);
-    }
     if (message.isClose !== false) {
       obj.isClose = message.isClose;
     }
@@ -2945,7 +3062,6 @@ var FeePoolListItem = {
     message.createdAt = object.createdAt ?? void 0;
     message.expiresAt = object.expiresAt ?? void 0;
     message.errorReason = object.errorReason ?? "";
-    message.unspentUpdateAmount = object.unspentUpdateAmount ?? 0;
     message.isClose = object.isClose ?? false;
     message.isSettled = object.isSettled ?? false;
     message.baseTxHex = object.baseTxHex ?? "";

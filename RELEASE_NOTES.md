@@ -313,3 +313,15 @@ go get github.com/spycat55/KeymasterProto@v0.1.8
 ```bash
 npm install keymaster_proto@0.1.8
 ```
+## v0.8.1 (2025-09-29)
+
+### 变更
+- 移除未使用字段：在 `proto/v1/message.proto` 中删除所有 `unspent_update_amount` 字段；并将其对应的标签号标记为 `reserved 10` 以避免误复用。
+- 对齐会话返回：`FeePoolSessionResponse` 参考 `FeePoolResponse`，补充并对齐所有费用池相关字段，唯独不包含 `status`（会话内固定为 `active`）。
+
+### 兼容性
+- `unspent_update_amount` 字段删除为破坏性变更；已使用该字段的客户端/服务端需同步更新。
+- 已通过 `reserved` 保留原有标签号以降低未来冲突风险。
+
+### 后续动作
+- 如需代码生成，请运行本仓库脚本：`./compile_proto.sh`。

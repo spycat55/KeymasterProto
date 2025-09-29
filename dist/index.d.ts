@@ -172,12 +172,33 @@ interface FeePoolSessionQuery {
 declare const FeePoolSessionQuery: MessageFns<FeePoolSessionQuery>;
 /** 费用池会话响应消息 */
 interface FeePoolSessionResponse {
-    /** 花费交易ID（32 字节，小端序；十六进制展示为大端序；选填） */
+    /**
+     * 说明：该结构体对齐 FeePoolResponse，传递所有费用池参数；
+     * 不包含 status 字段（会话内恒为 "active"）。
+     */
     spendTxid: Uint8Array;
-    /** 到期时间，选填 */
-    expirationAt?: Date | undefined;
-    /** 错误原因（如果状态为error时填写） */
+    /** 客户端投入的总金额 */
+    spendAmount: number;
+    /** 服务器当前金额 */
+    serverAmount: number;
+    /** 交易费用 */
+    spendTxFee: number;
+    /** 当前序列号 */
+    sequenceNumber: number;
+    /** 创建时间 */
+    createdAt?: Date | undefined;
+    /** 过期时间（如果适用） */
+    expiresAt?: Date | undefined;
+    /** 错误原因（如果出错） */
     errorReason: string;
+    /** 是否关闭 */
+    isClose: boolean;
+    /** 是否结算 */
+    isSettled: boolean;
+    /** 基础交易的十六进制表示 */
+    baseTxHex: string;
+    /** 花费交易的十六进制表示 */
+    spendTxHex: string;
 }
 declare const FeePoolSessionResponse: MessageFns<FeePoolSessionResponse>;
 /** 费用池查询消息 */
@@ -205,8 +226,6 @@ interface FeePoolResponse {
     expiresAt?: Date | undefined;
     /** 错误原因（状态为error时） */
     errorReason: string;
-    /** 未花费 update 金额 */
-    unspentUpdateAmount: number;
     /** 是否关闭 */
     isClose: boolean;
     /** 是否结算 */
@@ -245,8 +264,6 @@ interface FeePoolListItem {
     expiresAt?: Date | undefined;
     /** 错误原因（状态为 error 时可用） */
     errorReason: string;
-    /** 未花费的 update 金额 */
-    unspentUpdateAmount: number;
     /** 是否关闭 */
     isClose: boolean;
     /** 是否结算 */
